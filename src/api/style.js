@@ -7,16 +7,26 @@ export function fetchList(query) {
     params: query
   })
 }
+
 export function fetchDelete(id) {
   return request({
     url: `/map/v1/style/${id}`,
     method: 'delete'
   })
 }
+
 export function fetchAddStyle(query) {
   return request({
     url: `/map/v1/style`,
     method: 'put',
+    params: query
+  })
+}
+
+export function fetchUpdateStyle(id, query) {
+  return request({
+    url: `/map/v1/style/${id}`,
+    method: 'post',
     params: query
   })
 }

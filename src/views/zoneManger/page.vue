@@ -7,10 +7,10 @@
           </el-input>
           <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索
           </el-button>
-          <router-link to="/zoneManger/addZone">
-            <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus">添加地图样式
+
+            <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-plus"> <router-link to="/zoneManger/addZone">添加地图样式</router-link>
             </el-button>
-          </router-link>
+
           <el-button class="filter-item" type="danger" :loading="downloadLoading" v-waves icon="el-icon-delete"
                      @click="handleDeletMany">删除
           </el-button>
@@ -120,7 +120,7 @@
         percentage: 0,
         listQuery: {
           page: 1,
-          pageSize: 20,
+          pageSize: 10,
           name: ''
         },
         importanceOptions: [1, 2, 3],
@@ -175,7 +175,7 @@
         this.getList()
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val
+        this.listQuery.pageSize = val
         this.getList()
       },
       handleCurrentChange(val) {

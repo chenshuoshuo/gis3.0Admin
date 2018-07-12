@@ -6,7 +6,7 @@
           <el-input style="width: 200px;" class="filter-item" placeholder="请输入" v-model="listQuery.name">
           </el-input>
           <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handlerSearch">搜索</el-button>
-          <router-link  to="/styleManger/addStyle">
+          <router-link to="/styleManger/addStyle">
             <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-menu">新增模板
             </el-button>
           </router-link>
@@ -24,8 +24,11 @@
                 <div class="right-top">
                   <p class="title">{{item.name}}</p>
                   <div class="options">
-                    <el-button type="primary" icon="el-icon-star-off" size="medium" v-if="!item.is_template" @click="setTemplate(item.id)">设为模板</el-button>
-                    <el-button type="primary" icon="el-icon-star-on" size="medium" v-if="item.is_template">样式模板</el-button>
+                    <el-button type="primary" icon="el-icon-star-off" size="medium" v-if="!item.is_template"
+                               @click="setTemplate(item)">设为模板
+                    </el-button>
+                    <el-button type="primary" icon="el-icon-star-on" size="medium" v-if="item.is_template" style="background:#fff;color: #66b1ff;">样式模板
+                    </el-button>
                     <el-button type="success" icon="el-icon-edit" size="medium">编辑</el-button>
                     <el-button type="danger" icon="el-icon-delete" size="medium" @click="handlerDelete(item.id)">删除
                     </el-button>
@@ -42,7 +45,7 @@
 </template>
 
 <script>
-  import { fetchList, fetchDelete } from "../../api/style"
+  import {fetchList, fetchDelete, fetchUpdateStyle} from "../../api/style"
 
   export default {
     name: 'styleManger',
@@ -94,11 +97,16 @@
       handlerDelete(id) {
         this.deletData(id)
       },
-      setTemplate(id) {
+      setTemplate(item) {
         this.$alert('确认设为模板？', '消息提示', {
           confirmButtonText: '确定',
-          callback: () => {
-            this.$message("设置成功！")
+          callback: (action) => {
+            if (action == "confirm") {
+              item.is_template = true
+              fetchUpdateStyle(item.id, item).then(res => {
+                this.$message("设置成功！")
+              })
+            }
           }
         })
       }
@@ -108,6 +116,7 @@
     }
   }
 </script>
+
 <style scoped>
   .main-content {
     width: 90%;
