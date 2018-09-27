@@ -33,24 +33,14 @@
       <el-form-item label="样式代码: ">
         <el-row :gutter="10">
           <el-col :span="10" style="position: relative">
-            <json-editor :value="addStyleForm.content" @changed="getJsonVal"></json-editor>
+            <json-editor :value="addStyleForm.content" @changed="getJsonVal" id="jsoncontent"></json-editor>
             <div class="view-wrap">
               <el-button @click="viewMap" type="success">运行</el-button>
             </div>
             <span class="error" v-if="formError.content">{{formError.content}}</span>
           </el-col>
           <el-col :span="10">
-            <vue-mapbox-map id='map'
-                            :access-token='scene.accessToken'
-                            :interactive='false'
-                            :geocoder='false'
-                            :lng='scene.lng'
-                            :lat='scene.lat'
-                            :zoom='scene.zoom'
-                            :pitch='scene.pitch'
-                            :bearing='scene.bearing'
-                            :mapStyle="scene.mapStyle"
-            ></vue-mapbox-map>
+            <div ref="basicMapbox" id='map'></div>
           </el-col>
         </el-row>
       </el-form-item>
@@ -63,13 +53,14 @@
 </template>
 
 <script>
+	import Axios from 'axios'
   import JsonEditor from '@/components/JsonEditor'
-  import VueMapboxMap from 'vue-mapbox-map'
-  import {fetchAddStyle} from "../../api/style";
+	import mapboxgl from 'mapbox-gl'
+  import {fetchAddStyle, fetchUpdateStyle, fetchGetStyle} from "../../api/style";
 
   export default {
     name: 'addStyle',
-    components: {JsonEditor, VueMapboxMap},
+    components: {JsonEditor, mapboxgl},
     data() {
       return {
         addStyleForm: {
@@ -88,15 +79,7 @@
         },
         dialogImageUrl: '',
         dialogVisible: false,
-        scene: {
-          accessToken: "pk.eyJ1IjoiZnJlZXd1IiwiYSI6ImNpdTR0cndlNDAwMWYyenM0emNlY2wzdXIifQ.b6ES6ewS-L7PXgrX4HoWUA",
-          lng: 104.06073229826927,
-          lat: 30.597184959710276,
-          zoom: 13,
-          pitch: 20,
-          bearing: 0,
-          mapStyle: 'mapbox://sprites/mapbox/streets-v8'
-        }
+        is_Edit:false,
       }
     },
     methods: {
@@ -139,19 +122,37 @@
           this.addStyleForm.is_template == 1 ? this.addStyleForm.is_template = true : this.addStyleForm.is_template = false
           this.addStyleForm.visible == 1 ? this.addStyleForm.visible = true : this.addStyleForm.visible = false
           let loading = this.$loading({text: "加载中"})
-          fetchAddStyle(this.addStyleForm).then(response => {
-            loading.close()
-            this.resetForm()
-            if (response.data.code == 0) {
-              this.$alert('区域创建成功！', '消息提示', {
-                confirmButtonText: '确定'
-              })
-            } else {
-              this.$alert('区域创建失败，稍后再试！', '消息提示', {
-                confirmButtonText: '确定'
-              })
-            }
-          })
+          
+          if(this.is_Edit){
+          	fetchUpdateStyle(this.id, this.addStyleForm).then(response => {
+	            loading.close()
+	            if (response.data.code == 0) {
+	              this.$alert('区域修改成功！', '消息提示', {
+	                confirmButtonText: '确定'
+	              })
+	            } else {
+	              this.$alert('区域修改失败，稍后再试！', '消息提示', {
+	                confirmButtonText: '确定'
+	              })
+	            }
+	          })
+          }else{
+          	alert("添加")
+	          fetchAddStyle(this.addStyleForm).then(response => {
+	            loading.close()
+	            this.resetForm()
+	            if (response.data.code == 0) {
+	              this.$alert('区域创建成功！', '消息提示', {
+	                confirmButtonText: '确定'
+	              })
+	            } else {
+	              this.$alert('区域创建失败，稍后再试！', '消息提示', {
+	                confirmButtonText: '确定'
+	              })
+	            }
+	          })
+          }
+          
         }
       },
       resetForm() {
@@ -170,15 +171,42 @@
         this.addStyleForm.content = val
       },
       viewMap() {
-        this.mapStyle = this.addStyleForm.content
+
+	      this.map.setStyle(this.addStyleForm.content)
+				
+     }
+    },
+    mounted() {
+      if (this.$route.query.id) {
+
+				fetchGetStyle(this.$route.query.id).then(response => {
+
+						let updata=response.data.data;
+						
+							this.addStyleForm.name=updata.name;
+							this.addStyleForm.content=JSON.parse(updata.content);
+							this.addStyleForm.is_template=updata.is_template?'1':'0';
+							this.addStyleForm.visible=updata.visible?'1':'0';
+							this.id=updata.id;
+							
+							this.is_Edit=true;
+
+	      })
+				
+				mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZXd1IiwiYSI6ImNpdTR0cndlNDAwMWYyenM0emNlY2wzdXIifQ.b6ES6ewS-L7PXgrX4HoWUA'
+	      const map = new mapboxgl.Map({
+	        container: this.$refs.basicMapbox,
+	        style: 'mapbox://styles/mapbox/streets-v9'
+	      })
+	      
+	      this.map=map;
       }
     }
 
   }
 </script>
 <style scoped>
-  @import url("https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css");
-  @import url("https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css");
+ @import url('https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css');
   #map {
     height: 300px;
     width: 100%;
@@ -186,6 +214,10 @@
 
   .error {
     color: red;
+  }
+  #jsoncontent{
+  	height: 700px;
+  	overflow-y: auto;
   }
   .view-wrap {
     position: absolute;

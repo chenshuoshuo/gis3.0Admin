@@ -23,7 +23,16 @@ export function fetchAddStyle(query) {
   })
 }
 
+export function fetchGetStyle(id) {
+  return request({
+    url: `/map/v1/style/${id}`,
+    method: 'get'
+  })
+}
+
 export function fetchUpdateStyle(id, query) {
+	alert(`/map/v1/style/${id}`)
+	console.log(query)
   return request({
     url: `/map/v1/style/${id}`,
     method: 'post',

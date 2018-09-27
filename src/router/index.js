@@ -45,7 +45,7 @@ export const asyncRouterMap = [
   {
     path: '/zoneManger',
     component: Layout,
-    redirect: '/zoneManger/index',
+    redirect: '/zoneManger/page',
     alwaysShow: true, // will always show the root menu
     meta: {
       title: '区域管理',
@@ -78,22 +78,20 @@ export const asyncRouterMap = [
     alwaysShow: true, // will always show the root menu
     meta: {
       title: '样式管理',
-      icon: 'documentation',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      icon: 'documentation'
     },
     children: [{
       path: 'page',
       component: () => import('@/views/styleManger/page'),
       name: 'styleManger',
       meta: {
-        title: '样式管理',
-        roles: ['admin', 'editor'] // or you can only set roles in sub nav
+        title: '样式管理'
       }}, {
       path: 'addStyle',
       component: () => import('@/views/styleManger/addStyle'),
       name: 'addStyle',
       hidden: true,
-      meta: { title: '新增', roles: ['admin', 'editor'] }}]
+      meta: { title: '新增'}}]
   },
   {
     path: '/mapTempMannger',
@@ -140,3 +138,7 @@ export const asyncRouterMap = [
   },
   { path: '*', redirect: '/404', hidden: true }
 ]
+
+export function getConstantRouterMap(){
+  return asyncRouterMap;
+}

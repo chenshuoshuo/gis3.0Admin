@@ -29,7 +29,9 @@
                     </el-button>
                     <el-button type="primary" icon="el-icon-star-on" size="medium" v-if="item.is_template" style="background:#fff;color: #66b1ff;">样式模板
                     </el-button>
-                    <el-button type="success" icon="el-icon-edit" size="medium">编辑</el-button>
+                    <router-link :to="{path:'/styleManger/addStyle',query: {id: item.id}}">
+                    	<el-button type="success" icon="el-icon-edit" size="medium">编辑</el-button>
+                    </router-link>
                     <el-button type="danger" icon="el-icon-delete" size="medium" @click="handlerDelete(item.id)">删除
                     </el-button>
                   </div>
@@ -93,6 +95,9 @@
       },
       handlerSearch() {
         this.loadData()
+      },
+      handlerEdit(id) {
+        this.editData(id)
       },
       handlerDelete(id) {
         this.deletData(id)
