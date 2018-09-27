@@ -122,7 +122,7 @@
           this.addStyleForm.is_template == 1 ? this.addStyleForm.is_template = true : this.addStyleForm.is_template = false
           this.addStyleForm.visible == 1 ? this.addStyleForm.visible = true : this.addStyleForm.visible = false
           let loading = this.$loading({text: "加载中"})
-          
+
           if(this.is_Edit){
           	fetchUpdateStyle(this.id, this.addStyleForm).then(response => {
 	            loading.close()
@@ -152,7 +152,7 @@
 	            }
 	          })
           }
-          
+
         }
       },
       resetForm() {
@@ -171,9 +171,7 @@
         this.addStyleForm.content = val
       },
       viewMap() {
-
-	      this.map.setStyle(this.addStyleForm.content)
-				
+	      this.map.setStyle(JSON.parse(this.addStyleForm.content))
      }
     },
     mounted() {
@@ -182,23 +180,22 @@
 				fetchGetStyle(this.$route.query.id).then(response => {
 
 						let updata=response.data.data;
-						
+
 							this.addStyleForm.name=updata.name;
 							this.addStyleForm.content=JSON.parse(updata.content);
 							this.addStyleForm.is_template=updata.is_template?'1':'0';
 							this.addStyleForm.visible=updata.visible?'1':'0';
 							this.id=updata.id;
-							
-							this.is_Edit=true;
 
+							this.is_Edit=true;
 	      })
-				
+
 				mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZXd1IiwiYSI6ImNpdTR0cndlNDAwMWYyenM0emNlY2wzdXIifQ.b6ES6ewS-L7PXgrX4HoWUA'
 	      const map = new mapboxgl.Map({
 	        container: this.$refs.basicMapbox,
-	        style: 'mapbox://styles/mapbox/streets-v9'
+	        style: {}
 	      })
-	      
+
 	      this.map=map;
       }
     }

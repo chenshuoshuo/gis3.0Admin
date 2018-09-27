@@ -39,6 +39,7 @@ module.exports = {
     }
   },
   module: {
+    noParse: /(mapbox-gl)\.js$/,
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
