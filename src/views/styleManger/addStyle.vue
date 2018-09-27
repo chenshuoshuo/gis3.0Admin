@@ -31,8 +31,8 @@
         <el-radio v-model="addStyleForm.visible" label="0">否</el-radio>
       </el-form-item>
       <el-form-item label="样式代码: ">
-        <el-row :gutter="10">
-          <el-col :span="10" style="position: relative">
+        <el-row :gutter="24">
+          <el-col :span="12" style="position: relative">
             <json-editor :value="addStyleForm.content" @changed="getJsonVal" id="jsoncontent"></json-editor>
             <div class="view-wrap">
               <el-button @click="viewMap" type="success">运行</el-button>
@@ -189,15 +189,15 @@
 
 							this.is_Edit=true;
 	      })
-
-				mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZXd1IiwiYSI6ImNpdTR0cndlNDAwMWYyenM0emNlY2wzdXIifQ.b6ES6ewS-L7PXgrX4HoWUA'
-	      const map = new mapboxgl.Map({
-	        container: this.$refs.basicMapbox,
-	        style: {}
-	      })
-
-	      this.map=map;
       }
+      
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZXd1IiwiYSI6ImNpdTR0cndlNDAwMWYyenM0emNlY2wzdXIifQ.b6ES6ewS-L7PXgrX4HoWUA'
+      const map = new mapboxgl.Map({
+        container: this.$refs.basicMapbox,
+        style: this.addStyleForm.content
+      })
+
+      this.map=map;
     }
 
   }
@@ -207,6 +207,7 @@
   #map {
     height: 300px;
     width: 100%;
+    border: 1px solid #e5e5e5;
   }
 
   .error {

@@ -66,9 +66,9 @@
       loadData() {
         let loading = this.$loading({text: "加载中"})
         fetchList(this.listQuery).then(response => {
+          loading.close()
           this.list = response.data.data.list
           this.total = response.data.data.total
-          loading.close()
         })
       },
       deletData(id) {

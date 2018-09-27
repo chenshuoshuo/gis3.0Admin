@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://211.83.241.194:5049/', // api的base_url
+  baseURL: 'http://map.parkbobo.com/', // api的base_url
   timeout: 5000, // request timeout
 
 })
