@@ -188,16 +188,20 @@
 							this.id=updata.id;
 
 							this.is_Edit=true;
+						
+						let _this=this;
+						setTimeout(function(){
+							_this.viewMap();
+						},50)
 	      })
       }
       
       mapboxgl.accessToken = 'pk.eyJ1IjoiZnJlZXd1IiwiYSI6ImNpdTR0cndlNDAwMWYyenM0emNlY2wzdXIifQ.b6ES6ewS-L7PXgrX4HoWUA'
-      const map = new mapboxgl.Map({
+      this.map = new mapboxgl.Map({
         container: this.$refs.basicMapbox,
-        style: this.addStyleForm.content
+        style: {}
       })
 
-      this.map=map;
     }
 
   }
