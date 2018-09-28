@@ -31,11 +31,19 @@ export function fetchGetStyle(id) {
 }
 
 export function fetchUpdateStyle(id, query) {
-	alert(`/map/v1/style/${id}`)
-	console.log(query)
   return request({
     url: `/map/v1/style/${id}`,
     method: 'post',
-    params: query
+    data: query,
+    transformRequest: [function (data) {
+      let ret = '';
+      for (let it in data) {
+        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+      }
+      return ret
+    }],
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
