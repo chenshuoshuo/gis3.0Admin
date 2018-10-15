@@ -26,9 +26,9 @@
               style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" ref="multipleTable">
       </el-table-column>
-      <el-table-column width="150px" align="center" label="地图ICON">
+      <el-table-column width="88px" align="center" label="地图ICON">
         <template slot-scope="scope">
-          <span>{{scope.row.icon}}</span>
+          <span ><img class="icon" :src="'https://gis.you07.com/'+scope.row.icon" alt=""></span>
         </template>
       </el-table-column>
       <el-table-column width="150px" label="地图名称" align="center">
@@ -68,7 +68,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <router-link :to="{path:'/zoneManger/addZone',query: {id: scope.row.id}}">
+          <router-link :to="{path:'/zoneManger/addZone/'+scope.row.id}">
             <el-button type="success" size="mini">编辑</el-button>
           </router-link>
           <el-button size="mini" type="danger" @click="handleModifyStatus(scope.row.id)">删除
@@ -242,5 +242,8 @@
     font-size: 14px;
     color: #999;
     margin-bottom: 20px;
+  }
+  .icon{
+    width: 100%;
   }
 </style>

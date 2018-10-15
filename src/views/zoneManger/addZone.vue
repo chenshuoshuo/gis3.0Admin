@@ -3,10 +3,10 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm" style="padding-right: 20px">
       <el-row :gutter="10">
         <el-col :md="5" :sm="8">
-          <el-form-item label="是否是二维" prop="is_2d">
+          <el-form-item label="是否是二维:" prop="is_2d">
             <el-select v-model="ruleForm.is_2d" placeholder="请选择地图类型">
-              <el-option label="是" value="true"></el-option>
-              <el-option label="否" value="false"></el-option>
+              <el-option label="是" :value="1"></el-option>
+              <el-option label="否" :value="0"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -16,7 +16,7 @@
           </el-form-item>
         </el-col>
         <el-col :md="5" :sm="8">
-          <el-form-item label="地图样式" prop="style_id">
+          <el-form-item label="地图样式:" prop="style_id">
             <el-select v-model="ruleForm.style_id" placeholder="请选择地图样式">
               <el-option label="样式一" value="1"></el-option>
               <el-option label="样式二" value="3"></el-option>
@@ -77,13 +77,14 @@
       </el-row>
       <el-form-item label="地图ICON:" prop="icon">
         <el-upload
-          class="upload-demo"
-          drag
-          action="https://jsonplaceholder.typicode.com/posts/"
-          multiple>
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          class="avatar-uploader"
+          action=""
+          :http-request="upload"
+          :show-file-list="false"
+          >
+          <img v-if="ruleForm.icon" :src="'https://gis.you07.com/'+ruleForm.icon" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <div class="el-upload__tip" slot="tip">建议尺寸88 x 88(px)</div>
         </el-upload>
       </el-form-item>
       <el-form-item>
@@ -95,7 +96,7 @@
 </template>
 
 <script>
-  import { fetchAddZone, fetchZone, fetchUpdataZone } from "../../api/zone";
+  import { fetchAddZone, fetchZone, fetchUpdataZone, uploadIcon } from "../../api/zone";
 
   export default {
     name: 'addZone',
@@ -172,8 +173,8 @@
           center: '',
           center_lon: '',
           center_lat: '',
-          id: ''
-
+          id: '',
+          icon:''
         },
         rules: {
           name: [
@@ -224,8 +225,21 @@
           }
         })
       },
+      upload(param){
+        let self = this;
+        var fileObj = param.file;
+        var form = new FormData();
+        form.append("iconFile", fileObj);
+        uploadIcon(form).then(res=>{
+          if(res.data.code===0){
+            this.ruleForm.icon = res.data.data.url
+            this.$forceUpdate();
+          }
+        })
+      },
       resetForm(formName) {
-        this.$refs[formName].resetFields()
+        this.ruleForm = {};
+        this.$refs['ruleForm'].resetFields();
       },
       creatZone() {
         this.submitLoading = true
@@ -236,9 +250,14 @@
           if (response.data.code === 0) {
             this.$alert('区域创建成功！', '消息提示', {
               confirmButtonText: '确定'
+            }).then(()=>{
+              this.resetForm('ruleForm')
+              this.$router.push({
+                path:'/zoneManger/page'
+              })
             })
-            this.resetForm('ruleForm')
           }
+          
         })
       },
       updateZone() {
@@ -252,7 +271,9 @@
               confirmButtonText: '确定',
               callback: ()=>{
                 this.resetForm('ruleForm')
-                this.$router.back()
+                this.$router.push({
+                  path:'/zoneManger/page'
+                })
               }
             })
 
@@ -260,9 +281,9 @@
         })
       }
     },
-    mounted() {
-      if (this.$route.query.id) {
-        fetchZone(this.$route.query.id).then(response => {
+    mounted(){
+      if (this.$route.params.id) {
+        fetchZone(this.$route.params.id).then(response => {
           let bbox = response.data.data.bbox.split(',')
           let center = response.data.data.center.split(',')
           this.ruleForm.bboxLeftBottomLon = bbox[0]
@@ -275,7 +296,7 @@
           this.ruleForm.min_zoom = response.data.data.min_zoom
           this.ruleForm.max_zoom = response.data.data.max_zoom
           this.ruleForm.icon = response.data.data.icon
-          this.ruleForm.is_2d = response.data.data.is_2d
+          this.ruleForm.is_2d = response.data.data.is_2d?1:0
           this.ruleForm.style_id = response.data.data.style_id
           this.ruleForm.name = response.data.data.name
           this.ruleForm.id = response.data.data.id
@@ -284,8 +305,33 @@
     }
   }
 </script>
-<style scoped lang="scss">
+
+
+<style lang="scss">
   .addZone {
     margin-top: 20px;
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
+    .avatar {
+      width: 178px;
+      height: 178px;
+      display: block;
+    }
   }
 </style>

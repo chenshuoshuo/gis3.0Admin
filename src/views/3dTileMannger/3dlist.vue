@@ -46,8 +46,10 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)" style="background: #10bfa4;border:none">下载</el-button>
-          <el-button type="success" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button type="primary" size="mini" @click="handleDownload(scope.row)" style="background: #10bfa4;border:none">下载</el-button>
+          <router-link :to="{path:'/3dTileMannger/updateTile/'+scope.row.fileid}">
+            <el-button type="success" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+          </router-link>
           <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.fileid)">删除</el-button>
         </template>
       </el-table-column>
@@ -62,11 +64,11 @@
 </template>
 
 <script>
-  import {fetchTitleList, fetchAddtTitle, fetchTitleDelete} from "../../api/title";
+  import {fetchTileList, fetchTileDelete,fetchDownloadtTile} from "@/api/tile";
   import waves from '@/directive/waves' // 水波纹指令
 
   export default {
-    name: '3dlist',
+    name: 'tdlist',
     directives: {
       waves
     },
@@ -89,16 +91,27 @@
     methods: {
       getList() {
         this.listLoading = true
-        fetchTitleList(this.listQuery).then(response => {
+        fetchTileList(this.listQuery).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.total
           this.listLoading = false
         })
       },
+      handleDownload(param){
+        fetchDownloadtTile(param.fileid).then(res=>{
+          if(res.data){
+            window.location.href = res.config.url;
+          }else{
+            this.$message({
+              message: '没有可供下载的瓦片',
+              type: 'warning'
+            })
+          }
+        })
+        
+      },
       handleSelectionChange(val) {
-
         this.multipleSelection = val
-        console.log(this.multipleSelection)
       },
       handlerSearch() {
         this.listQuery.page = 1
@@ -124,7 +137,7 @@
               this.percentage = (i + 1) / this.multipleSelection.length
 
               if ((i + 1) == this.multipleSelection.length) {
-                fetchTitleDelete(this.multipleSelection[i].fileid).then(response => {
+                fetchTileDelete(this.multipleSelection[i].fileid).then(response => {
                   this.getList()
                   this.$message({
                     type: 'success',
@@ -132,7 +145,7 @@
                   })
                 })
               } else {
-                fetchTitleDelete(this.multipleSelection[i]['fileid']).then(response => {
+                fetchTileDelete(this.multipleSelection[i]['fileid']).then(response => {
 
                 })
               }
@@ -151,7 +164,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fetchTitleDelete(fileid).then(response => {
+          fetchTileDelete(fileid).then(response => {
             this.getList()
             this.$message({
               type: 'success',

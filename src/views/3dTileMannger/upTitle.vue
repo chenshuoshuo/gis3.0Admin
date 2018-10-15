@@ -32,12 +32,8 @@
 </template>
 <script>
   import {fetchZoneList} from "../../api/zone"
-  import {fetchAddtTitle} from "../../api/title"
-  import axios from "axios"
+  import {fetchAddtTile,fetchTileGet,fetchTileUpdate} from "../../api/tile"
 
-  let xhr
-  let ot
-  let oloaded
   export default {
     name: "upTitle",
     data() {
@@ -46,8 +42,9 @@
         upText: '上传文件',
         formUpTitle: {
           zoneid: '',
-          zipFile: '',
-          name: ''
+          file: '',
+          name: '',
+          fileid:''
         },
         listQuery: {
           page: 1,
@@ -57,7 +54,7 @@
     },
     methods: {
       getFile(event) {
-        this.formUpTitle.zipFile = document.getElementById('upload').files[0]
+        this.formUpTitle.file = document.getElementById('upload').files[0]
         this.upText = document.getElementById('upload').files[0].name
       },
       getZoneList() {
@@ -74,28 +71,53 @@
           }
         }
         let param = new FormData() //创建form对象
-        param.append('zipFile', this.formUpTitle.zipFile)//通过append向form对象添加数据
+        param.append('zipFile', this.formUpTitle.file)//通过append向form对象添加数据
         param.append('zoneid', this.formUpTitle.zoneid)
         param.append('name', this.formUpTitle.name)
-        axios({
-          url: 'https://gis.you07.com/map/v1/tile',
-          method: 'put',
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          data: param
-        }).then(res => {
-          this.formUpTitle.zoneid = ''
-          this.upText = "上传文件"
-          loading.close()
-          this.$alert('3d瓦片创建成功！', '消息提示', {
-            confirmButtonText: '确定'
+        if(this.formUpTitle.fileid){
+          param.append('fileid',this.formUpTitle.fileid)
+          fetchTileUpdate(param).then(res=>{
+            if(res.data.code===0){
+              this.formUpTitle.zoneid = ''
+              this.upText = "上传文件"
+              loading.close()
+              this.$alert('3d瓦片更新成功！', '消息提示', {
+                confirmButtonText: '确定'
+              }).then(()=>{
+                this.$router.push({
+                  path:"/3dTileMannger/3dlist"
+                })
+              })
+            }
           })
-        })
+        }else{
+          fetchAddtTile(param).then(res => {
+            this.formUpTitle.zoneid = ''
+            this.upText = "上传文件"
+            loading.close()
+            this.$alert('3d瓦片创建成功！', '消息提示', {
+              confirmButtonText: '确定'
+            }).then(()=>{
+              this.$router.push({
+                path:"/3dTileMannger/3dlist"
+              })
+            })
+          })
+        }
+        
       }
     },
     mounted() {
       this.getZoneList()
+      if(this.$route.params.id){
+        fetchTileGet(this.$route.params.id).then(res=>{
+          if(res.data){
+            this.formUpTitle.fileid = res.data.data.fileid;
+            this.formUpTitle.name = res.data.data.name;
+            this.formUpTitle.zoneid = res.data.data.zoneid;
+          }
+        })
+      }
     }
   }
 

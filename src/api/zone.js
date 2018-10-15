@@ -36,3 +36,11 @@ export function fetchUpdataZone(query) {
   })
 }
 
+export function uploadIcon(pic){
+  return request({
+    url: `/map/v1/zone/uploadIcon`,
+    method: 'put',
+    data:pic,
+    headers:{'Content-Type':'multipart/form-data'}
+  })
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container add-style">
     <el-form :model="addStyleForm" ref="addStyleForm" label-width="100px" class="demo-ruleForm">
       <el-row :gutter="20">
         <el-col :span="10">
@@ -11,16 +11,15 @@
       </el-row>
       <el-form-item label="缩略图:">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
+          class="avatar-uploader"
+          action=""
+          :http-request="upload"
+          :show-file-list="false"
+          >
+          <img v-if="addStyleForm.icon" :src="'https://gis.you07.com/'+addStyleForm.icon" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <div class="el-upload__tip" slot="tip">建议尺寸172 x 116(px)</div>
         </el-upload>
-        <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
-        <p style="font-size: 14px;color: #999999">建议尺寸：174×116(px)</p>
       </el-form-item>
       <el-form-item label="是否为模板: ">
         <el-radio v-model="addStyleForm.is_template" label="1">是</el-radio>
@@ -57,6 +56,7 @@
   import JsonEditor from '@/components/JsonEditor'
 	import mapboxgl from 'mapbox-gl'
   import {fetchAddStyle, fetchUpdateStyle, fetchGetStyle} from "../../api/style";
+  import { uploadIcon } from '@/api/zone'
 
   export default {
     name: 'addStyle',
@@ -68,7 +68,8 @@
           thumbnail: '',
           content: '',
           is_template: '1',
-          visible: '1'
+          visible: '1',
+          icon:""
         },
         valid: true,
         formError: {
@@ -83,12 +84,17 @@
       }
     },
     methods: {
-      handleRemove(file, fileList) {
-        console.log(file, fileList)
-      },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url
-        this.dialogVisible = true
+      upload(param){
+        let self = this;
+        var fileObj = param.file;
+        var form = new FormData();
+        form.append("iconFile", fileObj);
+        uploadIcon(form).then(res=>{
+          if(res.data.code===0){
+            this.addStyleForm.icon = res.data.data.url
+            this.$forceUpdate();
+          }
+        })
       },
       restName() {
         this.formError.name = ''
@@ -121,8 +127,9 @@
         if (this.valid) {
           this.addStyleForm.is_template == 1 ? this.addStyleForm.is_template = true : this.addStyleForm.is_template = false
           this.addStyleForm.visible == 1 ? this.addStyleForm.visible = true : this.addStyleForm.visible = false
+          console.log(typeof this.addStyleForm.content,this.addStyleForm.content);
+          
           let loading = this.$loading({text: "加载中"})
-
           if(this.is_Edit){
           	fetchUpdateStyle(this.id, this.addStyleForm).then(response => {
 	            loading.close()
@@ -137,7 +144,6 @@
 	            }
 	          })
           }else{
-          	alert("添加")
 	          fetchAddStyle(this.addStyleForm).then(response => {
 	            loading.close()
 	            this.resetForm()
@@ -175,24 +181,20 @@
      }
     },
     mounted() {
-      if (this.$route.query.id) {
+      if (this.$route.params.id) {
 
-				fetchGetStyle(this.$route.query.id).then(response => {
-
-						let updata=response.data.data;
-
-							this.addStyleForm.name=updata.name;
-							this.addStyleForm.content=JSON.parse(updata.content);
-							this.addStyleForm.is_template=updata.is_template?'1':'0';
-							this.addStyleForm.visible=updata.visible?'1':'0';
-							this.id=updata.id;
-
-							this.is_Edit=true;
-						
-						let _this=this;
-						setTimeout(function(){
-							_this.viewMap();
-						},50)
+				fetchGetStyle(this.$route.params.id).then(response => {
+          let updata=response.data.data;
+          this.addStyleForm.name=updata.name;
+          this.addStyleForm.content=JSON.parse(updata.content);
+          this.addStyleForm.is_template=updata.is_template?'1':'0';
+          this.addStyleForm.visible=updata.visible?'1':'0';
+          this.id=updata.id;
+          this.is_Edit=true;
+          let _this=this;
+          setTimeout(function(){
+            _this.viewMap();
+          },50)
 	      })
       }
       
@@ -206,22 +208,48 @@
 
   }
 </script>
+<style>
+  .add-style .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .add-style .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .add-style .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .add-style .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+</style>
+
 <style scoped>
  @import url('https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css');
-  #map {
+  .add-style #map {
     height: 300px;
     width: 100%;
     border: 1px solid #e5e5e5;
   }
 
-  .error {
+  .add-style .error {
     color: red;
   }
-  #jsoncontent{
+  .add-style #jsoncontent{
   	height: 700px;
   	overflow-y: auto;
   }
-  .view-wrap {
+  .add-style .view-wrap {
     position: absolute;
     right: 5px;
     top: 0;

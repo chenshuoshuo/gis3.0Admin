@@ -14,7 +14,7 @@
       </el-form>
       <div class="all">共搜索到了{{total}}条数据</div>
       <div class="main-content">
-        <div class="list" v-for=" item in list">
+        <div class="list" v-for=" (item,index) in list" :key="index">
           <el-row :gutter="20">
             <el-col :span="4">
               <div class="left"><img src="http://via.placeholder.com/174x116" alt=""></div>
@@ -25,11 +25,11 @@
                   <p class="title">{{item.name}}</p>
                   <div class="options">
                     <el-button type="primary" icon="el-icon-star-off" size="medium" v-if="!item.is_template"
-                               @click="setTemplate(item)">设为模板
+                               @click.native="setTemplate(item)">设为模板
                     </el-button>
                     <el-button type="primary" icon="el-icon-star-on" size="medium" v-if="item.is_template" style="background:#fff;color: #66b1ff;">样式模板
                     </el-button>
-                    <router-link :to="{path:'/styleManger/addStyle',query: {id: item.id}}">
+                    <router-link :to="{path:'/styleManger/addStyle/'+item.id}">
                     	<el-button type="success" icon="el-icon-edit" size="medium">编辑</el-button>
                     </router-link>
                     <el-button type="danger" icon="el-icon-delete" size="medium" @click="handlerDelete(item.id)">删除
