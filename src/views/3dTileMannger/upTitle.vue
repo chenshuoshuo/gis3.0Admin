@@ -77,10 +77,10 @@
         if(this.formUpTitle.fileid){
           param.append('fileid',this.formUpTitle.fileid)
           fetchTileUpdate(param).then(res=>{
+            loading.close()
             if(res.data.code===0){
               this.formUpTitle.zoneid = ''
               this.upText = "上传文件"
-              loading.close()
               this.$alert('3d瓦片更新成功！', '消息提示', {
                 confirmButtonText: '确定'
               }).then(()=>{
