@@ -1,10 +1,10 @@
 <template>
   <div class="addZone">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm" style="padding-right: 20px">
+    <el-form :model="ruleForm" ref="ruleForm" label-width="120px" class="demo-ruleForm" style="padding-right: 20px">
       <el-row :gutter="10">
         <el-col :md="5" :sm="8">
-          <el-form-item label="是否是二维:" prop="is_2d">
-            <el-select v-model="ruleForm.is_2d" placeholder="请选择地图类型">
+          <el-form-item label="是否是二维:" prop="is2D">
+            <el-select v-model="ruleForm.is2D" placeholder="请选择地图类型">
               <el-option label="是" :value="1"></el-option>
               <el-option label="否" :value="0"></el-option>
             </el-select>
@@ -16,28 +16,32 @@
           </el-form-item>
         </el-col>
         <el-col :md="5" :sm="8">
-          <el-form-item label="地图样式:" prop="style_id">
-            <el-select v-model="ruleForm.style_id" placeholder="请选择地图样式">
-              <el-option label="样式一" value="1"></el-option>
-              <el-option label="样式二" value="3"></el-option>
+          <el-form-item label="地图样式:" prop="styleId">
+            <el-select v-model="ruleForm.styleId" placeholder="请选择地图样式">
+              <el-option
+					      v-for="item in styleList"
+					      :key="item.id"
+					      :label="item.name"
+					      :value="item.id">
+					    </el-option>
             </el-select>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="10">
         <el-col :md="5" :sm="8">
-          <el-form-item label="默认地图等级:" prop="default_zoom">
-            <el-input v-model="ruleForm.default_zoom" placeholder="默认地图等级" type="number"></el-input>
+          <el-form-item label="默认地图等级:" prop="defaultZoom">
+            <el-input v-model="ruleForm.defaultZoom" placeholder="默认地图等级" type="number"></el-input>
           </el-form-item>
         </el-col>
         <el-col :md="5">
-          <el-form-item label="最小等级:" prop="min_zoom">
-            <el-input v-model="ruleForm.min_zoom" placeholder="最小等级" type="number"></el-input>
+          <el-form-item label="最小等级:" prop="minZoom">
+            <el-input v-model="ruleForm.minZoom" placeholder="最小等级" type="number"></el-input>
           </el-form-item>
         </el-col>
         <el-col :md="5" :sm="8">
-          <el-form-item label="最大等级:" prop="max_zoom">
-            <el-input v-model="ruleForm.max_zoom" placeholder="最大等级" type="number"></el-input>
+          <el-form-item label="最大等级:" prop="maxZoom">
+            <el-input v-model="ruleForm.maxZoom" placeholder="最大等级" type="number"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -81,8 +85,9 @@
           action=""
           :http-request="upload"
           :show-file-list="false"
+          :on-change="beforeAvatarUpload"
           >
-          <img v-if="ruleForm.icon" :src="'https://gis.you07.com/'+ruleForm.icon" class="avatar">
+          <img v-if="ruleForm.icon" :src="ruleForm.icon" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           <div class="el-upload__tip" slot="tip">建议尺寸88 x 88(px)</div>
         </el-upload>
@@ -97,6 +102,7 @@
 
 <script>
   import { fetchAddZone, fetchZone, fetchUpdataZone, uploadIcon } from "../../api/zone";
+  import { fetchList } from "../../api/style"
 
   export default {
     name: 'addZone',
@@ -160,22 +166,27 @@
       return {
         submitLoading: false,
         ruleForm: {
-          name: '',
-          style_id: '',
-          default_zoom: '',
-          min_zoom: '',
-          max_zoom: '',
-          bbox: '',
           bboxLeftBottomLon: '',
           bboxLeftBottomLat: '',
           bboxRightTopLon: '',
           bboxRightTopLat: '',
-          center: '',
           center_lon: '',
           center_lat: '',
+          is2D: '',
+          name: '',
+          styleId: '',
+          defaultZoom: '',
+          minZoom: '',
+          maxZoom: '',
+          bbox: '',
+          center: '',
           id: '',
           icon:''
         },
+        addForm: {
+        	
+        },
+        styleList: [],
         rules: {
           name: [
             { validator: vaildName, trigger: 'blur' }
@@ -225,17 +236,16 @@
           }
         })
       },
+      beforeAvatarUpload(param) {
+				let file  = param.raw;
+	      let reader = new FileReader();
+	      reader.readAsDataURL(file);
+	      reader.onload = ()=>{
+	      		this.ruleForm.icon = reader.result;
+	      }
+      },
       upload(param){
         let self = this;
-        var fileObj = param.file;
-        var form = new FormData();
-        form.append("iconFile", fileObj);
-        uploadIcon(form).then(res=>{
-          if(res.data.code===0){
-            this.ruleForm.icon = res.data.data.url
-            this.$forceUpdate();
-          }
-        })
       },
       resetForm(formName) {
         this.ruleForm = {};
@@ -243,9 +253,16 @@
       },
       creatZone() {
         this.submitLoading = true
-        this.ruleForm.bbox = `${this.ruleForm.bboxLeftBottomLon},${this.ruleForm.bboxLeftBottomLat},${this.ruleForm.bboxRightTopLon},${this.ruleForm.bboxLeftBottomLat}`
-        this.ruleForm.center = `${this.ruleForm.center_lon},${this.ruleForm.center_lat}`
-        fetchAddZone(this.ruleForm).then(response => {
+        this.addForm.bbox = `${this.ruleForm.bboxLeftBottomLon},${this.ruleForm.bboxLeftBottomLat},${this.ruleForm.bboxRightTopLon},${this.ruleForm.bboxLeftBottomLat}`
+        this.addForm.center = `${this.ruleForm.center_lon},${this.ruleForm.center_lat}`
+        this.addForm.is2D = this.ruleForm.is2D==1?true:false
+        this.addForm.defaultZoom = this.ruleForm.defaultZoom
+        this.addForm.icon = this.ruleForm.icon
+        this.addForm.maxZoom = this.ruleForm.maxZoom
+        this.addForm.minZoom = this.ruleForm.minZoom
+        this.addForm.name = this.ruleForm.name
+        this.addForm.styleId = this.ruleForm.styleId
+        fetchAddZone(this.addForm).then(response => {
           this.submitLoading = false
           if (response.data.code === 0) {
             this.$alert('区域创建成功！', '消息提示', {
@@ -262,9 +279,17 @@
       },
       updateZone() {
         this.submitLoading = true
-        this.ruleForm.bbox = `${this.ruleForm.bboxLeftBottomLon},${this.ruleForm.bboxLeftBottomLat},${this.ruleForm.bboxRightTopLon},${this.ruleForm.bboxLeftBottomLat}`
-        this.ruleForm.center = `${this.ruleForm.center_lon},${this.ruleForm.center_lat}`
-        fetchUpdataZone(this.ruleForm).then(response => {
+        this.addForm.bbox = `${this.ruleForm.bboxLeftBottomLon},${this.ruleForm.bboxLeftBottomLat},${this.ruleForm.bboxRightTopLon},${this.ruleForm.bboxLeftBottomLat}`
+        this.addForm.center = `${this.ruleForm.center_lon},${this.ruleForm.center_lat}`
+        this.addForm.is2D = this.ruleForm.is2D==1?true:false
+        this.addForm.defaultZoom = this.ruleForm.defaultZoom
+        this.addForm.icon = this.ruleForm.icon
+        this.addForm.maxZoom = this.ruleForm.maxZoom
+        this.addForm.minZoom = this.ruleForm.minZoom
+        this.addForm.name = this.ruleForm.name
+        this.addForm.id = this.ruleForm.id
+        this.addForm.styleId = this.ruleForm.styleId
+        fetchUpdataZone(this.addForm).then(response => {
           this.submitLoading = false
           if (response.data.code === 0) {
             this.$alert('区域更新成功！', '消息提示', {
@@ -282,8 +307,8 @@
       }
     },
     mounted(){
-      if (this.$route.params.id) {
-        fetchZone(this.$route.params.id).then(response => {
+      if (this.$route.query.id) {
+        fetchZone(this.$route.query.id).then(response => {
           let bbox = response.data.data.bbox.split(',')
           let center = response.data.data.center.split(',')
           this.ruleForm.bboxLeftBottomLon = bbox[0]
@@ -292,16 +317,21 @@
           this.ruleForm.bboxRightTopLat = bbox[3]
           this.ruleForm.center_lon = center[0]
           this.ruleForm.center_lat = center[1]
-          this.ruleForm.default_zoom = response.data.data.default_zoom
-          this.ruleForm.min_zoom = response.data.data.min_zoom
-          this.ruleForm.max_zoom = response.data.data.max_zoom
+          this.ruleForm.defaultZoom = response.data.data.defaultZoom
+          this.ruleForm.minZoom = response.data.data.minZoom
+          this.ruleForm.maxZoom = response.data.data.maxZoom
           this.ruleForm.icon = response.data.data.icon
-          this.ruleForm.is_2d = response.data.data.is_2d?1:0
-          this.ruleForm.style_id = response.data.data.style_id
+          this.ruleForm.is2D = response.data.data.is2D?1:0
+          this.ruleForm.styleId = response.data.data.styleId
           this.ruleForm.name = response.data.data.name
           this.ruleForm.id = response.data.data.id
         })
       }
+      
+      let styleQuery={page:0,pageSize:100};
+      fetchList(styleQuery).then(response => {
+	      this.styleList = response.data.data.content
+	    })
     }
   }
 </script>

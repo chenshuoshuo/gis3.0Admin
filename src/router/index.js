@@ -26,6 +26,8 @@ import Layout from '@/views/layout/Layout'
 **/
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+  { path: '/mylogin', component:()=>import('@/views/mylogin/index'),hidden: true },
+  { path: '/myregister', component:()=>import('@/views/myregister/index'),hidden: true },
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
@@ -41,9 +43,36 @@ export const asyncRouterMap = [
   {
     path:"",
     component: Layout,
-    redirect:"zoneManger/page",
+    redirect:"/index/index",
     hidden:true
   },
+  {
+    path: '/index',
+    component: Layout,
+    redirect: '/index/index',
+    children: [{ path: 'index', component: () => import('@/views/index/index'), name: 'index', meta: { title: '首页', icon: 'component' }}]
+  },
+{
+    path: '/Statistics',
+    component: Layout,
+    redirect: '/Statistics/metaptosis/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: '统计',
+      icon: 'documentation'
+    },
+    children: [
+      {
+        path: 'metaptosis',
+        component: () => import('@/views/Statistics/metaptosis/index'),
+        name: 'metaptosis',
+        meta: {
+          title: '迁徙图'
+        },
+        noCache:false
+      }
+    ]
+},
   {
     path: '/zoneManger',
     component: Layout,
@@ -133,7 +162,14 @@ export const asyncRouterMap = [
       icon: 'component'
     },
     children: [
-      { path: 'list', component: () => import('@/views/mapTempMannger/list'), name: 'list', meta: { title: '地图模板管理' }}
+      { path: 'list', component: () => import('@/views/mapTempMannger/list'), name: 'list', meta: { title: '地图模板管理' }}, 
+      {
+        path: 'addTemp',
+        component: () => import('@/views/mapTempMannger/addTemp'),
+        name: 'addTemp',
+        hidden: true,
+        meta: { title: '新增模板'}
+      }
     ]
   },
   {
@@ -143,13 +179,14 @@ export const asyncRouterMap = [
     redirect: '/3dTileMannger/3dist',
     name: '3dTileMannger',
     meta: {
-      title: '三维瓦片管理',
+      title: '三维地图管理',
       icon: 'table'
     },
     children: [
       { path: '3dlist', component: () => import('@/views/3dTileMannger/3dlist'), name: '3dTileMannger', meta: { title: '三维瓦片管理' }},
       { path: 'upTitle', component: () => import('@/views/3dTileMannger/upTitle'), name: 'upTitle', hidden: true, meta: { title: '上传瓦片' }},
-      { path: 'updateTile/:id', component: () => import('@/views/3dTileMannger/upTitle'), name: 'updateTile', hidden: true, meta: { title: '修改瓦片' }}
+      { path: 'updateTile/:id', component: () => import('@/views/3dTileMannger/upTitle'), name: 'updateTile', hidden: true, meta: { title: '修改瓦片' }},
+      { path: '3dDataAdminList', component: () => import('@/views/3dTileMannger/3dDataAdminList'), name: '3dDataAdminList', meta: { title: '三维数据管理' }}
     ]
   },
   {

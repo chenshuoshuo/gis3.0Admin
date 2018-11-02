@@ -47,8 +47,8 @@
           fileid:''
         },
         listQuery: {
-          page: 1,
-          pageSize: 20
+          page: 0,
+          pageSize: 100
         }
       }
     },
@@ -56,10 +56,13 @@
       getFile(event) {
         this.formUpTitle.file = document.getElementById('upload').files[0]
         this.upText = document.getElementById('upload').files[0].name
+        console.log(this.upText)
       },
       getZoneList() {
         fetchZoneList(this.listQuery).then(response => {
-          this.options = response.data.data.list
+        	console.log(response)
+          this.options = response.data.data.content
+          console.log(this.options)
         })
       },
       handleUpload() {
@@ -71,8 +74,8 @@
           }
         }
         let param = new FormData() //创建form对象
-        param.append('zipFile', this.formUpTitle.file)//通过append向form对象添加数据
-        param.append('zoneid', this.formUpTitle.zoneid)
+        param.append('uploadFile', this.formUpTitle.file)//通过append向form对象添加数据uploadFile
+        param.append('zoneId', this.formUpTitle.zoneid)
         param.append('name', this.formUpTitle.name)
         if(this.formUpTitle.fileid){
           param.append('fileid',this.formUpTitle.fileid)

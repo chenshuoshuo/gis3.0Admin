@@ -28,32 +28,32 @@
       </el-table-column>
       <el-table-column width="88px" align="center" label="地图ICON">
         <template slot-scope="scope">
-          <span ><img class="icon" :src="'https://gis.you07.com/'+scope.row.icon" alt=""></span>
+          <span ><img class="icon" :src="scope.row.icon" alt=""></span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" label="地图名称" align="center">
+      <el-table-column width="" label="地图名称" align="center">
         <template slot-scope="scope">
           <span >{{scope.row.name}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110px" align="center" label="地图类型">
         <template slot-scope="scope">
-          <span>{{scope.row.is_2d?"2D":"3D"}}</span>
+          <span>{{scope.row.is2D?"2D":"3D"}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110px" label="默认地图等级" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.default_zoom}}</span>
+          <span>{{scope.row.defaultZoom}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="最小地图等级" width="110px">
         <template slot-scope="scope">
-          <span>{{scope.row.min_zoom}}</span>
+          <span>{{scope.row.minZoom}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="最大地图等级" width="110px">
         <template slot-scope="scope">
-          <span>{{scope.row.max_zoom}}</span>
+          <span>{{scope.row.maxZoom}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="地图样式" width="110px">
@@ -63,23 +63,22 @@
       </el-table-column>
       <el-table-column align="center" label="上传时间" min-width="110px">
         <template slot-scope="scope">
-          <span>{{scope.row.create_time}}</span>
+          <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <router-link :to="{path:'/zoneManger/addZone/'+scope.row.id}">
+          <router-link :to="{path:'/zoneManger/addZone',query: {id: scope.row.id}}">
             <el-button type="success" size="mini">编辑</el-button>
           </router-link>
-          <el-button size="mini" type="danger" @click="handleModifyStatus(scope.row.id)">删除
+          <el-button size="mini" type="danger" @click="handleModifyStatus(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
+    
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
-                     layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30,40]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
 
@@ -87,9 +86,11 @@
 </template>
 
 <script>
+	import Axios from 'axios'
   import { fetchZoneList, fetchDelZone } from '@/api/zone'
   import waves from '@/directive/waves' // 水波纹指令
   import {parseTime} from '@/utils'
+  let Base64 = require('js-base64').Base64;
 
   const calendarTypeOptions = [
     {key: 'CN', display_name: 'China'},
@@ -120,8 +121,7 @@
         percentage: 0,
         listQuery: {
           page: 1,
-          pageSize: 10,
-          name: ''
+          pageSize: 10
         },
         importanceOptions: [1, 2, 3],
         showReviewer: false,
@@ -164,11 +164,18 @@
     methods: {
       getList() {
         this.listLoading = true
-        fetchZoneList(this.listQuery).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.total
-          this.listLoading = false
+        var nowQuery=this.listQuery;
+      		nowQuery.page--;
+    	
+        fetchZoneList(nowQuery).then(response => {
+        	this.listLoading = false
+        	if(response.status){
+        		this.listQuery.page++;
+		        this.list = response.data.data.content
+		        this.total = response.data.data.total
+        	}
         })
+				
       },
       handleFilter() {
         this.listQuery.page = 1
@@ -185,13 +192,13 @@
       handleSelectionChange(val) {
         this.multipleSelection = val
       },
-      handleModifyStatus(id) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      handleModifyStatus(row) {
+        this.$confirm('此操作将永久删除'+row.name+', 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fetchDelZone(id).then(response => {
+          fetchDelZone(row.id).then(response => {
             this.getList()
             this.$message({
               type: 'success',

@@ -3,16 +3,16 @@ import request from '@/utils/request'
 export function fetchZoneList(query) {
   return request({
     url: '/map/v1/zone/page',
-    method: 'post',
+    method: 'get',
     params: query
   })
 }
 
 export function fetchAddZone(query) {
   return request({
-    url: '/map/v1/zone',
+    url: '/map/v1/zone/',
     method: 'put',
-    params: query
+    data: query
   })
 }
 
@@ -32,7 +32,7 @@ export function fetchUpdataZone(query) {
   return request({
     url: `/map/v1/zone/${query.id}`,
     method: 'post',
-    params: query
+    data: query
   })
 }
 

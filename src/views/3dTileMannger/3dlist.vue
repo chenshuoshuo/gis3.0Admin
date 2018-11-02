@@ -24,33 +24,31 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column width="200px" align="center" label="地图ID">
+      <el-table-column align="center" label="地图ID">
         <template slot-scope="scope">
           <span>{{scope.row.zoneid}}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="150px" label="地图名称" align="center">
+      <el-table-column width="200px" label="地图名称" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="文件大小">
+      <el-table-column min-width="150px" align="center" label="文件路径">
         <template slot-scope="scope">
-          <span></span>
+          <span title="">{{scope.row.path}}</span>
         </template>
       </el-table-column>
       <el-table-column width="300px" label="上传时间" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.create_time}}</span>
+          <span>{{scope.row.createTime}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="400" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleDownload(scope.row)" style="background: #10bfa4;border:none">下载</el-button>
-          <router-link :to="{path:'/3dTileMannger/updateTile/'+scope.row.fileid}">
-            <el-button type="success" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          </router-link>
-          <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.fileid)">删除</el-button>
+          <el-button type="success" size="mini" @click="handlePreview(scope.row.userId)">预览</el-button>
+          <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,7 +62,7 @@
 </template>
 
 <script>
-  import {fetchTileList, fetchTileDelete,fetchDownloadtTile} from "@/api/tile";
+  import {fetchTileList, fetchTileDelete,fetchDownloadtTile,fetchTilePreview} from "@/api/tile";
   import waves from '@/directive/waves' // 水波纹指令
 
   export default {
@@ -81,8 +79,7 @@
         listLoading: false,
         listQuery: {
           page: 1,
-          pageSize: 10,
-          name: ''
+          pageSize: 10
         },
         showReviewer: false,
       }
@@ -91,9 +88,13 @@
     methods: {
       getList() {
         this.listLoading = true
-        fetchTileList(this.listQuery).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.total
+        var nowQuery=this.listQuery;
+      		nowQuery.page--;
+        fetchTileList(nowQuery).then(response => {
+        	console.log(response.data.data.content)
+        	this.listQuery.page++;
+          this.list = response.data.data.content
+          this.total = response.data.data.totalElements
           this.listLoading = false
         })
       },
@@ -109,6 +110,12 @@
           }
         })
         
+      },
+      handlePreview(id){
+      	fetchTilePreview(id).then(response => {
+      		console.log(response.data.data)
+          	window.open(response.data.data)
+        })
       },
       handleSelectionChange(val) {
         this.multipleSelection = val
@@ -158,13 +165,13 @@
           })
         }
       },
-      handleModifyStatus(fileid) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      handleModifyStatus(row) {
+        this.$confirm('此操作将永久删除'+row.name+'的瓦片, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fetchTileDelete(fileid).then(response => {
+          fetchTileDelete(row.fileid).then(response => {
             this.getList()
             this.$message({
               type: 'success',

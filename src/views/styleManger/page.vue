@@ -17,7 +17,7 @@
         <div class="list" v-for=" (item,index) in list" :key="index">
           <el-row :gutter="20">
             <el-col :span="4">
-              <div class="left"><img src="http://via.placeholder.com/174x116" alt=""></div>
+              <div class="left"><img :src="item.icon" alt=""></div>
             </el-col>
             <el-col :span="15">
               <div class="right">
@@ -32,7 +32,7 @@
                     <router-link :to="{path:'/styleManger/addStyle/'+item.id}">
                     	<el-button type="success" icon="el-icon-edit" size="medium">编辑</el-button>
                     </router-link>
-                    <el-button type="danger" icon="el-icon-delete" size="medium" @click="handlerDelete(item.id)">删除
+                    <el-button type="danger" icon="el-icon-delete" size="medium" @click="handlerDelete(item)">删除
                     </el-button>
                   </div>
                 </div>
@@ -56,7 +56,7 @@
         list: [],
         total: 0,
         listQuery: {
-          page: 1,
+          page: 0,
           pageSize: 20,
           name: ''
         }
@@ -67,17 +67,17 @@
         let loading = this.$loading({text: "加载中"})
         fetchList(this.listQuery).then(response => {
           loading.close()
-          this.list = response.data.data.list
-          this.total = response.data.data.total
+          this.list = response.data.data.content
+          this.total = response.data.data.totalElements
         })
       },
-      deletData(id) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      deletData(item) {
+        this.$confirm('此操作将永久删除'+item.name+', 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          fetchDelete(id).then(response => {
+          fetchDelete(item.id).then(response => {
             if (response.data.code == 0) {
               this.loadData()
               this.$message({
@@ -144,7 +144,13 @@
   .left {
     margin: 17px;
   }
-
+	
+	.left img{
+		width: 100%;
+		max-height: 112px;
+    object-fit: contain;
+	}
+	
   .title {
     font-size: 18px;
     font-weight: bold;

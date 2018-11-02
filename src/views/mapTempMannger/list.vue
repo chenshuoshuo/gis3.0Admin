@@ -1,12 +1,18 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form ref="form" :model="form">
+      <el-form ref="form">
         <el-form-item label="模板名称:">
-          <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item"  placeholder="请输入" v-model="listQuery.title" >
+          <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item"  placeholder="请输入" v-model="listQuery.name" >
           </el-input>
           <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
-          <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="success" icon="el-icon-download">批量下载</el-button>
+          <router-link :to="{path:'/mapTempMannger/addTemp'}">
+          	<el-button class="filter-item" style="margin-left: 20px;" icon="el-icon-edit" type="primary" @click="handleFilter">添加</el-button>
+          </router-link>
+          <el-button class="filter-item" icon="el-icon-edit" type="primary" @click="handleFilter">删除</el-button>
+          <el-button class="filter-item" @click="handleDownTemp" type="primary">下载导入模板</el-button>
+          <!--<el-button class="filter-item" @click="handleCreate" type="primary">批量导入</el-button>-->
+          <el-button class="filter-item" @click="dialogFormVisible = true" type="primary" icon="el-icon-upload2">导入</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -19,40 +25,54 @@
       </el-table-column>
       <el-table-column width="150px" align="center" label="模板名称">
         <template slot-scope="scope">
-          <span>{{scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="150px" label="模板分类">
+      <el-table-column min-width="150px" label="组名">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdate(scope.row)">{{scope.row.title}}</span>
-          <el-tag>{{scope.row.type | typeFilter}}</el-tag>
+          <span class="link-type">{{scope.row.groups}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="地图类型">
+      <el-table-column min-width="300px" align="center" label="内容">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" label="terms">
-        <template slot-scope="scope">
-          <svg-icon v-for="n in +scope.row.importance" icon-class="star" class="meta-item__icon" :key="n"></svg-icon>
+          <span>{{scope.row.content}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button  type="primary" size="mini" @click="handleUpdate(scope.row)">下载</el-button>
+          <el-button  type="primary" size="mini" @click="handleDown(scope.row.id)">下载</el-button>
+          <router-link :to="{path:'/mapTempMannger/addTemp',query:{id:scope.row.id}}">
+          	<el-button type="success" size="mini">编辑</el-button>
+          </router-link>
+          <el-button  type="danger" size="mini" @click="handleDel(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.page_size" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+    
+    
+    <el-dialog title="批量导入" :visible.sync="dialogFormVisible" width="440px">
+		  <div class="upload-input-box">
+		  	<label for="">选择文件：</label>
+		  	<div class="upload-input">
+			  	<input type="file" name="fileUpload" class="fileUpload" v-on:change="handleFiles($event)" ref="upload" id="upload" />
+			  	<span>{{uploadText}}</span>
+		  	</div>
+		  </div>
+		  
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogFormVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="handleUpload">确 定</el-button>
+		  </div>
+		</el-dialog>
   </div>
 </template>
 
 <script>
-  import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/zone'
+  import { fetchTempList, fetchDelTemp, fetchDownloadtTemp, fetchUploadTemp } from '@/api/mapTempMannger'
   import waves from '@/directive/waves' // 水波纹指令
   import { parseTime } from '@/utils'
   const calendarTypeOptions = [
@@ -81,11 +101,8 @@
         listLoading: true,
         listQuery: {
           page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id'
+          page_size: 10,
+          name: ''
         },
         importanceOptions: [1, 2, 3],
         calendarTypeOptions,
@@ -111,7 +128,9 @@
           timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
           title: [{ required: true, message: 'title is required', trigger: 'blur' }]
         },
-        downloadLoading: false
+        uploadText: '未上传任何文件',
+        dialogFormVisible: false,
+        fileList: ''
       }
     },
     filters: {
@@ -133,9 +152,12 @@
     methods: {
       getList() {
         this.listLoading = true
-        fetchList(this.listQuery).then(response => {
-          this.list = response.data.items
-          this.total = response.data.total
+        var nowQuery=this.listQuery;
+      			nowQuery.page--;
+        fetchTempList(this.listQuery).then(response => {
+        	this.listQuery.page++;
+          this.list = response.data.data.content
+          this.total = response.data.data.totalElements
           this.listLoading = false
         })
       },
@@ -144,7 +166,7 @@
         this.getList()
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val
+        this.listQuery.page_size = val
         this.getList()
       },
       handleCurrentChange(val) {
@@ -180,14 +202,7 @@
           if (valid) {
             this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
             this.temp.author = 'vue-element-admin'
-            createArticle(this.temp).then(() => {
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
-              })
-            })
+
           }
         })
       },
@@ -198,57 +213,71 @@
           this.$refs['dataForm'].clearValidate()
         })
       },
+      handleFiles(obj) {
+      	console.log(obj)
+					this.fileList = document.getElementById('upload').files[0]
+        	this.uploadText = document.getElementById('upload').files[0].name
+			},
+      handleUpload() {
+        let param = new FormData() //创建form对象
+        param.append('presentFile', this.fileList)//通过append向form对象添加数据
+        let loading = this.$loading()
+        fetchUploadTemp(param).then(res=>{
+            loading.close()
+            console.log(res)
+            if(res.data.code===0){
+              this.dialogFormVisible = false
+              this.upText = "上传文件"
+              this.$alert('上传成功！', '消息提示', {
+                confirmButtonText: '确定'
+              })
+            }
+          })
+    },
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             const tempData = Object.assign({}, this.temp)
             tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-            updateArticle(tempData).then(() => {
-              for (const v of this.list) {
-                if (v.id === this.temp.id) {
-                  const index = this.list.indexOf(v)
-                  this.list.splice(index, 1, this.temp)
-                  break
-                }
-              }
-              this.$notify({
-                title: '成功',
-                message: '更新成功',
-                type: 'success',
-                duration: 2000
-              })
-            })
+
           }
         })
       },
-      handleDelete(row) {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
-        })
-        const index = this.list.indexOf(row)
-        this.list.splice(index, 1)
+      handleDownTemp() {
+
+				window.location.href=window.g.ApiUrl + "map/v1/present/export/";
+
       },
-      handleFetchPv(pv) {
-        fetchPv(pv).then(response => {
-          this.pvData = response.data.pvData
+      handleDown(id){
+      	fetchDownloadtTemp(id).then(response => {
+        	console.log(response)
         })
       },
-      handleDownload() {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-          const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-          const data = this.formatJson(filterVal, this.list)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: 'table-list'
+      handleDel(id){
+      	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          fetchDelTemp(id).then(response => {
+          	console.log(response)
+            if (response.data.status == 0) {
+              this.loadData()
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '删除失败!'
+              })
+            }
           })
-          this.downloadLoading = false
         })
+//    	fetchDelTemp(id).then(response => {
+//      	console.log(response)
+//      })
       },
       formatJson(filterVal, jsonData) {
         return jsonData.map(v => filterVal.map(j => {
@@ -262,4 +291,30 @@
     }
   }
 </script>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+.upload-input-box{
+	overflow: hidden;
+	line-height: 32px;
+	label{
+		float: left;
+	}
+	.upload-input{
+		float:left;
+		width: 200px;
+		height: 32px;
+		border: 1px solid #e5e5e5;
+		text-align: center;
+		cursor: pointer;
+		position: relative;
+		border-radius: 5px;
+		.fileUpload {
+		  width: 100%;
+		  height: 100%;
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  opacity: 0;
+		}
+	}
+}
+</style>

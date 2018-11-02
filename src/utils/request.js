@@ -1,29 +1,34 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import { getCookie } from '@/utils/auth'
+let Base64 = require('js-base64').Base64;
 
-// create an axios instance
+var baseURLStr = window.g.ApiUrl
+//process.env.BASE_API = baseURLStr
+// create an axios instance Authorization
 const service = axios.create({
-  baseURL: 'https://gis.you07.com/', // api的base_url
+  baseURL: baseURLStr, // api的base_url
   timeout: 5000, // request timeout
 
 })
-
 // request interceptor
 service.interceptors.request.use(config => {
   // Do something before request is sent
-  if (store.getters.token) {
+//if (store.getters.token) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
     //config.headers['X-Token'] = getToken()
-    //config.headers['Content-Type']= 'multipart/form-data'
-  }
+      config.headers['Authorization']= 'Basic ' + Base64.encode(getCookie('username')+':'+getCookie('password'))
+//}
+//console.log(config)
   return config
 }, error => {
   // Do something with request error
-  console.log(error) // for debug
+//console.log(error) // for debug
   Promise.reject(error)
 })
+
+console.log(service)
 
 // respone interceptor
 service.interceptors.response.use(
