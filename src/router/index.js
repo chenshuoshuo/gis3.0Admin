@@ -41,18 +41,12 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path:"",
+    path: '',
     component: Layout,
-    redirect:"/index/index",
-    hidden:true
-  },
-  {
-    path: '/index',
-    component: Layout,
-    redirect: '/index/index',
+    redirect: 'index',
     children: [{ path: 'index', component: () => import('@/views/index/index'), name: 'index', meta: { title: '首页', icon: 'component' }}]
   },
-{
+  {
     path: '/Statistics',
     component: Layout,
     redirect: '/Statistics/metaptosis/index',

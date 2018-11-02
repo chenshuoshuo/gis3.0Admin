@@ -53,7 +53,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-import { getToken, setToken, removeToken, setCookie, removeCookie } from '@/utils/auth'
+import { getToken, setToken,getCookie, removeToken, setCookie, removeCookie } from '@/utils/auth'
 import {myloginByUsername} from "@/api/mylogin"
 //import LangSelect from '@/components/LangSelect'
 //import SocialSign from './socialsignin'
@@ -112,27 +112,25 @@ methods: {
         	setCookie('password',this.loginForm.password)
 					myloginByUsername(this.loginForm.username, this.loginForm.password).then(response => {
             if (response.status==200) {
-							setToken('admin')
+							//setToken('admin')
 							this.$router.push({ path: '/' })
-							
             } else {
-							
 								alert('登录失败！')
-							
 								removeCookie('username')
         				removeCookie('password')
             }
-
-						console.log(response)
+          }).catch(()=>{
+              alert('登录失败！')
+							removeCookie('username')
+        			removeCookie('password')
           })
-
         } else {
           console.log('error submit!!')
           return false
         }
       })
     }
-}
+},
 }
 </script>
 
