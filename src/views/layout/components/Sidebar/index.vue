@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { getConstantRouterMap } from "@/router"
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 

@@ -13,12 +13,11 @@ import store from './store'
 
 import i18n from './lang' // Internationalization
 import './icons' // icon
-import './errorLog'// error log
+
 import './permission' // permission control
 
 import * as filters from './filters' // global filters
 
-import ApiUrl from './../static/config'
 
 Vue.use(Element, {
   size: 'medium', // set element-ui default size

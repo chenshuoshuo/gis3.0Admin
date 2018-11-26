@@ -1,7 +1,8 @@
 <template>
   <div class="menu-wrapper">
+    <h1 class="menu-title" :class="{'display-none':isCollapse}">地图门户管理</h1>
+    <h1 class="menu-title" :class="{'display-none':(!isCollapse)}">IPS</h1>
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
-
       <router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow" :to="item.path+'/'+item.children[0].path"
         :key="item.children[0].name">
         <el-menu-item :index="item.path+'/'+item.children[0].path" :class="{'submenu-title-noDropdown':!isNest}">
@@ -33,6 +34,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { generateTitle } from '@/utils/i18n'
 
 export default {
@@ -57,7 +59,33 @@ export default {
       return false
     },
     generateTitle
+  },
+  computed:{
+    ...mapGetters([
+      'sidebar'
+    ]),
+    isCollapse() {
+      return !this.sidebar.opened
+    }
   }
 }
 </script>
+
+<style scoped>
+  .menu-title{
+    font-size: 16px;
+    font-family: '幼圆';
+    font-weight: bold;
+    text-align: center;
+    color: rgb(64, 159, 255);
+    line-height: 3em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .display-none{
+    display: none;
+    -visibility: hidden;
+  }
+</style>
+
 

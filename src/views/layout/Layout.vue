@@ -3,15 +3,19 @@
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
-      <navbar></navbar>
-      <tags-view></tags-view>
+      <div class="main-header">
+        <navbar></navbar>
+        <tags-view></tags-view>
+      </div>
       <app-main></app-main>
     </div>
   </div>
 </template>
+
 <script>
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
+
 export default {
   name: 'layout',
   components: {
@@ -46,6 +50,11 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/mixin.scss";
+  .main-header{
+    float: left;
+    width: 100%;
+    height: 84px;
+  }
   .app-wrapper {
     @include clearfix;
     position: relative;

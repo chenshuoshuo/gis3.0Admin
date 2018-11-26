@@ -26,11 +26,9 @@ import Layout from '@/views/layout/Layout'
 **/
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/mylogin', component:()=>import('@/views/mylogin/index'),hidden: true },
-  { path: '/myregister', component:()=>import('@/views/myregister/index'),hidden: true },
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
-  { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
+  { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true }
 ]
 
 export default new Router({
@@ -40,185 +38,56 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  {
-    path: '',
-    component: Layout,
-    redirect: 'index',
-    children: [{ path: 'index', component: () => import('@/views/index/index'), name: 'index', meta: { title: '首页', icon: 'component' }}]
+  { 
+    path:'',
+    redirect:'/attr-manager',
+    hidden:true
   },
   {
-    path: '/Statistics',
-    component: Layout,
-    redirect: '/Statistics/metaptosis/index',
-    alwaysShow: true, // will always show the root menu
+    path:'/attr-manager',
+    redirect:'/attr-manager/organization',
+    component:Layout,
+    alwaysShow:true,
+    name: 'attr-manager',
     meta: {
-      title: '统计',
-      icon: 'documentation'
-    },
-    children: [
-      {
-        path: 'metaptosis',
-        component: () => import('@/views/Statistics/metaptosis/index'),
-        name: 'metaptosis',
-        meta: {
-          title: '迁徙图'
-        },
-        noCache:false
-      }
-    ]
-},
-  {
-    path: '/zoneManger',
-    component: Layout,
-    redirect: '/zoneManger/page',
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: '区域管理',
-      icon: 'clipboard',
-      roles: ['admin', 'editor'] // you can set roles in root nav
-    },
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/zoneManger/page'),
-        name: 'pageZoneManger',
-        meta: {
-          title: '区域列表',
-          roles: ['admin', 'editor'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'addZone',
-        component: () => import('@/views/zoneManger/addZone'),
-        name: 'addZone',
-        hidden: true,
-        meta: {
-          title: '添加地图区域',
-          roles: ['admin', 'editor'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'addZone/:id',
-        component: () => import('@/views/zoneManger/addZone'),
-        name: 'updateZone',
-        hidden: true,
-        meta: {
-          title: '更新地图区域',
-          roles: ['admin', 'editor'] // or you can only set roles in sub nav
-        },
-        noCache:false
-      }
-    ]
-  },
-  {
-    path: '/styleManger',
-    component: Layout,
-    redirect: '/styleManger/index',
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: '样式管理',
-      icon: 'documentation'
-    },
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/styleManger/page'),
-        name: 'styleManger',
-        meta: {
-          title: '样式管理'
-        },
-        noCache:false
-      }, 
-      {
-        path: 'addStyle',
-        component: () => import('@/views/styleManger/addStyle'),
-        name: 'addStyle',
-        hidden: true,
-        meta: { title: '新增样式'}
-      },
-      {
-        path: 'addStyle/:id',
-        component: () => import('@/views/styleManger/addStyle'),
-        name: 'updateStyle',
-        hidden: true,
-        meta: { title: '修改样式'}
-      }
-    ]
-  },
-  {
-    path: '/mapTempMannger',
-    component: Layout,
-    alwaysShow: true,
-    redirect: '/mapTempMannger/list',
-    name: 'mapTempMannger',
-    meta: {
-      title: '地图模板管理',
-      icon: 'component'
-    },
-    children: [
-      { path: 'list', component: () => import('@/views/mapTempMannger/list'), name: 'list', meta: { title: '地图模板管理' }}, 
-      {
-        path: 'addTemp',
-        component: () => import('@/views/mapTempMannger/addTemp'),
-        name: 'addTemp',
-        hidden: true,
-        meta: { title: '新增模板'}
-      }
-    ]
-  },
-  {
-    path: '/3dTileMannger',
-    component: Layout,
-    alwaysShow: true,
-    redirect: '/3dTileMannger/3dist',
-    name: '3dTileMannger',
-    meta: {
-      title: '三维地图管理',
-      icon: 'table'
-    },
-    children: [
-      { path: '3dlist', component: () => import('@/views/3dTileMannger/3dlist'), name: '3dTileMannger', meta: { title: '三维瓦片管理' }},
-      { path: 'upTitle', component: () => import('@/views/3dTileMannger/upTitle'), name: 'upTitle', hidden: true, meta: { title: '上传瓦片' }},
-      { path: 'updateTile/:id', component: () => import('@/views/3dTileMannger/upTitle'), name: 'updateTile', hidden: true, meta: { title: '修改瓦片' }},
-      { path: '3dDataAdminList', component: () => import('@/views/3dTileMannger/3dDataAdminList'), name: '3dDataAdminList', meta: { title: '三维数据管理' }}
-    ]
-  },
-  {
-    path: '/authorManager',
-    component: Layout,
-    alwaysShow: true,
-    redirect: '/authorManager/authorizList',
-    name: 'authorManager',
-    meta: {
-      title: '授权管理',
-      icon: 'lock'
-    },
-    children: [
-      { path: 'authorizList', component: () => import('@/views/authorManager/authorizList'), name: 'authorizList', meta: { title: '授权管理' }}
-    ]
-  },
-  {
-    path: '/systemSetting',
-    component: Layout,
-    alwaysShow: true,
-    redirect: '/systemSetting/userManager',
-    name: 'systemSetting',
-    meta: {
-      title: '系统设置',
+      title: 'attr-manager',
       icon: 'setting'
     },
-    children: [
-      { path: 'userManager', component: () => import('@/views/systemSetting/userManager'), name: 'userManager',meta: { title: '用户管理' }},
-      { path:"editUser", component: () => import('@/views/systemSetting/userManager/addUser'), name: 'editUser',  meta: { title: '编辑用户'}, hidden:true },
-      { path: 'roleManager', component: () => import('@/views/systemSetting/roleManager'), name: 'roleManager', meta: { title: '角色管理' }},
-      { path: 'editRole', component: () => import('@/views/systemSetting/roleManager/addRole'), name: 'editRole', meta: { title: '编辑角色' }, hidden:true },
-      { path: 'personalInfo', component: () => import('@/views/systemSetting/personalInfo'), name: 'personalInfo', meta: { title: '个人信息' }},
-      { path: 'systemLog', component: () => import('@/views/systemSetting/systemLog'), name: 'systemLog', meta: { title: '系统日志' }},
+    children:[
+      { 
+        path:"organization",
+        component:() => import('@/views/attrCategoryManager/organizationCategory'),
+        name:'attr-organization',
+        meta: {
+          title: 'attr-organization'
+        }
+      },
+      { 
+        path:"label",
+        component:() => import('@/views/attrCategoryManager/labelCategory'),
+        name:'attr-label',
+        meta: {
+          title: 'attr-label'
+        }
+      },
+      { 
+        path:"building",
+        component:() => import('@/views/attrCategoryManager/buildingCategory'),
+        name:'attr-building',
+        meta: {
+          title: 'attr-building'
+        }
+      },
+      { 
+        path:"room",
+        component:() => import('@/views/attrCategoryManager/roomCategory'),
+        name:'attr-room',
+        meta: {
+          title: 'attr-room'
+        }
+      },
     ]
   },
+
   { path: '*', redirect: '/404', hidden: true }
 ]
-
-export function getConstantRouterMap(){
-  return asyncRouterMap;
-}

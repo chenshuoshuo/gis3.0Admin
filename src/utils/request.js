@@ -10,7 +10,6 @@ var baseURLStr = window.g.ApiUrl
 const service = axios.create({
   baseURL: baseURLStr, // api的base_url
   timeout: 5000, // request timeout
-
 })
 // request interceptor
 service.interceptors.request.use(config => {
@@ -28,7 +27,6 @@ service.interceptors.request.use(config => {
   Promise.reject(error)
 })
 
-console.log(service)
 
 // respone interceptor
 service.interceptors.response.use(
