@@ -1,7 +1,7 @@
 export default {
     zh: {
         sort: '排序',
-        numer: '编号',
+        number: '编号',
         pic: '图片',
         orgName: '机构名称',
         campus: '校区',
@@ -20,10 +20,19 @@ export default {
         search:'搜索',
         buildCategoryName:'大楼类别名称',
         roomCategoryName:'房间类别名称',
+        flyCamName:'航拍名称',
+        flyCamUrl:'航拍地址',
+        updateTime:'更新时间',
+        position:'位置',
+        correctContent:'纠错类容',
+        username:'姓名',
+        workNumber:'学工号',
+        commitTime:'提交时间',
+        suggestion:'反馈类容'
     },
     en: {
         sort: 'Sort',
-        numer: 'Number',
+        number: 'Number',
         pic: 'Pic',
         orgName: 'Org Name',
         campus: 'Campus',
@@ -42,5 +51,14 @@ export default {
         search:'Search',
         buildCategoryName:'Build Category Name',
         roomCategoryName:'Room Category Name',
+        flyCamName:'Fly Cam Name',
+        flyCamUrl:'Fly Cam Url',
+        updateTime:'Update Time',
+        position:'Position',
+        correctContent:'Correct Content',
+        username:'Username',
+        workNumber:'Work Number',
+        commitTime:'Commit Time',
+        suggestion:'Suggestion'
     }
 }

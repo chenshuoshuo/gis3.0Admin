@@ -1,27 +1,20 @@
-
 import waves from '@/directive/waves' // 水波纹指令
-
 export default {
   directives: {
     waves
   },
   data() {
     return {
-      picUrl:'',
-      searchIconUrl:'',
-      state:'',
-      showForm:false,
       multipleSelection: [],
       list: [
-        {number:'1',roomCategoryName:'办公室'}
-      ],
+          {position:'第一教学楼',campus:'南校区',mapType:'二维',correctContent:'名字错误',username:'王晓华',workNumber:'20120120452'}
+        ],
       total: 0,
       listLoading: false,
       listQuery: {
         page: 1,
         page_size: 10,
       },
-      showReviewer: false,
       formData:{
       }
     }
@@ -34,21 +27,9 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleAdd(){
-      this.state = 'add'
-      this.showForm = true
-    },
     handleClose(){
-      this.formData = {email:''}
+      this.formData = {}
       this.$refs.postForm.resetFields();
-    },
-    handleEdit(id){
-      this.state = 'edit'
-      this.showForm = true;
-      // getUser(id).then(res=>{
-      //   this.formData = res.data;
-      //   this.showForm = true;
-      // })
     },
     handlerSearch() {
       this.listQuery.page = 1
@@ -75,42 +56,6 @@ export default {
         this.$alert('请选择要删除的数据', '消息提示', {
           confirmButtonText: '确定',
           type: 'warning'
-        })
-      }
-    },
-    handleSubmit(){
-      if(this.state==='add'){
-        createUser(this.formData).then(res=>{
-          if(res.data.code==0){
-              this.$message({
-                  type:"success",
-                  message:"添加成功!"
-              })
-              this.showForm = false;
-              this.getList();
-          }else{
-              this.$message({
-                  type: 'warning',
-                  message: '添加失败!'
-              })
-          }
-        })
-      }else if(this.state === 'edit'){
-        delete this.formData.password
-        updateUser(this.formData.id,this.formData).then(res=>{
-          if(res.data){
-              this.$message({
-                  type:"success",
-                  message:"更新成功!"
-              })
-              this.showForm = false;
-              this.getList();
-          }else{
-              this.$message({
-                  type: 'warning',
-                  message: '更新失败!'
-              })
-          }
         })
       }
     },

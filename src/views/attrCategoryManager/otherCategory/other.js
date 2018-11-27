@@ -1,4 +1,5 @@
 
+
 import waves from '@/directive/waves' // 水波纹指令
 
 export default {
@@ -7,13 +8,12 @@ export default {
   },
   data() {
     return {
-      picUrl:'',
-      searchIconUrl:'',
+      showConfig:false,
       state:'',
       showForm:false,
       multipleSelection: [],
       list: [
-        {number:'1',roomCategoryName:'办公室'}
+        {number:'010',categoryName:'水域'}
       ],
       total: 0,
       listLoading: false,

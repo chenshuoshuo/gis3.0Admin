@@ -10,7 +10,9 @@ export default {
       state:'',
       showForm:false,
       multipleSelection: [],
-      list: null,
+      list: [
+        {number:1,icon:'111',parentCategory:'父级',categoryName:'子级',mapType:'二维'}
+      ],
       total: 0,
       listLoading: false,
       listQuery: {
@@ -43,10 +45,7 @@ export default {
     },
     handleEdit(id){
       this.state = 'edit'
-      getUser(id).then(res=>{
-        this.formData = res.data;
-        this.showForm = true;
-      })
+      this.showForm = true;
     },
     handlerSearch() {
       this.listQuery.page = 1

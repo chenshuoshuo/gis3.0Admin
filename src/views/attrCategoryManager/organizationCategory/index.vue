@@ -30,9 +30,9 @@
                 <span>{{scope.row.sort}}</span>
                 </template>
             </el-table-column>
-            <el-table-column width="100" :label="$t('table.numer')" align="center">
+            <el-table-column width="100" :label="$t('table.number')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.numer}}</span>
+                <span>{{scope.row.number}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.menuIcon')">

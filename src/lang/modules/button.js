@@ -6,7 +6,9 @@ export default {
         edit:'编辑',
         submit:'提交',
         cancel:'取消',
-        configField:'配置字段'
+        configField:'配置字段',
+        viewPos:'查看位置',
+        viewPic:'查看图片'
     },
     en:{
         search:'Search',
@@ -15,6 +17,8 @@ export default {
         edit:'Edit',
         submit:'Submit',
         cancel:'Cancel',
-        configField:'Config Field'
+        configField:'Config Field',
+        viewPos:'view pos',
+        viewPic:'view pic'
     }
 }

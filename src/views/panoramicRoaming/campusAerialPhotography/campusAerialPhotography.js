@@ -1,6 +1,4 @@
-
 import waves from '@/directive/waves' // 水波纹指令
-
 export default {
   directives: {
     waves
@@ -12,9 +10,7 @@ export default {
       state:'',
       showForm:false,
       multipleSelection: [],
-      list: [
-        {number:'1',roomCategoryName:'办公室'}
-      ],
+      list: null,
       total: 0,
       listLoading: false,
       listQuery: {
@@ -44,11 +40,10 @@ export default {
     },
     handleEdit(id){
       this.state = 'edit'
-      this.showForm = true;
-      // getUser(id).then(res=>{
-      //   this.formData = res.data;
-      //   this.showForm = true;
-      // })
+      getUser(id).then(res=>{
+        this.formData = res.data;
+        this.showForm = true;
+      })
     },
     handlerSearch() {
       this.listQuery.page = 1

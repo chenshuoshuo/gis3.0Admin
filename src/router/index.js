@@ -51,7 +51,7 @@ export const asyncRouterMap = [
     name: 'attr-manager',
     meta: {
       title: 'attr-manager',
-      icon: 'setting'
+      icon: 'category'
     },
     children:[
       { 
@@ -84,6 +84,77 @@ export const asyncRouterMap = [
         name:'attr-room',
         meta: {
           title: 'attr-room'
+        }
+      },
+      { 
+        path:"other",
+        component:() => import('@/views/attrCategoryManager/otherCategory'),
+        name:'attr-other',
+        meta: {
+          title: 'attr-other'
+        }
+      },
+    ]
+  },
+  {
+    path:'/panoramic-roaming',
+    redirect:'/panoramic-roaming/aerialPhoto',
+    component:Layout,
+    alwaysShow:true,
+    name: 'panoramic-roaming',
+    meta: {
+      title: 'panoramic-roaming',
+      icon: 'cam'
+    },
+    children:[
+      {
+        path:'aerialPhoto',
+        component:()=>import('@/views/panoramicRoaming/campusAerialPhotography'),
+        name:'aerial-photo',
+        meta: {
+          title:'aerial-photo'
+        }
+      },
+    ]
+  },
+  {
+    path:'/map-correction',
+    redirect:'/map-correction/correction',
+    component:Layout,
+    alwaysShow:true,
+    name: 'map-correction',
+    meta: {
+      title: 'map-correction',
+      icon: 'write'
+    },
+    children:[
+      {
+        path:'correction',
+        component:()=>import('@/views/correctionManager'),
+        name:'correction',
+        meta: {
+          title:'correction'
+        }
+      },
+    ]
+  },
+  {
+    path:'/suggestions-manager',
+    redirect:'/suggestions-manager/suggestions',
+    component:Layout,
+    alwaysShow:true,
+    name: 'suggestions-manager',
+    meta: {
+      title: 'suggestions-manager',
+      icon: 'sugg'
+    },
+    children:[
+      {
+        path:'suggestions',
+        component:()=>import('@/views/suggestionsManager'),
+        name:'suggestions',
+        meta: {
+          title:'suggestions'
         }
       },
     ]

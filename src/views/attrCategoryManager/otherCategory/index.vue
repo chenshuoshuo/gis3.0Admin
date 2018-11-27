@@ -1,8 +1,8 @@
 <template>
-    <div class="app-container attr-room">
+    <div class="app-container attr-other">
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
-                <el-form-item :label="$t('form.roomCategoryName')+':'">
+                <el-form-item :label="$t('form.categoryName')+':'">
                     <el-input class="filter-item" v-model="listQuery.categoryName">
                     </el-input>
                 </el-form-item>
@@ -24,9 +24,9 @@
                 <span>{{scope.row.number}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.roomCategoryName')">
+            <el-table-column align="center" :label="$t('table.categoryName')">
                 <template slot-scope="scope">
-                <span>{{scope.row.roomCategoryName}}</span>
+                <span>{{scope.row.categoryName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.click')">
@@ -41,7 +41,7 @@
             </el-table-column>
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.configField')}}</el-button>
+                    <el-button type="primary" size="mini" @click="showConfig = true" >{{$t('button.configField')}}</el-button>
                     <el-button type="success" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.edit')}}</el-button>
                     <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.id)">{{$t('button.delete')}}</el-button>
                 </template>
@@ -57,8 +57,8 @@
             :title="$t('button.'+state)"
             width="550px" :visible.sync="showForm" @close="handleClose">
             <el-form :model="formData" ref="postForm" label-position="right" label-width="110px" class="post-form">
-              <el-form-item :label="$t('form.roomCategoryName')+':'" prop="roomCategoryName" class="required">
-                  <el-input v-model="formData.roomCategoryName" ></el-input>
+              <el-form-item :label="$t('form.categoryName')+':'" prop="categoryName" class="required">
+                  <el-input v-model="formData.categoryName" ></el-input>
               </el-form-item>
               <el-form-item :label="$t('form.number')+':'" class="required">
                   <el-input v-model="formData.number"></el-input>
@@ -79,12 +79,23 @@
                 <el-button type="primary" @click="handleSubmit">{{$t('button.submit')}}</el-button>
             </div>
         </el-dialog>
+        <el-dialog :title="$t('button.configField')" :visible.sync="showConfig">
+            <el-table :data="gridData">
+                <el-table-column property="date" label="日期" width="150"></el-table-column>
+                <el-table-column property="name" label="姓名" width="200"></el-table-column>
+                <el-table-column property="address" label="地址"></el-table-column>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="showConfig = false">{{$t('button.cancel')}}</el-button>
+                <el-button type="primary" @click="handleSubmit">{{$t('button.submit')}}</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
-<script src='./roomCategory.js'></script>
+<script src='./other.js'></script>
 <style lang='scss'>
-    .attr-room{
+    .attr-other{
         padding: 20px;
         .el-dialog__body{
             padding-bottom: 0;
@@ -112,13 +123,9 @@
     }
 </style>
 
+<style scoped lang='scss'>
+    .attr-other{
+        padding: 20px;
+    }
 
-<style scoped lang="scss">
-    .post-form{
-        padding-right:50px;
-    }
-    .form-box{
-        padding-right: 30px;
-        padding-left: 10px;
-    }
 </style>

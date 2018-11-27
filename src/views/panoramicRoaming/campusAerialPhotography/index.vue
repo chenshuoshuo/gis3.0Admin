@@ -1,12 +1,18 @@
 <template>
-    <div class="app-container attr-room">
+    <div class="app-container campus-aerial">
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
-                <el-form-item :label="$t('form.roomCategoryName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.categoryName">
+                <el-form-item :label="$t('form.flyCamName')+':'">
+                    <el-input class="filter-item" v-model="listQuery.flyCamName">
+                    </el-input>
+                </el-form-item>
+                <el-form-item :label="$t('form.campus')+':'">
+                    <el-input class="filter-item" v-model="listQuery.campus">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
+                </el-button>
+                <el-button class="filter-item" style="margin-left: 10px;" @click="handleAdd" type="success" icon="el-icon-edit">{{$t('button.add')}}
                 </el-button>
                 <el-button class="filter-item" style="margin-left: 10px;" type="danger"  @click="handleDeletMany" icon="el-icon-delete" >{{$t('button.delete')}}
                 </el-button>
@@ -19,29 +25,28 @@
                 type="selection"
                 width="55">
             </el-table-column>
-            <el-table-column width="100" :label="$t('table.number')" align="center">
+            <el-table-column align="center" :label="$t('table.flyCamName')">
                 <template slot-scope="scope">
-                <span>{{scope.row.number}}</span>
+                <span>{{scope.row.flyCamName}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.roomCategoryName')">
+            <el-table-column :label="$t('table.campus')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.roomCategoryName}}</span>
+                <span>{{scope.row.campus}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.click')">
+            <el-table-column align="center" :label="$t('table.flyCamUrl')">
                 <template slot-scope="scope">
-                <span>{{scope.row.click}}</span>
+                    <span><img :src="scope.row.flyCamUrl" alt=""></span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.search')">
+            <el-table-column :label="$t('table.updateTime')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.search}}</span>
+                <span>{{scope.row.updateTime|parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.configField')}}</el-button>
                     <el-button type="success" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.edit')}}</el-button>
                     <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.id)">{{$t('button.delete')}}</el-button>
                 </template>
@@ -55,24 +60,20 @@
           </div>
           <el-dialog
             :title="$t('button.'+state)"
-            width="550px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" label-position="right" label-width="110px" class="post-form">
-              <el-form-item :label="$t('form.roomCategoryName')+':'" prop="roomCategoryName" class="required">
-                  <el-input v-model="formData.roomCategoryName" ></el-input>
+            width="450px" :visible.sync="showForm" @close="handleClose">
+            <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form">
+              <el-form-item :label="$t('form.flyCamName')+':'" prop="flyCamName" class="required">
+                  <el-input v-model="formData.flyCamName"></el-input>
               </el-form-item>
-              <el-form-item :label="$t('form.number')+':'" class="required">
-                  <el-input v-model="formData.number"></el-input>
+              <el-form-item :label="$t('form.campus')+':'" prop="campus" class="required">
+                  <el-input v-model="formData.campus"></el-input>
               </el-form-item>
-              <div class="radio">
-                <el-form-item :label="$t('form.click')+':'" class="required">
-                    <el-radio v-model="formData.click" label="1">是</el-radio>
-                    <el-radio v-model="formData.click" label="2">否</el-radio>
-                </el-form-item>
-                <el-form-item :label="$t('form.search')+':'" class="required">
-                    <el-radio v-model="formData.search" label="1">是</el-radio>
-                    <el-radio v-model="formData.search" label="2">否</el-radio>
-                </el-form-item>
-              </div>
+              <el-form-item :label="$t('form.flyCamUrl')+':'" prop="flyCamUrl" class="required">
+                  <el-input v-model="formData.flyCamUrl"></el-input>
+              </el-form-item>
+              <el-form-item :label="$t('form.sort')+':'" prop="sort" class="required">
+                  <el-input v-model="formData.sort"></el-input>
+              </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>
@@ -82,21 +83,11 @@
     </div>
 </template>
 
-<script src='./roomCategory.js'></script>
-<style lang='scss'>
-    .attr-room{
-        padding: 20px;
-        .el-dialog__body{
-            padding-bottom: 0;
-        }
-        .fixed-width .el-button--mini{
-            display: inline-block;
-            width: auto;
-        }
-        .radio{
-            display: flex;
-        }
+<script src="./campusAerialPhotography.js"></script>
 
+<style lang='scss'>
+    .campus-aerial{
+        padding: 20px;
         .post-form{
             .required .el-form-item__content::after {
                 content: '*';
@@ -106,17 +97,17 @@
                 vertical-align: top;
             }
             .el-input{
-                width: 340px;
+                width: 280px;
             }
+        } 
+        .el-dialog__body{
+            padding-bottom: 0;
         }
     }
 </style>
 
 
 <style scoped lang="scss">
-    .post-form{
-        padding-right:50px;
-    }
     .form-box{
         padding-right: 30px;
         padding-left: 10px;

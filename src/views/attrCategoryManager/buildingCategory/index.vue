@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container attr-organization">
+    <div class="app-container attr-building">
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
                 <el-form-item :label="$t('form.buildCategoryName')+':'">
@@ -19,9 +19,9 @@
                 type="selection"
                 width="55">
             </el-table-column>
-            <el-table-column width="100" :label="$t('table.numer')" align="center">
+            <el-table-column width="100" :label="$t('table.number')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.numer}}</span>
+                    <span>{{scope.row.number}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.buildCategoryName')">
@@ -41,7 +41,7 @@
             </el-table-column>
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="success" size="mini" @click="handleConfig(scope.row.id)" >{{$t('button.configField')}}</el-button>
+                    <el-button type="primary" size="mini" @click="handleConfig(scope.row.id)" >{{$t('button.configField')}}</el-button>
                     <el-button type="success" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.edit')}}</el-button>
                     <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.id)">{{$t('button.delete')}}</el-button>
                 </template>
@@ -55,35 +55,24 @@
           </div>
           <el-dialog
             :title="$t('button.'+state)"
-            width="530px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form">
-              <el-form-item :label="$t('form.campus')+':'" prop="campus" required>
-                  <el-input v-model="formData.campus" ></el-input>
+            width="550px" :visible.sync="showForm" @close="handleClose">
+            <el-form :model="formData" ref="postForm" label-position="right" label-width="110px" class="post-form">
+              <el-form-item :label="$t('form.buildCategoryName')+':'" prop="buildCategoryName" class="required">
+                  <el-input v-model="formData.buildCategoryName" ></el-input>
               </el-form-item>
-              <el-form-item :label="$t('form.pic')+':'" prop="pic" required>
-                  <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :show-file-list="false">
-                    <img v-if="picUrl" :src="picUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+              <el-form-item :label="$t('form.number')+':'" class="required">
+                  <el-input v-model="formData.number"></el-input>
               </el-form-item>
-              <el-form-item :label="$t('form.searchIcon')+':'" prop="searchIcon" required>
-                  <el-upload
-                    class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :show-file-list="false">
-                    <img v-if="searchIconUrl" :src="searchIconUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-              <el-form-item :label="$t('form.categoryName')+':'" required>
-                  <el-input v-model="formData.phone"></el-input>
-              </el-form-item>
-              <el-form-item :label="$t('form.serialNumer')+':'" required>
-                  <el-input v-model="formData.serialNumer"></el-input>
-              </el-form-item>
+              <div class="radio">
+                <el-form-item :label="$t('form.click')+':'" class="required">
+                    <el-radio v-model="formData.click" label="1">是</el-radio>
+                    <el-radio v-model="formData.click" label="2">否</el-radio>
+                </el-form-item>
+                <el-form-item :label="$t('form.search')+':'" class="required">
+                    <el-radio v-model="formData.search" label="1">是</el-radio>
+                    <el-radio v-model="formData.search" label="2">否</el-radio>
+                </el-form-item>
+              </div>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>
@@ -96,33 +85,30 @@
 <script src="./buildingCategory.js"></script>
 
 <style lang='scss'>
-    .attr-organization{
+    .attr-building{
         padding: 20px;
-        .avatar-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .avatar-uploader .el-upload:hover {
-            border-color: #409EFF;
-        }
-        .avatar-uploader-icon {
-            font-size: 28px;
-            color: #8c939d;
-            width: 66px;
-            height: 66px;
-            line-height: 66px;
-            text-align: center;
-        }
-        .avatar {
-            width: 66px;
-            height: 66px;
-            display: block;
-        }
         .el-dialog__body{
             padding-bottom: 0;
+        }
+        .fixed-width .el-button--mini{
+            display: inline-block;
+            width: auto;
+        }
+        .radio{
+            display: flex;
+        }
+
+        .post-form{
+            .required .el-form-item__content::after {
+                content: '*';
+                display: inline-block;
+                color: #f56c6c;
+                margin-left: 4px;
+                vertical-align: top;
+            }
+            .el-input{
+                width: 340px;
+            }
         }
     }
 </style>
@@ -130,7 +116,7 @@
 
 <style scoped lang="scss">
     .post-form{
-        padding-right:100px;
+        padding-right:50px;
     }
     .form-box{
         padding-right: 30px;

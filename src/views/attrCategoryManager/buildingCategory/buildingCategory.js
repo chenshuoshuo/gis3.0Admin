@@ -10,7 +10,9 @@ export default {
       state:'',
       showForm:false,
       multipleSelection: [],
-      list: null,
+      list: [
+        {number:'1',buildCategoryName:'行政楼'}
+      ],
       total: 0,
       listLoading: false,
       listQuery: {
@@ -40,10 +42,11 @@ export default {
     },
     handleEdit(id){
       this.state = 'edit'
-      getUser(id).then(res=>{
-        this.formData = res.data;
-        this.showForm = true;
-      })
+      this.showForm = true;
+      // getUser(id).then(res=>{
+      //   this.formData = res.data;
+      //   this.showForm = true;
+      // })
     },
     handleConfig(){
       this.state = 'config';
@@ -139,6 +142,6 @@ export default {
 
   },
   mounted() {
-    this.getList()
+    //this.getList()
   }
 }
