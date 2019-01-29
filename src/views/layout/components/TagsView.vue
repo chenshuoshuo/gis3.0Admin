@@ -104,7 +104,7 @@ export default {
     openMenu(tag, e) {
       this.visible = true
       this.selectedTag = tag
-      this.left = e.clientX
+      this.left = e.clientX - 180
       this.top = e.clientY
     },
     closeMenu() {

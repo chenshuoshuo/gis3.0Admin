@@ -2,12 +2,18 @@
     <div class="app-container attr-organization">
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
-                <el-form-item :label="$t('form.categoryName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.categoryName">
-                    </el-input>
-                </el-form-item>
                 <el-form-item :label="$t('form.campus')+':'">
-                    <el-input class="filter-item" v-model="listQuery.campus">
+                    <el-select v-model="listQuery.campusCode" clearable placeholder="请选择">
+                        <el-option
+                        v-for="item in campus"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item :label="$t('form.categoryName')+':'">
+                    <el-input class="filter-item" v-model="listQuery.typeName">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
@@ -16,54 +22,54 @@
                 </el-button>
                 <el-button class="filter-item" style="margin-left: 10px;" type="danger"  @click="handleDeletMany" icon="el-icon-delete" >{{$t('button.delete')}}
                 </el-button>
+                <el-button style="margin-left: 10px;" v-waves type="temp"  @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
+                <!-- <el-button type="import" v-waves @click="handleImportExecel" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button> -->
+                <el-button type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
+                <!-- <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" >地图刷新</el-button> -->
             </el-form>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+        <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit
                 highlight-current-row
                 style="width: 100%" @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"
-                width="55">
-            </el-table-column>
-            <el-table-column width="100" align="center" :label="$t('table.sort')">
-                <template slot-scope="scope">
-                <span>{{scope.row.sort}}</span>
-                </template>
+                width="55" align="center">
             </el-table-column>
             <el-table-column width="100" :label="$t('table.number')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.number}}</span>
+                <span>{{scope.row.typeCode}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.menuIcon')">
                 <template slot-scope="scope">
-                    <span><img :src="scope.row.menuIcon" alt=""></span>
+                    <span class="menu-icon"><img :src="scope.row.menuIcon?baseUrl+scope.row.menuIcon:''" alt=""></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.searchIcon')">
                 <template slot-scope="scope">
-                    <span><img :src="scope.row.menuIcon" alt=""></span>
+                    <span class="search-icon"><img :src="scope.row.searchIcon?baseUrl+scope.row.searchIcon:''" alt=""></span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.campus')">
+            <el-table-column align="center" :label="$t('table.campus')" width="200px">
                 <template slot-scope="scope">
-                <span>{{scope.row.campus}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('table.orgCategory')">
-                <template slot-scope="scope">
-                <span>{{scope.row.orgCategory}}</span>
+                <span>{{scope.row.campusName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.categoryName')">
                 <template slot-scope="scope">
-                <span>{{scope.row.categoryName}}</span>
+                <span>{{scope.row.typeName}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
+            <el-table-column width="100" align="center" :label="$t('table.sort')">
                 <template slot-scope="scope">
-                    <el-button type="success" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.edit')}}</el-button>
-                    <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.id)">{{$t('button.delete')}}</el-button>
+                <span>{{scope.row.orderId}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width" width="260px">
+                <template slot-scope="scope">
+                    <el-button type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
+                    <el-button type="success" size="mini" @click="handleEdit(scope.row.typeCode)" >{{$t('button.edit')}}</el-button>
+                    <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.typeCode)">{{$t('button.delete')}}</el-button>
                 </template>
             </el-table-column>
           </el-table>
@@ -75,41 +81,52 @@
           </div>
           <el-dialog
             :title="$t('button.'+state)"
-            width="530px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form">
-              <el-form-item :label="$t('form.campus')+':'" prop="campus" required>
-                  <el-input v-model="formData.campus" ></el-input>
+            width="550px" :visible.sync="showForm" @close="handleClose">
+            <el-form :model="formData" ref="postForm" :rules="rules" label-position="right" label-width="110px" class="post-form">
+              <el-form-item :label="$t('form.campus')+':'" prop="campusCode"  class="required">
+                <el-select v-model="formData.campusCode" placeholder="请选择">
+                    <el-option
+                    v-for="item in campus"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                    </el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item :label="$t('form.pic')+':'" prop="pic" required>
+              <el-form-item label="机构类别图标:" prop="menuIcon"  class="required">
                   <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :action="baseUrl+'/mapOrganizationType/uploadImg'"
+                    :on-success="handleAvatarSuccess"
                     :show-file-list="false">
                     <img v-if="picUrl" :src="picUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
-              <el-form-item :label="$t('form.searchIcon')+':'" prop="searchIcon" required>
+              <el-form-item label="移动端图标:" prop="searchIcon"  class="required">
                   <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :action="baseUrl+'/mapOrganizationType/uploadImg'"
+                    :on-success="handleSearchSuccess"
                     :show-file-list="false">
                     <img v-if="searchIconUrl" :src="searchIconUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
-              <el-form-item :label="$t('form.categoryName')+':'" required>
-                  <el-input v-model="formData.phone"></el-input>
+              <el-form-item :label="$t('form.categoryName')+':'" class="required" prop="typeName" ref="typeName">
+                  <el-input v-model="formData.typeName"></el-input>
               </el-form-item>
-              <el-form-item :label="$t('form.serialNumer')+':'" required>
-                  <el-input v-model="formData.serialNumer"></el-input>
+              <el-form-item :label="$t('form.sort')+':'" class="required" prop="orderId" ref="orderId">
+                  <el-input v-model.number="formData.orderId"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>
-                <el-button type="primary" @click="handleSubmit">{{$t('button.submit')}}</el-button>
+                <el-button type="primary" :loading="isSub" @click="handleSubmit">{{$t('button.submit')}}</el-button>
             </div>
         </el-dialog>
+        <configFiled ref="config" v-model="fields" @http-request="handleConfigSub" @del-column="handleDelColumn" />
+        <import-dialog :uploadUrl="baseUrl+'/mapOrganizationType/upload'" ref="upload"/>
     </div>
 </template>
 
@@ -141,17 +158,50 @@
             height: 66px;
             display: block;
         }
-        .el-dialog__body{
-            padding-bottom: 0;
+        .avatar-uploader{
+            display: inline-block;
+        }
+        .menu-icon{
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            img{
+                width: 100%;
+                height: 100%;;
+            }
+        }
+        .search-icon{
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            img{
+                width: 100%;
+                height: 100%;;
+            }
+        }
+        .el-form-item.is-required .el-form-item__label:before{
+            content: ''
+        }
+        .post-form{
+            .required .el-form-item__content::after {
+                content: '*';
+                display: inline-block;
+                color: #f56c6c;
+                margin-left: 4px;
+                vertical-align: top;
+            }
+            .el-input{
+                width: 340px;
+            }
+        }
+        .fixed-width .el-button--mini{
+            width: auto;
         }
     }
 </style>
 
 
 <style scoped lang="scss">
-    .post-form{
-        padding-right:100px;
-    }
     .form-box{
         padding-right: 30px;
         padding-left: 10px;

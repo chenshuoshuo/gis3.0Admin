@@ -25,7 +25,7 @@ import Layout from '@/views/layout/Layout'
   }
 **/
 export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+  // { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true }
@@ -38,125 +38,235 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  { 
-    path:'',
-    redirect:'/attr-manager',
-    hidden:true
-  },
   {
-    path:'/attr-manager',
-    redirect:'/attr-manager/organization',
-    component:Layout,
-    alwaysShow:true,
-    name: 'attr-manager',
+    path: '/information-manager',
+    redirect: '/information-manager/organization',
+    component: Layout,
+    alwaysShow: true,
+    name: 'information-manager',
     meta: {
-      title: 'attr-manager',
-      icon: 'category'
+      title: 'information-manager',
+      icon: 'menu'
     },
-    children:[
-      { 
-        path:"organization",
-        component:() => import('@/views/attrCategoryManager/organizationCategory'),
-        name:'attr-organization',
+    children: [
+      {
+        path: 'organization',
+        component: () => import('@/views/attrInformationManager/organizationInformation'),
+        name: 'information-organization',
         meta: {
-          title: 'attr-organization'
+          title: 'information-organization'
         }
       },
-      { 
-        path:"label",
-        component:() => import('@/views/attrCategoryManager/labelCategory'),
-        name:'attr-label',
+      {
+        path: 'createOrganization',
+        component: () => import('@/views/attrInformationManager/organizationInformation/createOrganization'),
+        name: 'create-organization',
+        hidden: true,
         meta: {
-          title: 'attr-label'
+          title: 'create-organization'
         }
       },
-      { 
-        path:"building",
-        component:() => import('@/views/attrCategoryManager/buildingCategory'),
-        name:'attr-building',
+      {
+        path: 'label',
+        component: () => import('@/views/attrInformationManager/labelInformation'),
+        name: 'information-label',
         meta: {
-          title: 'attr-building'
+          title: 'information-label'
         }
       },
-      { 
-        path:"room",
-        component:() => import('@/views/attrCategoryManager/roomCategory'),
-        name:'attr-room',
+      {
+        path: 'createLabel',
+        component: () => import('@/views/attrInformationManager/labelInformation/createLabel'),
+        name: 'create-label',
+        hidden: true,
         meta: {
-          title: 'attr-room'
+          title: 'create-label'
         }
       },
-      { 
-        path:"other",
-        component:() => import('@/views/attrCategoryManager/otherCategory'),
-        name:'attr-other',
+      {
+        path: 'building',
+        component: () => import('@/views/attrInformationManager/buildingInformation'),
+        name: 'information-building',
         meta: {
-          title: 'attr-other'
+          title: 'information-building'
         }
       },
+      {
+        path: 'createBuilding',
+        component: () => import('@/views/attrInformationManager/buildingInformation/createBuilding'),
+        name: 'create-building',
+        hidden: true,
+        meta: {
+          title: 'create-building'
+        }
+      },
+      {
+        path: 'room',
+        component: () => import('@/views/attrInformationManager/roomInformation'),
+        name: 'information-room',
+        meta: {
+          title: 'information-room'
+        }
+      },
+      {
+        path: 'createRoom',
+        component: () => import('@/views/attrInformationManager/roomInformation/createRoom'),
+        name: 'edit-room',
+        hidden: true,
+        meta: {
+          title: 'edit-room'
+        }
+      },
+      {
+        path: 'other',
+        component: () => import('@/views/attrInformationManager/otherInformation'),
+        name: 'information-other',
+        meta: {
+          title: 'information-other'
+        }
+      },
+      {
+        path: 'createOthers',
+        component: () => import('@/views/attrInformationManager/otherInformation/createOhter'),
+        name: 'edit-other',
+        hidden: true,
+        meta: {
+          title: 'edit-other'
+        }
+      }
     ]
   },
   {
-    path:'/panoramic-roaming',
-    redirect:'/panoramic-roaming/aerialPhoto',
-    component:Layout,
-    alwaysShow:true,
+    path: '/category-manager',
+    redirect: '/category-manager/organization',
+    component: Layout,
+    alwaysShow: true,
+    name: 'category-manager',
+    meta: {
+      title: 'category-manager',
+      icon: 'category'
+    },
+    children: [
+      {
+        path: 'organization',
+        component: () => import('@/views/attrCategoryManager/organizationCategory'),
+        name: 'category-organization',
+        meta: {
+          title: 'category-organization'
+        }
+      },
+      {
+        path: 'label',
+        component: () => import('@/views/attrCategoryManager/labelCategory'),
+        name: 'category-label',
+        meta: {
+          title: 'category-label'
+        }
+      },
+      {
+        path: 'building',
+        component: () => import('@/views/attrCategoryManager/buildingCategory'),
+        name: 'category-building',
+        meta: {
+          title: 'category-building'
+        }
+      },
+      {
+        path: 'room',
+        component: () => import('@/views/attrCategoryManager/roomCategory'),
+        name: 'category-room',
+        meta: {
+          title: 'category-room'
+        }
+      },
+      {
+        path: 'other',
+        component: () => import('@/views/attrCategoryManager/otherCategory'),
+        name: 'category-other',
+        meta: {
+          title: 'category-other'
+        }
+      }
+    ]
+  },
+  {
+    path: '/panoramic-roaming',
+    redirect: '/panoramic-roaming/aerialPhoto',
+    component: Layout,
+    alwaysShow: true,
     name: 'panoramic-roaming',
     meta: {
       title: 'panoramic-roaming',
-      icon: 'cam'
+      icon: 'quanjing'
     },
-    children:[
+    children: [
       {
-        path:'aerialPhoto',
-        component:()=>import('@/views/panoramicRoaming/campusAerialPhotography'),
-        name:'aerial-photo',
+        path: 'aerialPhoto',
+        component: () => import('@/views/panoramicRoaming/campusAerialPhotography'),
+        name: 'aerial-photo',
         meta: {
-          title:'aerial-photo'
+          title: 'aerial-photo'
         }
       },
+      {
+        path: 'groundPanorama',
+        component: () => import('@/views/panoramicRoaming/groundPanorama'),
+        name: 'ground-panorama',
+        meta: {
+          title: '地面全景'
+        }
+      },
+      {
+        path: 'creategroundPanorama',
+        component: () => import('@/views/panoramicRoaming/groundPanorama/create'),
+        name: 'add-panorama',
+        meta: {
+          title: '编辑地面全景'
+        },
+        hidden: true
+      }
     ]
   },
   {
-    path:'/map-correction',
-    redirect:'/map-correction/correction',
-    component:Layout,
-    alwaysShow:true,
+    path: '/map-correction',
+    redirect: '/map-correction/correction',
+    component: Layout,
+    alwaysShow: true,
     name: 'map-correction',
     meta: {
       title: 'map-correction',
-      icon: 'write'
+      icon: 'correct'
     },
-    children:[
+    children: [
       {
-        path:'correction',
-        component:()=>import('@/views/correctionManager'),
-        name:'correction',
+        path: 'correction',
+        component: () => import('@/views/correctionManager'),
+        name: 'correction',
         meta: {
-          title:'correction'
+          title: 'correction'
         }
-      },
+      }
     ]
   },
   {
-    path:'/suggestions-manager',
-    redirect:'/suggestions-manager/suggestions',
-    component:Layout,
-    alwaysShow:true,
+    path: '/suggestions-manager',
+    redirect: '/suggestions-manager/suggestions',
+    component: Layout,
+    alwaysShow: true,
     name: 'suggestions-manager',
     meta: {
       title: 'suggestions-manager',
-      icon: 'sugg'
+      icon: 'wechat'
     },
-    children:[
+    children: [
       {
-        path:'suggestions',
-        component:()=>import('@/views/suggestionsManager'),
-        name:'suggestions',
+        path: 'suggestions',
+        component: () => import('@/views/suggestionsManager'),
+        name: 'suggestions',
         meta: {
-          title:'suggestions'
+          title: 'suggestions'
         }
-      },
+      }
     ]
   },
 

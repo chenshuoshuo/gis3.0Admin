@@ -1,7 +1,11 @@
 <template>
   <div class="menu-wrapper">
-    <h1 class="menu-title" :class="{'display-none':isCollapse}">地图门户管理</h1>
-    <h1 class="menu-title" :class="{'display-none':(!isCollapse)}">IPS</h1>
+    <h1 class="menu-title" :class="{'display-none':isCollapse}">
+      <img src="../../../../assets/images/logo.png" alt="" />
+    </h1>
+    <h1 class="menu-title" :class="{'display-none':(!isCollapse)}">
+      <img src="../../../../assets/images/min-logo.png" alt="" />
+    </h1>
     <template v-for="item in routes" v-if="!item.hidden&&item.children">
       <router-link v-if="hasOneShowingChildren(item.children) && !item.children[0].children&&!item.alwaysShow" :to="item.path+'/'+item.children[0].path"
         :key="item.children[0].name">
@@ -60,7 +64,7 @@ export default {
     },
     generateTitle
   },
-  computed:{
+  computed: {
     ...mapGetters([
       'sidebar'
     ]),
@@ -71,16 +75,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .menu-title{
     font-size: 16px;
-    font-family: '幼圆';
-    font-weight: bold;
-    text-align: center;
-    color: rgb(64, 159, 255);
-    line-height: 3em;
-    overflow: hidden;
-    white-space: nowrap;
+    img{
+      width: 100%;
+      height: 48px;
+    }
   }
   .display-none{
     display: none;

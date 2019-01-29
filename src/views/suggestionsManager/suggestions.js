@@ -1,35 +1,48 @@
+import { pageFeedback, delFeedback, bulkDeleteFeedback } from '@/api/feedBack'
 import waves from '@/directive/waves' // 水波纹指令
 export default {
+  inject: ['baseUrl'],
   directives: {
     waves
   },
   data() {
     return {
       multipleSelection: [],
-      list: [
-          {position:'第一教学楼',campus:'南校区',mapType:'二维',correctContent:'名字错误',username:'王晓华',workNumber:'20120120452'}
-        ],
+      list: [],
+      showPic: false,
+      pic: [],
       total: 0,
       listLoading: false,
       listQuery: {
         page: 1,
-        page_size: 10,
+        pageSize: 10
       },
-      formData:{
+      formData: {
       }
     }
-
   },
   methods: {
     getList() {
-      
+      this.listQuery.page--
+      pageFeedback(this.listQuery).then(res => {
+        this.listQuery.page++
+        if (res.data.code === 200) {
+          this.list = res.data.data.content
+          this.total = res.data.data.totalCount
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '列表获取失败'
+          })
+        }
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleClose(){
+    handleClose() {
       this.formData = {}
-      this.$refs.postForm.resetFields();
+      this.$refs.postForm.resetFields()
     },
     handlerSearch() {
       this.listQuery.page = 1
@@ -43,6 +56,10 @@ export default {
       this.listQuery.page = val
       this.getList()
     },
+    handleView(list) {
+      this.showPic = true
+      this.pic = list
+    },
     handleDeletMany() {
       if (this.multipleSelection.length > 0) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -50,7 +67,20 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          
+          bulkDeleteFeedback(this.multipleSelection.map(item => item.feedbackId)).then(res => {
+            if (res.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              this.getList()
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '删除失败'
+              })
+            }
+          })
         })
       } else {
         this.$alert('请选择要删除的数据', '消息提示', {
@@ -65,20 +95,19 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteUser(fileid).then(response => {
-          if(response.data){
-              this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-              })
-          }else{
+        delFeedback(fileid).then(res => {
+          if (res.data.code === 200) {
             this.$message({
-                type: 'warning',
-                message: '删除失败!'
+              type: 'success',
+              message: '删除成功'
+            })
+            this.getList()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '删除失败'
             })
           }
-        }).finally(()=>{
-          this.getList();
         })
       })
     }

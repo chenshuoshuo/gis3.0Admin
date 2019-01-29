@@ -1,5 +1,9 @@
 <template>
-  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs">
+  <el-table :data="formatData" :row-style="showRow" v-bind="$attrs" @selection-change="handleSelectionChange">
+    <el-table-column
+      type="selection"
+      width="55" align="center">
+    </el-table-column>
     <el-table-column v-if="columns.length===0" width="150">
       <template slot-scope="scope">
         <span v-for="space in scope.row._level" class="ms-tree-space" :key="space"></span>
@@ -10,14 +14,16 @@
         {{scope.$index}}
       </template>
     </el-table-column>
-    <el-table-column v-else v-for="(column, index) in columns" :key="column.value" :label="column.text" :width="column.width">
+    
+    <el-table-column v-else v-for="(column, index) in columns" :key="column.value" :label="column.text" :width="column.width" :align="column.position?column.position:'center'" :show-overflow-tooltip="index === 0">
       <template slot-scope="scope">
         <span v-if="index === 0" v-for="space in scope.row._level" class="ms-tree-space" :key="space"></span>
         <span class="tree-ctrl" v-if="iconShow(index,scope.row)" @click="toggleExpanded(scope.$index)">
           <i v-if="!scope.row._expanded" class="el-icon-plus"></i>
           <i v-else class="el-icon-minus"></i>
         </span>
-        {{scope.row[column.value]}}
+        <img v-if="column.type === 'icon'" :src="scope.row[column.value]?baseUrl+scope.row[column.value]:''" alt="" style="width:16px;">
+        <span v-else>{{scope.row[column.value]}}</span>
       </template>
     </el-table-column>
     <slot></slot>
@@ -32,6 +38,7 @@
 import treeToArray from './eval'
 export default {
   name: 'treeTable',
+  inject: ['baseUrl'],
   props: {
     data: {
       type: [Array, Object],
@@ -63,6 +70,9 @@ export default {
     }
   },
   methods: {
+    handleSelectionChange(val) {
+      this.$emit('change-selection', val)
+    },
     showRow: function(row) {
       const show = (row.row.parent ? (row.row.parent._expanded && row.row.parent._show) : true)
       row.row._show = show
@@ -75,7 +85,7 @@ export default {
     },
     // 图标显示
     iconShow(index, record) {
-      return (index === 0 && record.children && record.children.length > 0)
+      return (index === 0 && record.childrenMapPointTypeList && record.childrenMapPointTypeList.length > 0)
     }
   }
 }

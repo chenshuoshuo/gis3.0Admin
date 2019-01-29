@@ -3,47 +3,53 @@
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
                 <el-form-item :label="$t('form.roomCategoryName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.categoryName">
+                    <el-input class="filter-item" v-model="listQuery.typeName">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
                 </el-button>
                 <el-button class="filter-item" style="margin-left: 10px;" type="danger"  @click="handleDeletMany" icon="el-icon-delete" >{{$t('button.delete')}}
                 </el-button>
+                <!-- <el-button style="margin-left: 10px;" v-waves type="temp"  @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
+                <el-button type="import" v-waves @click="handleImport" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button> -->
+                <el-button type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
+                <!-- <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" >地图刷新</el-button> -->
             </el-form>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
+        <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit
                 highlight-current-row
                 style="width: 100%" @selection-change="handleSelectionChange">
             <el-table-column
                 type="selection"
-                width="55">
+                width="55" align="center">
             </el-table-column>
             <el-table-column width="100" :label="$t('table.number')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.number}}</span>
+                <span>{{scope.row.typeCode}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.roomCategoryName')">
                 <template slot-scope="scope">
-                <span>{{scope.row.roomCategoryName}}</span>
+                <span>{{scope.row.typeName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.click')">
                 <template slot-scope="scope">
-                <span>{{scope.row.click}}</span>
+                    <span v-if="scope.row.click"><i class="el-icon-ips-gou1"></i></span>
+                    <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.search')">
                 <template slot-scope="scope">
-                <span>{{scope.row.search}}</span>
+                    <span v-if="scope.row.search"><i class="el-icon-ips-gou1"></i></span>
+                    <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.configField')}}</el-button>
-                    <el-button type="success" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.edit')}}</el-button>
-                    <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.id)">{{$t('button.delete')}}</el-button>
+                    <el-button type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
+                    <el-button type="success" size="mini" @click="handleEdit(scope.row.typeCode)" >{{$t('button.edit')}}</el-button>
+                    <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.typeCode)">{{$t('button.delete')}}</el-button>
                 </template>
             </el-table-column>
           </el-table>
@@ -56,29 +62,25 @@
           <el-dialog
             :title="$t('button.'+state)"
             width="550px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" label-position="right" label-width="110px" class="post-form">
-              <el-form-item :label="$t('form.roomCategoryName')+':'" prop="roomCategoryName" class="required">
-                  <el-input v-model="formData.roomCategoryName" ></el-input>
-              </el-form-item>
-              <el-form-item :label="$t('form.number')+':'" class="required">
-                  <el-input v-model="formData.number"></el-input>
-              </el-form-item>
-              <div class="radio">
-                <el-form-item :label="$t('form.click')+':'" class="required">
-                    <el-radio v-model="formData.click" label="1">是</el-radio>
-                    <el-radio v-model="formData.click" label="2">否</el-radio>
+            <el-form :model="formData" ref="postForm" status-icon :show-message="false" label-position="right" label-width="120px" class="post-form">
+                <el-form-item :label="$t('form.roomCategoryName')+':'" prop="typeName" required>
+                    <el-input v-model="formData.typeName" ></el-input>
                 </el-form-item>
-                <el-form-item :label="$t('form.search')+':'" class="required">
-                    <el-radio v-model="formData.search" label="1">是</el-radio>
-                    <el-radio v-model="formData.search" label="2">否</el-radio>
+                <el-form-item :label="$t('form.click')+':'" required>
+                    <el-radio v-model="formData.click" :label="true">是</el-radio>
+                    <el-radio v-model="formData.click" :label="false">否</el-radio>
                 </el-form-item>
-              </div>
+                <el-form-item :label="$t('form.search')+':'" required>
+                    <el-radio v-model="formData.search" :label="true">是</el-radio>
+                    <el-radio v-model="formData.search" :label="false">否</el-radio>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>
                 <el-button type="primary" @click="handleSubmit">{{$t('button.submit')}}</el-button>
             </div>
         </el-dialog>
+        <configFiled ref="config" v-model="fields" @http-request="handleConfigSub" @del-column="handleDelColumn" />
     </div>
 </template>
 
@@ -86,9 +88,6 @@
 <style lang='scss'>
     .attr-room{
         padding: 20px;
-        .el-dialog__body{
-            padding-bottom: 0;
-        }
         .fixed-width .el-button--mini{
             display: inline-block;
             width: auto;

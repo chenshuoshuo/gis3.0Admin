@@ -1,48 +1,84 @@
 import waves from '@/directive/waves' // 水波纹指令
+import {
+  addRoam,
+  updateRoam,
+  delRoam,
+  infoRoam,
+  pageRoam
+} from '@/api/roam'
+import { campusList } from '@/api/campus'
 export default {
   directives: {
     waves
   },
   data() {
     return {
-      picUrl:'',
-      searchIconUrl:'',
-      state:'',
-      showForm:false,
+      state: '',
+      showForm: false,
       multipleSelection: [],
-      list: null,
+      list: [],
       total: 0,
+      campus: [],
       listLoading: false,
       listQuery: {
         page: 1,
-        page_size: 10,
+        pageSize: 10,
+        roamType: 1
       },
-      showReviewer: false,
-      formData:{
+      formData: {
+        roamType: 1
       }
     }
-
   },
   methods: {
     getList() {
-      
+      this.listLoading = true
+      this.listQuery.page--
+      pageRoam(this.listQuery).then(res => {
+        if (res.data.code === 200) {
+          this.list = res.data.data.content
+          this.total = res.data.data.totalCount
+        } else {
+          this.$message({
+            type: 'error',
+            message: '列表获取失败'
+          })
+        }
+      }).finally(() => {
+        this.listLoading = false
+        this.listQuery.page++
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
-    handleAdd(){
+    getCampus() {
+      campusList().then(res => {
+        if (res.data.code === 200) {
+          this.campus = res.data.data
+        }
+      })
+    },
+    handleAdd() {
       this.state = 'add'
       this.showForm = true
     },
-    handleClose(){
-      this.formData = {email:''}
-      this.$refs.postForm.resetFields();
+    handleClose() {
+      this.formData = { roamType: 1 }
+      this.$refs.postForm.resetFields()
     },
-    handleEdit(id){
+    handleEdit(id) {
       this.state = 'edit'
-      getUser(id).then(res=>{
-        this.formData = res.data;
-        this.showForm = true;
+      infoRoam(id).then(res => {
+        if (res.data.code === 200) {
+          this.formData = res.data.data
+          this.showForm = true
+        } else {
+          this.$message({
+            type: 'error',
+            message: '航拍信息获取失败'
+          })
+        }
       })
     },
     handlerSearch() {
@@ -64,7 +100,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          
+
         })
       } else {
         this.$alert('请选择要删除的数据', '消息提示', {
@@ -73,38 +109,43 @@ export default {
         })
       }
     },
-    handleSubmit(){
-      if(this.state==='add'){
-        createUser(this.formData).then(res=>{
-          if(res.data.code==0){
-              this.$message({
-                  type:"success",
-                  message:"添加成功!"
-              })
-              this.showForm = false;
-              this.getList();
-          }else{
-              this.$message({
-                  type: 'warning',
-                  message: '添加失败!'
-              })
+    handleSubmit() {
+      this.isSub = true
+      if (this.state === 'add') {
+        addRoam(this.formData).then(res => {
+          if (res.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '添加成功'
+            })
+            this.getList()
+            this.showForm = false
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '添加失败'
+            })
           }
+        }).finally(() => {
+          this.isSub = false
         })
-      }else if(this.state === 'edit'){
-        delete this.formData.password
-        updateUser(this.formData.id,this.formData).then(res=>{
-          if(res.data){
-              this.$message({
-                  type:"success",
-                  message:"更新成功!"
-              })
-              this.showForm = false;
-              this.getList();
-          }else{
-              this.$message({
-                  type: 'warning',
-                  message: '更新失败!'
-              })
+      } else if (this.state === 'edit') {
+        delete this.formData.lngLat
+        updateRoam(this.formData.roamId, this.formData).then(res => {
+          if (res.data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '更新成功'
+            })
+            this.getList()
+            this.showForm = false
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '更新失败'
+            }).finally(() => {
+              this.isSub = false
+            })
           }
         })
       }
@@ -115,26 +156,26 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteUser(fileid).then(response => {
-          if(response.data){
-              this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-              })
-          }else{
+        delRoam(fileid).then(res => {
+          if (res.data.code === 200) {
             this.$message({
-                type: 'warning',
-                message: '删除失败!'
+              type: 'success',
+              message: '删除成功'
+            })
+            this.getList()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '删除失败'
             })
           }
-        }).finally(()=>{
-          this.getList();
         })
       })
     }
 
   },
-  mounted() {
+  beforeMount() {
     this.getList()
+    this.getCampus()
   }
 }

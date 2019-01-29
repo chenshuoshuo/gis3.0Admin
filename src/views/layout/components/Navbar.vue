@@ -9,11 +9,8 @@
       <el-tooltip effect="dark" :content="$t('navbar.screenfull')" placement="bottom">
         <screenfull class="screenfull right-menu-item"></screenfull>
       </el-tooltip>
-
-      <lang-select class="international right-menu-item"></lang-select>
-
-      <el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">
-        <theme-picker class="theme-switch right-menu-item"></theme-picker>
+      <el-tooltip effect="dark" content="地图同步" placement="bottom">
+        <el-button type="primary" class="theme-switch right-menu-item" size="small" :loading="mapSyn" @click="handleClick">GIS</el-button>
       </el-tooltip>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -38,6 +35,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+import { mapSynchronize } from '@/api/map'
 
 export default {
   components: {
@@ -50,15 +48,35 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
+      'name'
     ])
   },
-  data(){
+  data() {
     return {
-      avatar:"https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"
+      mapSyn: false,
+      avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
     }
   },
   methods: {
+    handleClick() {
+      this.mapSyn = true
+      mapSynchronize().then(res => {
+        this.mapSyn = false
+        if (res.data.code === 0) {
+          this.$notify({
+            title: '成功',
+            message: '地图数据同步成功',
+            type: 'success'
+          })
+        } else {
+          this.$notify({
+            title: '失败',
+            message: '地图数据同步失败',
+            type: 'error'
+          })
+        }
+      })
+    },
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
@@ -81,6 +99,9 @@ export default {
     height: 50px;
     float: left;
     padding: 0 10px;
+  }
+  .el-button--small{
+    padding: 6px 4px;
   }
   .breadcrumb-container{
     float: left;

@@ -5,30 +5,32 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  * @param roles
  * @param route
  */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.indexOf(role) >= 0)
-  } else {
-    return true
-  }
+function hasPermission(route, roles) {
+  var flag = false
+  roles.forEach(element => {
+    if (element.content === route.name) {
+      flag = true
+    }
+  })
+  return flag
 }
 
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表
- * @param asyncRouterMap
+ * @param routes asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(asyncRouterMap, roles) {
-  const accessedRouters = asyncRouterMap.filter(route => {
-    if (hasPermission(roles, route)) {
-      if (route.children && route.children.length) {
+function filterAsyncRouter(routes, roles) {
+  const res = []
+  routes.forEach(route => {
+    if (hasPermission(route, roles)) {
+      if (route.children) {
         route.children = filterAsyncRouter(route.children, roles)
       }
-      return true
+      res.push(route)
     }
-    return false
   })
-  return accessedRouters
+  return res
 }
 
 const permission = {
@@ -43,9 +45,15 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes({ commit }) {
+    GenerateRoutes({ commit }, roles) {
       return new Promise(resolve => {
-        commit('SET_ROUTERS', asyncRouterMap)
+        const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        accessedRouters.push({
+          path: '',
+          redirect: accessedRouters[0].path,
+          hidden: true
+        })
+        commit('SET_ROUTERS', accessedRouters)
         resolve()
       })
     }

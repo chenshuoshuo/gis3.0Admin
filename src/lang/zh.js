@@ -4,14 +4,14 @@ import table from './modules/table'
 import form from './modules/form'
 
 export default {
-  
-  route:route.zh,
 
-  button:button.zh,
+  route: route.zh,
 
-  table:table.zh,
+  button: button.zh,
 
-  form:form.zh,
+  table: table.zh,
+
+  form: form.zh,
 
   navbar: {
     logOut: '退出登录',

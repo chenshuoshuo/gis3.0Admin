@@ -269,3 +269,14 @@ export function deepClone(source) {
 export function uniqueArr(arr) {
   return Array.from(new Set(arr))
 }
+// 解析url
+export function parseUrlQuery() {
+  let query = window.location.search || null
+  if (!query) return null
+  const params = {}
+  query = query.replace('?', '')
+  query.split('&').forEach(element => {
+    params[element.split('=')[0]] = element.split('=')[1]
+  })
+  return params
+}

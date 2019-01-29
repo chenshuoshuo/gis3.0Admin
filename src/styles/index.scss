@@ -142,6 +142,7 @@ code {
 
 .pagination-container {
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .text-center {
@@ -198,4 +199,37 @@ code {
 
 .pagination-container{
   float: right;
+}
+.el-button--temp{
+  background-color: #4274b9;
+  color: #fff;
+  border: #4274b9;
+}
+.el-button--temp:focus,.el-button--temp:hover{
+  opacity: .9;
+  color: #fff;
+  background-color: #4274b9;
+  border: #4274b9;
+}
+.el-button--import{
+  background-color: #42b983;
+  color: #fff;
+  border: #42b983;
+}
+.el-button--import:focus,.el-button--import:hover{
+  opacity: .9;
+  color: #fff;
+  background-color: #42b983;
+  border: #42b983;
+}
+.el-button--export{
+  background-color: #429cb9;
+  color: #fff;
+  border: #429cb9;
+}
+.el-button--export:focus,.el-button--export:hover{
+  opacity: .9;
+  color: #fff;
+  background-color: #429cb9;
+  border: #429cb9;
 }

@@ -1,13 +1,13 @@
 <template>
-    <div class="app-container attr-organization">
+    <div class="app-container label-category">
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
                 <el-form-item :label="$t('form.categoryName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.categoryName">
+                    <el-input class="filter-item" v-model="listQuery.typeName">
                     </el-input>
                 </el-form-item>
-                <el-form-item :label="$t('form.campus')+':'">
-                    <el-input class="filter-item" v-model="listQuery.campus">
+                <el-form-item label="父类别:">
+                    <el-input class="filter-item" v-model="listQuery.parentTypeName">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
@@ -16,146 +16,133 @@
                 </el-button>
                 <el-button class="filter-item" style="margin-left: 10px;" type="danger"  @click="handleDeletMany" icon="el-icon-delete" >{{$t('button.delete')}}
                 </el-button>
+                <el-button style="margin-left: 10px;" v-waves type="temp"  @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
+                <!-- <el-button type="import" v-waves @click="handleImport" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button> -->
+                <el-button type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
+                <!-- <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" >地图刷新</el-button> -->
             </el-form>
         </div>
-        <el-table :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit
-                highlight-current-row
-                style="width: 100%" @selection-change="handleSelectionChange">
-            <el-table-column
-                type="selection"
-                width="55">
-            </el-table-column>
-            <el-table-column width="100" align="center" :label="$t('table.number')">
-                <template slot-scope="scope">
-                    <span>{{scope.row.number}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column width="150" align="center" :label="$t('table.icon')">
-                <template slot-scope="scope">
-                    <span><img :src="scope.row.icon" alt=""></span>
-                </template>
-            </el-table-column>
-            <el-table-column width="200" :label="$t('table.parentCategory')" align="center">
-                <template slot-scope="scope">
-                    <span>{{scope.row.parentCategory}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('table.categoryName')">
-                <template slot-scope="scope">
-                    <span>{{scope.row.categoryName}}</span>
-                </template>
-            </el-table-column>
-            <el-table-column width="100" align="center" :label="$t('table.mapType')">
-                <template slot-scope="scope">
-                    <span>{{scope.row.mapType}}</span>
-                </template>
-            </el-table-column>
+        <tree-table :data="list" :columns="columns" border :evalFunc="func" @change-selection="handleSelectionChange" v-loading="listLoading" element-loading-text="加载中...">
             <el-table-column align="center" :label="$t('table.click')">
                 <template slot-scope="scope">
-                    <span><img :src="scope.row.click" alt=""></span>
+                    <span v-if="scope.row.click"><i class="el-icon-ips-gou1"></i></span>
+                    <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.display')">
                 <template slot-scope="scope">
-                    <span><img :src="scope.row.display" alt=""></span>
+                    <span v-if="scope.row.display"><i class="el-icon-ips-gou1"></i></span>
+                    <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.search')">
                 <template slot-scope="scope">
-                    <span><img :src="scope.row.search" alt=""></span>
+                    <span v-if="scope.row.search"><i class="el-icon-ips-gou1"></i></span>
+                    <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
+            <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width" width="260px">
                 <template slot-scope="scope">
-                    <el-button type="success" size="mini" @click="handleEdit(scope.row.id)" >{{$t('button.edit')}}</el-button>
-                    <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.id)">{{$t('button.delete')}}</el-button>
+                    <el-button type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
+                    <el-button type="success" size="mini" @click="handleEdit(scope.row.typeCode)" >{{$t('button.edit')}}</el-button>
+                    <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.typeCode)">{{$t('button.delete')}}</el-button>
                 </template>
             </el-table-column>
-          </el-table>
-          <div class="pagination-container">
+        </tree-table>
+        <div class="pagination-container">
             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
                             :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit"
                             layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
-          </div>
-          <el-dialog
-            :title="$t('button.'+state)"
-            width="800px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form">
-                <el-form-item :label="$t('form.icon')+':'" prop="icon" class="required">
-                  <el-upload
+        </div>
+        <el-dialog
+        :title="$t('button.'+state)"
+        width="800px" :visible.sync="showForm" @close="handleClose">
+            <el-form :model="formData" ref="postForm" status-icon :show-message="false" label-position="right" label-width="100px" class="post-form">
+                <el-form-item label="二维图标:" prop="vectorIcon">
+                    <el-upload
                     class="avatar-uploader"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :action="baseUrl+'/mapPointType/uploadImg'"
+                    :on-success="handleVectorIcon"
                     :show-file-list="false">
-                    <img v-if="picUrl" :src="picUrl" class="avatar">
+                    <img v-if="vectorIcon" :src="vectorIcon" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div slot="tip" class="tip">图片尺寸:66x66px</div>
                 </el-upload>
-              </el-form-item>
-              <el-form-item :label="$t('form.categoryName')+':'" prop="categoryName" class="required">
-                  <el-select v-model="formData.categoryName" placeholder="">
+                </el-form-item>
+                <el-form-item label="三维图标:" prop="rasterIcon">
+                    <el-upload
+                    class="avatar-uploader"
+                    :action="baseUrl+'/mapPointType/uploadImg'"
+                    :on-success="handleRasterIcon"
+                    :show-file-list="false">
+                    <img v-if="rasterIcon" :src="rasterIcon" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div slot="tip" class="tip">图片尺寸:66x66px</div>
+                </el-upload>
+                </el-form-item>
+                <el-form-item :label="$t('form.categoryName')+':'" prop="typeName" required>
+                    <el-input type="text" v-model="formData.typeName"></el-input>
+                </el-form-item>
+                
+                <el-form-item :label="$t('form.parentCategory')+':'">
+                    <el-select v-model="formData.parentCode" placeholder="">
                     <el-option
-                    v-for="item in options.categoryNames"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in parentCategorys"
+                    :key="item.typeCode"
+                    :label="item.typeName"
+                    :value="item.typeCode">
                     </el-option>
-                  </el-select>
-              </el-form-item>
-              <el-form-item :label="$t('form.mapType')+':'" prop="mapType">
-                  <el-radio v-model="formData.mapType" label="1">二维</el-radio>
-                  <el-radio v-model="formData.mapType" label="2">三维</el-radio>
-              </el-form-item>
-              
-              <el-form-item :label="$t('form.parentCategory')+':'">
-                  <el-select v-model="formData.parentCategory" placeholder="">
-                    <el-option
-                    v-for="item in options.parentCategorys"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                  </el-select>
-              </el-form-item>
-              <el-form-item :label="$t('form.displayLevel')+':'" class="required">
-                  <el-input v-model="formData.displayLevel"></el-input>
-              </el-form-item>
-              <el-form-item :label="$t('form.layerDeep')+':'" class="required">
-                  <el-input v-model="formData.layerDeep"></el-input>
-              </el-form-item>
-              <div class="radio">
-                <el-form-item :label="$t('form.click')+':'" class="required">
-                    <el-radio v-model="formData.click" label="1">是</el-radio>
-                    <el-radio v-model="formData.click" label="2">否</el-radio>
+                    </el-select>
                 </el-form-item>
-                <el-form-item :label="$t('form.display')+':'" class="required">
-                    <el-radio v-model="formData.display" label="1">是</el-radio>
-                    <el-radio v-model="formData.display" label="2">否</el-radio>
+                <el-form-item :label="$t('form.displayLevel')+':'" prop="displayLevel" required>
+                    <el-input v-model="formData.displayLevel"></el-input>
                 </el-form-item>
-                <el-form-item :label="$t('form.search')+':'" class="required">
-                    <el-radio v-model="formData.search" label="1">是</el-radio>
-                    <el-radio v-model="formData.search" label="2">否</el-radio>
+                <div class="radio">
+                <el-form-item :label="$t('form.click')+':'" prop="click" required>
+                    <el-radio v-model="formData.click" :label="true">是</el-radio>
+                    <el-radio v-model="formData.click" :label="false">否</el-radio>
                 </el-form-item>
-              </div>
-              <el-form-item :label="$t('form.description')+':'">
-                  <el-input v-model="formData.description"></el-input>
-              </el-form-item>
-              <el-form-item :label="$t('form.sort')+':'" class="required">
-                  <el-input v-model="formData.sort"></el-input>
-              </el-form-item>
+                <el-form-item :label="$t('form.display')+':'" prop="display" required>
+                    <el-radio v-model="formData.display" :label="true">是</el-radio>
+                    <el-radio v-model="formData.display" :label="false">否</el-radio>
+                </el-form-item>
+                <el-form-item :label="$t('form.search')+':'" prop="search" required>
+                    <el-radio v-model="formData.search" :label="true">是</el-radio>
+                    <el-radio v-model="formData.search" :label="false">否</el-radio>
+                </el-form-item>
+                </div>
+                <el-form-item :label="$t('form.description')+':'" prop="description">
+                    <el-input v-model="formData.description"></el-input>
+                </el-form-item>
+                <el-form-item :label="$t('form.sort')+':'" prop="orderId">
+                    <el-input v-model.number="formData.orderId"></el-input>
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>
                 <el-button type="primary" @click="handleSubmit">{{$t('button.submit')}}</el-button>
             </div>
         </el-dialog>
+        <configFiled ref="config" v-model="fields" @http-request="handleConfigSub" @del-column="handleDelColumn" />
     </div>
 </template>
 
 <script src="./labelCategory.js"></script>
 
 <style lang='scss'>
-    .attr-organization{
+    .label-category{
         padding: 20px;
+        .tip{
+            position: absolute;
+            top: 40px;
+            left: 80px;
+            font-size: 14px;
+            color: #999;
+        }
+        .fixed-width .el-button--mini{
+            width: auto;
+        }
         .avatar-uploader{
             display: inline-block;
         }
@@ -183,8 +170,7 @@
             display: block;
         }
         .el-dialog__body{
-            padding-top: 0;
-            padding-bottom: 0;
+            padding-top: 20px;
         }
         .el-form-item {
             margin-bottom: 14px;

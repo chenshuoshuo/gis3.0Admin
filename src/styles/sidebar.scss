@@ -86,6 +86,7 @@
   .sidebar-container .el-submenu .el-menu-item {
     min-width: 180px !important;
     background-color: $subMenuBg !important;
+    padding-left: 54px !important;
     &:hover {
       background-color: $menuHover !important;
     }
