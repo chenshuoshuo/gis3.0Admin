@@ -179,6 +179,7 @@ export default {
       this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
     },
     initMap() {
+      console.log(1);
       var marker = null
       this.vectorMap.on('load', () => {
         this.vectorMap.on('zoom', () => {
@@ -343,7 +344,6 @@ export default {
     } else {
       this.getCampusList().then(() => {
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
-        this.initMap()
       })
     }
   },
