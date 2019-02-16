@@ -12,10 +12,10 @@
                         <el-form-item label="校区:" prop="campusCode" class="required" :show-message="false">
                             <el-select v-model="campusId"  placeholder="请选择校区">
                                 <el-option
-                                    v-for="item in campus"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
+                                v-for="item in campus"
+                                :key="item.groupId"
+                                :label="item.name"
+                                :value="item.zones[item.zones.length-1].mapZoneByZoneId.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -56,7 +56,10 @@
                             <el-input v-if="item.columnType===0" v-model="item.extendsValue" type="text"></el-input>
                             <el-input v-if="item.columnType===2" v-model="item.extendsValue" type="textarea" :rows="3" ></el-input>
                         </el-form-item>
-                        <el-form-item label="排序:" prop="orderId">
+                        <el-form-item label="官网地址:" prop="officialWebsite">
+                            <el-input v-model="postForm.officialWebsite"></el-input>
+                        </el-form-item>
+                        <el-form-item label="排序:" orderIdprop="orderId">
                             <el-input v-model="postForm.orderId"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:" prop="memo">

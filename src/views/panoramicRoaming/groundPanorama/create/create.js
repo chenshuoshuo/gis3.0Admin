@@ -151,17 +151,25 @@ export default {
   },
   mounted() {
     if (this.state === 'add') {
-      campusList({ only_vector: true }).then(res => {
-        if (res.data.code === 200) {
-          this.campus = res.data.data
-          this.campusId = this.campus[0].id
+      campusList().then(res => {
+        if (res.data.code === 0) {
+          let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
+          this.campus = arr.map(item=>{
+            item.zones = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+            return item
+          })
+          this.campusId = this.campus[0].zones[this.campus[0].zones.length-1].mapZoneByZoneId.id
           this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
         }
       })
     } else {
-      campusList({ only_vector: true }).then(res => {
-        if (res.data.code === 200) {
-          this.campus = res.data.data
+      campusList().then(res => {
+        if (res.data.code === 0) {
+          let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
+          this.campus = arr.map(item=>{
+            item.zones = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+            return item
+          })
         }
       })
       infoRoam(this.postForm.roamId).then(res => {

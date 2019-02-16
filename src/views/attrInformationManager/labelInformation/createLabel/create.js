@@ -13,6 +13,7 @@ export default {
     return {
       picUrl: '',
       fileList: [],
+      has3D:false,
       loaddingMap: true,
       isOver: false,
       isFisrt: true,
@@ -261,11 +262,16 @@ export default {
     },
     getCampusList() {
       return new Promise((resolve, reject) => {
-        campusList({ only_vector: true }).then(res => {
-          if (res.data.code === 200) {
-            this.campus = res.data.data
+        campusList().then(res => {
+          if (res.data.code === 0) {
+            let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
+            this.campus = arr.map(item=>{
+              item.map2D = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+              item.map3D = item.zones.filter(element=>!element.mapZoneByZoneId.is2D)
+              return item
+            })
             if (this.state === 'add') {
-              this.campusId = this.campus[0].id
+              this.campusId = this.campus[0].map2D[this.campus[0].map2D.length-1].mapZoneByZoneId.id
               this.postForm.campusCode = this.campusId
             }
             resolve()
@@ -280,8 +286,15 @@ export default {
     openRaster() {
       this.isOpenRaster = true
       setTimeout(() => {
-        const res = this.campus.filter(item => item.id === this.campusId)
-        this.rasterMap = new window.creeper.VectorMap('rasterMap', res[0].rasterId, window.g.MAP_URL)
+        var res = null
+        this.campus.forEach(item => {
+          item.map2D.forEach(element=>{
+            if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
+              res = item.map3D[item.map3D.length-1]
+            }
+          })
+        })
+        this.rasterMap = new window.creeper.VectorMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
         this.rasterMap.on('load', () => {
           var marker = null
           this.rasterMap.on('click', (e) => {
@@ -317,6 +330,16 @@ export default {
   },
   watch: {
     campusId(cur) {
+      this.has3D = false
+      console.log(this.campusId);
+      this.campus.forEach(item => {
+        item.map2D.forEach(element=>{
+          if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
+            this.has3D = true
+          }
+        })
+      })
+      console.log(this.has3D);
       if (this.state === 'update' && this.isFisrt) {
         this.isFisrt = false
         this.getPointTypeList()
@@ -326,6 +349,8 @@ export default {
         this.loaddingMap = true
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
         this.inintMap()
+        this.postForm.lngLatString = ''
+        this.postForm.rasterLngLatString = ''
       }
       this.postForm.campusCode = cur
     },
@@ -365,26 +390,27 @@ export default {
   },
   mounted() {
     if (this.state === 'update') {
-      this.getCampusList()
-      getPointInfo(this.postForm.PointCode).then(res => {
-        if (res.data.code === 200) {
-          this.postForm = res.data.data
-          res.data.data.mapPointImgList.forEach(element => {
-            this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })
-          })
-          this.campusId = res.data.data.campusCode
-          this.typeArr = [res.data.data.mapPointType.parentCode, res.data.data.mapPointType.typeCode]
-          this.floor.currentLevel = this.postForm.leaf === null ? 0 : this.postForm.leaf
-          this.postForm.leaf = !!this.postForm.leaf
-          this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
-          this.inintMap()
-        } else {
-          this.$message({
-            type: 'warning',
-            message: '应用信息获取失败'
-          })
-          this.$router.back(-1)
-        }
+      this.getCampusList().then(res=>{
+        getPointInfo(this.postForm.PointCode).then(res => {
+          if (res.data.code === 200) {
+            this.postForm = res.data.data
+            res.data.data.mapPointImgList.forEach(element => {
+              this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })
+            })
+            this.campusId = res.data.data.campusCode
+            this.typeArr = [res.data.data.mapPointType.parentCode, res.data.data.mapPointType.typeCode]
+            this.floor.currentLevel = this.postForm.leaf === null ? 0 : this.postForm.leaf
+            this.postForm.leaf = !!this.postForm.leaf
+            this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
+            this.inintMap()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '应用信息获取失败'
+            })
+            this.$router.back(-1)
+          }
+        })
       })
     } else {
       this.getCampusList().then(() => {

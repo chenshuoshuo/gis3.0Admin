@@ -10,9 +10,9 @@
                     <el-select v-model="listQuery.campusCode" clearable placeholder="请选择">
                         <el-option
                         v-for="item in campus"
-                        :key="item.id"
+                        :key="item.groupId"
                         :label="item.name"
-                        :value="item.id">
+                        :value="item.zones[item.zones.length-1].mapZoneByZoneId.id">
                         </el-option>
                     </el-select>
               </el-form-item>

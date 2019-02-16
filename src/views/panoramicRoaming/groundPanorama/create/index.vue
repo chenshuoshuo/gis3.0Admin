@@ -15,10 +15,10 @@
                         <el-form-item label="校区:" prop="campusId" class="required">
                             <el-select v-model="campusId"  placeholder="请选择校区">
                                 <el-option
-                                    v-for="item in campus"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
+                                v-for="item in campus"
+                                :key="item.groupId"
+                                :label="item.name"
+                                :value="item.zones[item.zones.length-1].mapZoneByZoneId.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>

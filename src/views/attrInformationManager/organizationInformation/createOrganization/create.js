@@ -31,6 +31,7 @@ export default {
         location: '',
         campusCode: null,
         typeCode: '',
+        officialWebsite:'http://',
         mapOrganizationExtendsList: [],
         mapOrganizationImgList: [],
         extendsFields: []
@@ -248,6 +249,7 @@ export default {
         brief: '',
         location: '',
         typeCode: '',
+        officialWebsite:'http://',
         mapOrganizationExtendsList: [],
         mapOrganizationImgList: []
       }
@@ -256,10 +258,14 @@ export default {
     },
     getCampusList() {
       return new Promise((resolve, reject) => {
-        campusList({ only_vector: true }).then(res => {
-          if (res.data.code === 200) {
-            this.campus = res.data.data
-            if (this.state === 'add') this.campusId = this.campus[0].id
+        campusList().then(res => {
+          if (res.data.code === 0) {
+            let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
+            this.campus = arr.map(item=>{
+              item.zones = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+              return item
+            })
+            if (this.state === 'add') this.campusId = this.campus[0].zones[this.campus[0].zones.length-1].mapZoneByZoneId.id
             resolve()
           } else {
             reject()

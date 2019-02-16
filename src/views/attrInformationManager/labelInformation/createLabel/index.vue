@@ -13,9 +13,9 @@
                             <el-select v-model="campusId" placeholder="请选择校区">
                                 <el-option
                                 v-for="item in campus"
-                                :key="item.id"
+                                :key="item.groupId"
                                 :label="item.name"
-                                :value="item.id">
+                                :value="item.map2D[item.map2D.length-1].mapZoneByZoneId.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
@@ -53,7 +53,7 @@
                         <el-form-item label="二维位置绑定:" prop="location" class="required" required :show-message="false">
                             <el-input v-model="postForm.location" disabled placeholder="请在地图上选择"></el-input>
                         </el-form-item>
-                        <el-form-item label="三维位置绑定:" prop="rasterLngLatString" class="required" required :show-message="false">
+                        <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" required :show-message="false">
                             <span @click="openRaster">
                                 <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" disabled></el-input>
                             </span>
