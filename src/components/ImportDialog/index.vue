@@ -5,10 +5,15 @@
       :visible.sync="showUpload"
       width="300px">
       <div class="file-choice">
-        <el-input type="text" v-model="fileName" />
+        <el-form :show-message="false" ref="form" :model="form">
+          <el-form-item prop="fileName" required>
+            <el-input type="text" v-model="form.fileName" readonly/>
+          </el-form-item>
+        </el-form>
         <div class="upload-button">
           <el-upload
             action=""
+            ref="upload"
             :http-request="handleImport"
             accept=".xlsx"
             :limit="1"
@@ -18,24 +23,22 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="subFile">确认上传</el-button>
+        <el-button type="primary" @click="subFile" :loading="hasFile">确认上传</el-button>
       </span>
-    </el-dialog>
-    <el-dialog
-      title="导入进度"
-      :visible.sync="hasFile"
-      width="200px">
-      <el-progress :percentage="progressValue" color="#3cbfa5"></el-progress>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import axios from 'axios'
+  import { importExcel } from '@/api/import'
   export default {
     props: {
       uploadUrl: {
         type: String,
+        require: true
+      },
+      update:{
+        type: Function,
         require: true
       }
     },
@@ -45,7 +48,9 @@
         hasFile: false,
         showUpload: false,
         progressValue: 0,
-        fileName: ''
+        form:{
+          fileName: '',
+        }
       }
     },
     methods: {
@@ -54,7 +59,7 @@
       },
       handleImport(params) {
         this.file = params.file
-        this.fileName = this.file.name
+        this.form.fileName = this.file.name
       },
       createWebSocket() {
         const url = new URL(window.g.BASE_IPS)
@@ -84,33 +89,36 @@
         }
       },
       subFile() {
-        this.createWebSocket()
-        this.showUpload = false
-        this.hasFile = true
-        const form = new FormData()
-        form.append('file', this.file)
-        form.append('userId', window.cmips_userId)
-        axios.post(this.uploadUrl, form, {
-          onUploadProgress: progressEvent => {
-            var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
-            this.progress = complete
-          }
-        }).then(res => {
-          if (res.data.code === 0) {
-            this.$notify({
-              title: '成功',
-              message: '数据导入成功',
-              type: 'success'
-            })
-            this.file = null
-            this.hasFile = false
-          } else {
-            this.$notify.error({
-              title: '错误',
-              message: '数据导入失败'
+        this.$refs.form.validate(val=>{
+          if (val) {
+            this.hasFile = true
+            const form = new FormData()
+            form.append('file', this.file)
+            form.append('userId', window.cmips_userId)
+            importExcel(this.uploadUrl,form).then(res => {
+              if (res.data.code === 0) {
+                this.$notify({
+                  title: '成功',
+                  message: '数据导入成功',
+                  type: 'success'
+                })
+                this.file = null
+                this.hasFile = false
+                this.showUpload = false
+                this.form.fileName = ''
+                this.$refs.upload.clearFiles()
+                this.update()
+              } else {
+                this.$notify.error({
+                  title: '错误',
+                  message: '数据导入失败'
+                })
+                this.hasFile = false
+              }
             })
           }
         })
+        // this.createWebSocket()
       }
     }
   }

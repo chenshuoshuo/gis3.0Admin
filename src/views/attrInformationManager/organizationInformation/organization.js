@@ -8,10 +8,14 @@ import { campusList } from '@/api/campus'
 import { mapOrganizationDownloadTemplate } from '@/api/downloadTemplate'
 import { mapOrganizationDownload } from '@/api/download'
 import { listOrganizationType } from '@/api/typeManager'
+import importDialog from '@/components/ImportDialog'
 export default {
   inject: ['baseUrl'],
   directives: {
     waves
+  },
+  components: {
+    'import-dialog': importDialog
   },
   data() {
     return {

@@ -8,10 +8,14 @@ import { campusList } from '@/api/campus'
 import { mapPointDownloadTemplate } from '@/api/downloadTemplate'
 import { mapPointDownload } from '@/api/download'
 import { queryPonitParentList, listPointType } from '@/api/typeManager'
+import importDialog from '@/components/ImportDialog'
 export default {
   inject: ['baseUrl'],
   directives: {
     waves
+  },
+  components: {
+    'import-dialog': importDialog
   },
   data() {
     return {

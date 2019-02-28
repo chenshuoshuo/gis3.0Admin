@@ -1,6 +1,7 @@
 import waves from '@/directive/waves' // 水波纹指令
 import treeTable from '@/components/TreeTable'
 import treeToArray from './customEval'
+import { getToken } from '@/utils/auth'
 import {
   pagePointType,
   createPointType,
@@ -17,11 +18,13 @@ import { campusList } from '@/api/campus'
 import { mapPointTypeDownloadTemplate } from '@/api/downloadTemplate'
 import { mapPointTypeDownload } from '@/api/download'
 import configFiled from '../components/configFiled'
+import importDialog from '@/components/ImportDialog'
 export default {
   inject: ['baseUrl'],
   components: {
     configFiled,
-    treeTable
+    treeTable,
+    importDialog
   },
   directives: {
     waves
@@ -34,6 +37,7 @@ export default {
       fields: [],
       func: treeToArray,
       rasterIcon: '',
+      token:getToken(),
       vectorIcon: '',
       state: '',
       columns: [
@@ -145,6 +149,7 @@ export default {
           })
           this.getList()
           this.showForm = false
+          this.$refs.config.close()
         } else {
           this.$message({
             type: 'warning',
@@ -346,8 +351,8 @@ export default {
         }
       })
     },
-    handleImport() {
-
+    handleImportExecel() {
+      this.$refs.upload.openUpload();
     },
     handleExport() {
       this.isExport = true

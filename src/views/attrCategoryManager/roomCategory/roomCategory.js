@@ -104,6 +104,7 @@ export default {
           })
           this.getList()
           this.showForm = false
+          this.$refs.config.close()
         } else {
           this.$message({
             type: 'warning',

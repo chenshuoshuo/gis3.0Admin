@@ -33,6 +33,9 @@
                                 accept=".jpg,.png"
                                 :action="baseUrl
                                 +'/mapBuilding/uploadImg'"
+                                :headers="{
+                                    'Authorization':'Bearer ' + token
+                                }"
                                 :on-success="handleSuccess"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"

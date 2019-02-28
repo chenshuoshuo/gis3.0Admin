@@ -3,7 +3,7 @@ import { listOrganizationType, getMapOtExtendsDefine } from '@/api/typeManager'
 import { addOrganizationInfo, getOrganizationInfo, updateOrganizationInfo } from '@/api/infoManager'
 import { campusList } from '@/api/campus'
 import { Message } from 'element-ui'
-
+import { getToken } from '@/utils/auth'
 export default {
   inject: ['baseUrl'],
   components: {
@@ -17,6 +17,7 @@ export default {
       campusId: null,
       campus: [],
       id: null,
+      token:getToken(),
       state: '',
       fileList: [],
       floor: {
@@ -178,9 +179,9 @@ export default {
       this.postForm.lngLatString = `${e.lngLat.lng},${e.lngLat.lat}`
       this.postForm.codeIsBuilding = feature && feature.properties ? /building/.test(JSON.stringify(feature.properties)) : false
       this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
+      console.log(feature.properties);
     },
     initMap() {
-      console.log(1);
       var marker = null
       this.vectorMap.on('load', () => {
         this.vectorMap.on('zoom', () => {

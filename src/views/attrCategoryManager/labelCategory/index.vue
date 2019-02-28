@@ -17,7 +17,7 @@
                 <el-button class="filter-item" style="margin-left: 10px;" type="danger"  @click="handleDeletMany" icon="el-icon-delete" >{{$t('button.delete')}}
                 </el-button>
                 <el-button style="margin-left: 10px;" v-waves type="temp"  @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
-                <!-- <el-button type="import" v-waves @click="handleImport" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button> -->
+                <el-button type="import" v-waves @click="handleImportExecel" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button>
                 <el-button type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
                 <!-- <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" >地图刷新</el-button> -->
             </el-form>
@@ -63,6 +63,9 @@
                     <el-upload
                     class="avatar-uploader"
                     :action="baseUrl+'/mapPointType/uploadImg'"
+                    :headers="{
+                        'Authorization':'Bearer ' + token
+                    }"
                     :on-success="handleVectorIcon"
                     :show-file-list="false">
                     <img v-if="vectorIcon" :src="vectorIcon" class="avatar">
@@ -74,6 +77,9 @@
                     <el-upload
                     class="avatar-uploader"
                     :action="baseUrl+'/mapPointType/uploadImg'"
+                    :headers="{
+                        'Authorization':'Bearer ' + token
+                    }"
                     :on-success="handleRasterIcon"
                     :show-file-list="false">
                     <img v-if="rasterIcon" :src="rasterIcon" class="avatar">
@@ -125,6 +131,7 @@
             </div>
         </el-dialog>
         <configFiled ref="config" v-model="fields" @http-request="handleConfigSub" @del-column="handleDelColumn" />
+        <import-dialog uploadUrl="/mapPointType/upload" :update="getList" ref="upload"/>
     </div>
 </template>
 

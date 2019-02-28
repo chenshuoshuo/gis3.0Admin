@@ -10,10 +10,14 @@ import { mapBuildingDownloadTemplate } from '@/api/downloadTemplate'
 import { mapBuildingSynData } from '@/api/synData'
 import { listBuildingType } from '@/api/typeManager'
 import { campusList } from '@/api/campus'
+import importDialog from '@/components/ImportDialog'
 export default {
   inject: ['baseUrl'],
   directives: {
     waves
+  },
+  components: {
+    'import-dialog': importDialog
   },
   data() {
     return {

@@ -2,7 +2,7 @@ import LevelSelector from '@/components/LevelSelector'
 import { listOthersPolygonType, getMapOptExtendsDefine } from '@/api/typeManager'
 import { getOthersInfo, updateOthersInfo } from '@/api/infoManager'
 import { Message } from 'element-ui'
-
+import { getToken } from '@/utils/auth'
 export default {
   inject: ['baseUrl'],
   components: {
@@ -18,6 +18,7 @@ export default {
       id: null,
       state: '',
       loaddingMap: true,
+      token:getToken(),
       fileList: [],
       postForm: {
         brief: '',

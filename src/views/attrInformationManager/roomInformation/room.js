@@ -9,10 +9,14 @@ import { mapRoomDownloadTemplate } from '@/api/downloadTemplate'
 import { mapRoomDownload } from '@/api/download'
 import { mapRoomSynData } from '@/api/synData'
 import { listRoomType } from '@/api/typeManager'
+import importDialog from '@/components/ImportDialog'
 export default {
   inject: ['baseUrl'],
   directives: {
     waves
+  },
+  components: {
+    'import-dialog': importDialog
   },
   data() {
     return {

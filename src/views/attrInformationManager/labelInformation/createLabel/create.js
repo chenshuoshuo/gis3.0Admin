@@ -3,7 +3,7 @@ import { listPointType, getMapPtExtendsDefine } from '@/api/typeManager'
 import { addPointInfo, getPointInfo, updatePointInfo } from '@/api/infoManager'
 import { campusList } from '@/api/campus'
 import { Message } from 'element-ui'
-
+import { getToken } from '@/utils/auth'
 export default {
   inject: ['baseUrl'],
   components: {
@@ -23,6 +23,7 @@ export default {
       campus: [],
       state: '',
       rasterMap: null,
+      token:getToken(),
       typeArr: [],
       floor: {
         minLevel: 0,

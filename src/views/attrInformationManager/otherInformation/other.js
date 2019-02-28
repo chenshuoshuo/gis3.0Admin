@@ -9,10 +9,14 @@ import { mapOthersPolygonDownloadTemplate } from '@/api/downloadTemplate'
 import { mapOthersPolygonSynData } from '@/api/synData'
 import { mapOthersPolygonDownload } from '@/api/download'
 import { listOthersPolygonType } from '@/api/typeManager'
+import importDialog from '@/components/ImportDialog'
 export default {
   inject: ['baseUrl'],
   directives: {
     waves
+  },
+  components: {
+    'import-dialog': importDialog
   },
   data() {
     return {

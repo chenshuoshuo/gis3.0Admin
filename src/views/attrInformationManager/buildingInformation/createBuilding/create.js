@@ -2,7 +2,7 @@ import LevelSelector from '@/components/LevelSelector'
 import { listBuildingType, getMapBtExtendsDefine } from '@/api/typeManager'
 import { getBuildingInfo, updateBuildingInfo } from '@/api/infoManager'
 import { Message } from 'element-ui'
-
+import { getToken } from '@/utils/auth'
 export default {
   inject: ['baseUrl'],
   components: {
@@ -18,6 +18,7 @@ export default {
       campus: [],
       id: null,
       state: '',
+      token:getToken(),
       fileList: [],
       loaddingMap: true,
       postForm: {

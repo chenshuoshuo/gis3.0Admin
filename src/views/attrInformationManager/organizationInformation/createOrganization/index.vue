@@ -42,6 +42,9 @@
                                 accept=".jpg,.png"
                                 :action="baseUrl
                                 +'/mapOrganization/uploadImg'"
+                                :headers="{
+                                    'Authorization':'Bearer ' + token
+                                }"
                                 :on-success="handleSuccess"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"

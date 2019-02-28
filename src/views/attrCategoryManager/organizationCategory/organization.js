@@ -1,4 +1,5 @@
 import waves from '@/directive/waves' // 水波纹指令
+import { getToken } from '@/utils/auth'
 import {
   pageOrganizationType,
   createOrganizationType,
@@ -32,6 +33,7 @@ export default {
       state: '',
       isSub: false,
       downloading: false,
+      token:getToken(),
       isImport: false,
       isExport: false,
       fields: [],
@@ -140,6 +142,7 @@ export default {
           })
           this.getList()
           this.showForm = false
+          this.$refs.config.close()
         } else {
           this.$message({
             type: 'warning',
