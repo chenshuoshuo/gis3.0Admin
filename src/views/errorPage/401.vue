@@ -3,8 +3,10 @@
     <el-row>
       <el-col :span="12">
         <h1 class="text-jumbo text-ginormous">Oops!</h1>
-        <h2>你没有权限去该页面</h2>
-        <h6>没有权限或不能直接访问此链接</h6>
+        <h2>无法访问原因可能如下:</h2>
+        <h6>1、长时间没有操作本系统，用户身份过期，需要重新登录</h6>
+        <h6>2、当前登录账号没有本系统访问权限。</h6>
+        <h6>3、不能直接访问本系统链接地址，需要登录后才能进入。</h6>
       </el-col>
       <el-col :span="12">
         <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
@@ -43,7 +45,12 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   .errPage-container {
     width: 800px;
-    margin: 100px auto;
+    padding-top: 100px;
+    margin: 0 auto;
+    h6{
+      font-size: 16px;
+      font-weight: normal;
+    }
     .pan-back-btn {
       background: #008489;
       color: #fff;

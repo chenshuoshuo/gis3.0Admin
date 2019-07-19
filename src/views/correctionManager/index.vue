@@ -50,7 +50,7 @@
             </el-table-column>
             <el-table-column :label="$t('table.campus')" align="center"  width="160" >
                 <template slot-scope="scope">
-                <span>{{scope.row.mapCode}}</span>
+                <span>{{scope.row.campusName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.mapType')"  width="120" >
@@ -71,6 +71,11 @@
             <el-table-column align="center" :label="$t('table.workNumber')"  width="160" >
                 <template slot-scope="scope">
                     <span>{{scope.row.userCode}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="联系方式"  width="160" >
+                <template slot-scope="scope">
+                    <span>{{scope.row.contact}}</span>
                 </template>
             </el-table-column>
             <el-table-column :label="$t('table.commitTime')" align="center"  width="240" >

@@ -35,7 +35,7 @@ export default {
         this.listQuery.page++
         if (res.data.code === 200) {
           this.list = res.data.data.content
-          this.total = res.data.data.totalCount
+          this.total = res.data.data.totalElements
         } else {
           this.$message({
             type: 'warning',
@@ -46,10 +46,10 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 0) {
-          let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
-          this.campus = arr.map(item=>{
-            item.zones = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+        if (res.data.code === 200) {
+          const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
+          this.campus = arr.map(item => {
+            item.zones = item.zones.filter(element => element.mapZoneByZoneId.is2D)
             return item
           })
         }

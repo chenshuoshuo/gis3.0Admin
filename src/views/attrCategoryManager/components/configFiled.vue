@@ -31,7 +31,7 @@
             </el-option>
           </el-select>
         </div>
-        <div class="sort"><el-input v-model="item.orderid" type="text"></el-input></div>
+        <div class="sort"><el-input v-model="item.orderid" type="nubmer"></el-input></div>
         <div class="required">
           <el-radio v-model="item.required" :label="true">是</el-radio>
           <el-radio v-model="item.required" :label="false">否</el-radio>
@@ -119,6 +119,36 @@
 
 <style lang="scss">
   .config-filed{
+    /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+    ::-webkit-scrollbar {
+      width: 4px; /*对垂直流动条有效*/
+      height: 4px; /*对水平流动条有效*/
+    }
+
+    /*定义滚动条的轨道颜色、内阴影及圆角*/
+    ::-webkit-scrollbar-track {
+      //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1);
+      background-color: white;
+      border-radius: 3px;
+    }
+
+    /*定义滑块颜色、内阴影及圆角*/
+    ::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      //-webkit-box-shadow:inset 0 0 6px rgb(166, 166, 166);
+      background-color: #ebebeb;
+    }
+
+    /*定义两端按钮的样式*/
+    ::-webkit-scrollbar-button {
+      background-color: rgba(255, 255, 255, 0.53);
+      height: 0;
+    }
+
+    /*定义右下角汇合处的样式*/
+    ::-webkit-scrollbar-corner {
+      background: white;
+    }
     .alert{
       display: inline;
       border-radius: 0;
@@ -128,7 +158,15 @@
     }
     .fileds-List{
       margin-top: 40px;
+      height: 50vh;
+      overflow: auto;
+      padding-bottom: 10px;
       .title{
+        margin-top: 0 !important;
+        position: sticky;
+        top: 0;
+        z-index: 111;
+        background: #fff;
         font-size: 18px;
         font-weight: bold;
       }

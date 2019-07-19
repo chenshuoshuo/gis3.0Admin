@@ -15,9 +15,11 @@ export default {
       isFisrt: true,
       types: [],
       campusId: null,
+      isOpenRaster: false,
+      has3D: false,
       campus: [],
       id: null,
-      token:getToken(),
+      token: getToken(),
       state: '',
       fileList: [],
       floor: {
@@ -27,12 +29,13 @@ export default {
         currentLevel: 0
       },
       postForm: {
-        leaf: false,
+        leaf: null,
+        codeIsBuilding: false,
         brief: '',
         location: '',
         campusCode: null,
-        typeCode: '',
-        officialWebsite:'http://',
+        typeCode: null,
+        officialWebsite: 'http://',
         mapOrganizationExtendsList: [],
         mapOrganizationImgList: [],
         extendsFields: []
@@ -80,14 +83,14 @@ export default {
       }
     },
     handleSub() {
-      this.$refs.ruleForm.validate(val => {
+      this.$refs.postForm.validate(val => {
         if (val) {
           this.saveInfo()
         }
       })
     },
     saveInfo() {
-      this.postForm.leaf = this.postForm.leaf ? this.vectorMap.floorComponent.nowLevelIndex : null
+      this.postForm.leaf = this.postForm.codeIsBuilding ? null : this.vectorMap.floorComponent.nowLevelIndex
       if (this.state === 'add') {
         this.postForm.extendsFields.forEach(element => {
           this.postForm.mapOrganizationExtendsList.push({ columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
@@ -177,18 +180,34 @@ export default {
       }
       this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
       this.postForm.lngLatString = `${e.lngLat.lng},${e.lngLat.lat}`
-      this.postForm.codeIsBuilding = feature && feature.properties ? /building/.test(JSON.stringify(feature.properties)) : false
       this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
-      console.log(feature.properties);
     },
     initMap() {
       var marker = null
       this.vectorMap.on('load', () => {
-        this.vectorMap.on('zoom', () => {
-          if (this.vectorMap.getZoom() > 17 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
+        // 重写moveend方法
+        this.vectorMap.on('moveend', () => {
+          if (this.vectorMap.getZoom() >= 18) {
+            this.postForm.codeIsBuilding = false
+          } else {
+            this.postForm.codeIsBuilding = true
+          }
+          // 调用sdk中的moveend回调
+          this.vectorMap.floorComponent.onCameraMoveEnd()
+          if (this.vectorMap.getZoom() >= 18 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
+            if (this.floor.currentLevel && !this.floor.maxLevel) {
+              this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+              this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+              this.setLevel(this.floor.currentLevel)
+            } else {
+              this.floor.currentLevel = this.vectorMap.floorComponent.nowLevelIndex
+              this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+              this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+              if (this.$refs.level) {
+                this.$refs.level.setCurrentFloor(this.vectorMap.floorComponent.nowLevelIndex)
+              }
+            }
             this.floor.floorShow = true
-            this.floor.minLevel = Number(this.vectorMap.getMinLevel())
-            this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
           } else {
             this.floor.floorShow = false
           }
@@ -208,7 +227,6 @@ export default {
             }
             this.postForm.location = `${(feature.properties && feature.properties.name) ? feature.properties.name : '未知位置'}`
             this.postForm.lngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
-            this.postForm.codeIsBuilding = (feature && feature.properties) ? /building/.test(JSON.stringify(feature.properties)) : false
             this.postForm.mapCode = feature.properties.id
           })
           this.setPostForm(e)
@@ -227,46 +245,51 @@ export default {
               }
               this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
               this.postForm.lngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
-              this.postForm.codeIsBuilding = feature && feature.properties ? /building/.test(JSON.stringify(feature.properties)) : false
               this.postForm.mapCode = feature.properties.id
             })
-            this.vectorMap.flyTo({
-              center: lngLat,
-              zoom: 17
-            })
-            setTimeout(() => {
-              if (this.floor.currentLevel) {
-                this.setLevel(this.floor.currentLevel)
-              }
-            }, 1000)
+            if (this.postForm.codeIsBuilding) {
+              this.vectorMap.flyTo({
+                center: lngLat,
+                zoom: 17
+              })
+            } else {
+              this.vectorMap.flyTo({
+                center: lngLat,
+                zoom: 20
+              })
+            }
           }
         }, 500)
         this.loaddingMap = false
       })
     },
     resetForm() {
-      this.postForm = {
-        leaf: false,
-        brief: '',
-        location: '',
-        typeCode: '',
-        officialWebsite:'http://',
-        mapOrganizationExtendsList: [],
-        mapOrganizationImgList: []
-      }
+      this.postForm.organizationName = ''
+      this.postForm.brief = ''
+      this.postForm.location = ''
+      this.postForm.officialWebsite = 'http://'
+      this.postForm.mapOrganizationExtendsList = []
+      this.postForm.mapOrganizationExtendsList.forEach(item => {
+        item.extendsValue
+      })
+      this.postForm.mapOrganizationImgList = []
+      this.postForm.rasterLngLatString = ''
       this.$refs.avatar.clearFiles()
-      this.$refs.ruleForm.clearValidate()
+      this.$nextTick(() => {
+        this.$refs.postForm.clearValidate()
+      })
     },
     getCampusList() {
       return new Promise((resolve, reject) => {
         campusList().then(res => {
-          if (res.data.code === 0) {
-            let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
-            this.campus = arr.map(item=>{
-              item.zones = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+          if (res.data.code === 200) {
+            const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
+            this.campus = arr.map(item => {
+              item.map2D = item.zones.filter(element => element.mapZoneByZoneId.is2D)
+              item.map3D = item.zones.filter(element => !element.mapZoneByZoneId.is2D)
               return item
             })
-            if (this.state === 'add') this.campusId = this.campus[0].zones[this.campus[0].zones.length-1].mapZoneByZoneId.id
+            if (this.state === 'add') this.campusId = this.campus[0].map2D[this.campus[0].map2D.length - 1].mapZoneByZoneId.id
             resolve()
           } else {
             reject()
@@ -275,10 +298,62 @@ export default {
           reject()
         })
       })
+    },
+    openRaster() {
+      this.isOpenRaster = true
+      setTimeout(() => {
+        var res = null
+        this.campus.forEach(item => {
+          item.map2D.forEach(element => {
+            if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
+              res = item.map3D[item.map3D.length - 1]
+            }
+          })
+        })
+        this.rasterMap = new window.creeper.RasterMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
+        this.rasterMap.on('load', () => {
+          var marker = null
+          this.rasterMap.on('click', (e) => {
+            if (marker !== null) {
+              marker.remove()
+            }
+            marker = new window.creeper.Marker({
+              draggable: true
+            }).setLngLat(e.lngLat).addTo(this.rasterMap)
+            marker.on('dragend', () => {
+              this.postForm.rasterLngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
+            })
+            this.postForm.rasterLngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
+          })
+          setTimeout(() => {
+            if (this.postForm.rasterLngLatString) {
+              const lngLat = this.postForm.rasterLngLatString.split(',')
+              this.rasterMap.flyTo({
+                center: lngLat,
+                zoom: 18
+              })
+              marker = new window.creeper.Marker({
+                draggable: true
+              }).setLngLat(lngLat).addTo(this.rasterMap)
+              marker.on('dragend', () => {
+                this.postForm.rasterLngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
+              })
+            }
+          }, 500)
+        })
+      }, 200)
     }
   },
   watch: {
     campusId(cur) {
+      this.has3D = false
+      this.campus.forEach(item => {
+        item.map2D.forEach(element => {
+          if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
+            this.has3D = true
+          }
+        })
+      })
       this.postForm.campusCode = cur
       if (this.state === 'update' && this.isFisrt) {
         this.isFisrt = false
@@ -293,6 +368,7 @@ export default {
       }
     },
     typeCode() {
+      this.$forceUpdate()
       this.postForm.extendsFields = []
       this.initExtendsDefine()
     },
@@ -328,26 +404,26 @@ export default {
   },
   mounted() {
     if (this.state === 'update') {
-      getOrganizationInfo(this.postForm.organizationCode).then(res => {
-        if (res.data.code === 200) {
-          this.postForm = res.data.data
-          res.data.data.mapOrganizationImgList.forEach(element => {
-            this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })
-          })
-          this.campusId = res.data.data.mapOrganizationType.campusCode
-          this.floor.currentLevel = this.postForm.leaf === null ? 0 : this.postForm.leaf
-          this.postForm.leaf = !!this.postForm.leaf
-          this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
-          this.initMap()
-        } else {
-          this.$message({
-            type: 'warning',
-            message: '应用信息获取失败'
-          })
-          this.$router.back(-1)
-        }
+      this.getCampusList().then(() => {
+        getOrganizationInfo(this.postForm.organizationCode).then(res => {
+          if (res.data.code === 200) {
+            this.postForm = res.data.data
+            res.data.data.mapOrganizationImgList.forEach(element => {
+              this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })
+            })
+            this.campusId = res.data.data.mapOrganizationType.campusCode
+            this.floor.currentLevel = res.data.data.leaf
+            this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
+            this.initMap()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: '系统内该地图不存在'
+            })
+            this.$router.back(-1)
+          }
+        })
       })
-      this.getCampusList()
     } else {
       this.getCampusList().then(() => {
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)

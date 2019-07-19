@@ -9,10 +9,10 @@
                         <el-form-item label="名称:" prop="polygonName" class="required" required :show-message="false">
                             <el-input v-model="postForm.polygonName" id="name"></el-input>
                         </el-form-item>
-                        <el-form-item label="别名:" prop="alias" class="required" required :show-message="false">
+                        <el-form-item label="别名:" prop="alias" :show-message="false">
                             <el-input v-model="postForm.alias" id="alias"></el-input>
                         </el-form-item>
-                        <el-form-item label="英文名:" prop="enName" class="required" required :show-message="false">
+                        <el-form-item label="英文名:" prop="enName" :show-message="false">
                             <el-input v-model="postForm.enName" id="enName"></el-input>
                         </el-form-item>
                         <el-form-item label="类别:" prop="category" class="required">

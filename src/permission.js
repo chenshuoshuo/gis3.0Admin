@@ -2,7 +2,7 @@ import router from './router'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css'// progress bar style
 import store from './store'
-import { getToken, getRefresh, getExpirationDate, autoGetToken, setToken, removeRefresh } from '@/utils/auth'
+import { getToken, getRefresh, getExpirationDate, autoGetToken, setToken, removeRefresh, removeToken } from '@/utils/auth'
 import { refreshToken, getUserInfo } from '@/api/zk'
 import { Message } from 'element-ui'
 // import axios from 'axios'
@@ -29,10 +29,6 @@ router.beforeEach((to, from, next) => {
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           })
         } else {
-          Message({
-            type: 'error',
-            message: '用户信息获取失败'
-          })
           next('/mylogin')
         }
       }).catch(() => {
@@ -57,10 +53,7 @@ router.beforeEach((to, from, next) => {
         autoGetToken(getRefresh())
         next('/')
       }).catch(() => {
-        Message({
-          type: 'error',
-          message: '自动登录失败'
-        })
+        removeToken()
         removeRefresh()
         next({ ...to, replace: true })
       })
@@ -68,10 +61,6 @@ router.beforeEach((to, from, next) => {
       if (whiteList.indexOf(to.path) !== -1) {
         next()
       } else {
-        Message({
-          type: 'error',
-          message: '请登录之后再操作'
-        })
         next('/401')
         NProgress.done()
       }
@@ -84,7 +73,7 @@ router.afterEach(() => {
 })
 // 页面刷新时重新设置定时器自动更新token
 window.onload = function() {
-  if (getExpirationDate()) {
+  if (getRefresh() && getExpirationDate()) {
     autoGetToken(getRefresh())
   }
 }

@@ -248,7 +248,7 @@ export default {
       } else {
         this.$message({
           type: 'warning',
-          message: '应用信息获取失败'
+          message: '系统内该地图不存在'
         })
         this.$router.back(-1)
       }

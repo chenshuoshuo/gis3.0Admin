@@ -39,6 +39,8 @@
       },
       data() {
         return {
+          floors:[],
+          dispalyLevel:[],
           currentLevel: null,
           currentIndex: 0,
           isTop: false,
@@ -47,26 +49,32 @@
       },
       methods: {
         addLevel() {
-          if (this.generateLevel.indexOf(this.currentLevel) === 0) return
-          const index = this.generateLevel.indexOf(this.currentLevel) - 1 < 0
-            ? 0 : this.generateLevel.indexOf(this.currentLevel) - 1
-          this.currentLevel = this.generateLevel[index]
+          if (this.floors.indexOf(this.currentLevel) === 0) return
+          const index = this.floors.indexOf(this.currentLevel) - 1 < 0
+            ? 0 : this.floors.indexOf(this.currentLevel) - 1
+          this.currentLevel = this.floors[index]
           this.$emit('change-level', this.currentLevel.level)
         },
         reduceLevel() {
-          if (this.generateLevel.indexOf(this.currentLevel) === this.generateLevel.length - 1) return
-          const index = this.generateLevel.indexOf(this.currentLevel) + 1 > this.generateLevel.length - 1
-            ? this.generateLevel.length - 1 : this.generateLevel.indexOf(this.currentLevel) + 1
-          this.currentLevel = this.generateLevel[index]
+          if (this.floors.indexOf(this.currentLevel) === this.floors.length - 1) return
+          const index = this.floors.indexOf(this.currentLevel) + 1 > this.floors.length - 1
+            ? this.floors.length - 1 : this.floors.indexOf(this.currentLevel) + 1
+          this.currentLevel = this.floors[index]
           this.$emit('change-level', this.currentLevel.level)
         },
         changeLevel(level) {
-          this.currentLevel = this.generateLevel[this.generateLevel.indexOf(level)]
+          this.currentLevel = this.floors[this.floors.indexOf(level)]
+          this.generateDispalyLevel()
+          this.currentIndex = this.dispalyLevel.indexOf(this.currentLevel)
           this.$emit('change-level', this.currentLevel.level)
-        }
-      },
-      computed: {
-        generateLevel() {
+        },
+        isVertex(){
+          this.floors.indexOf(this.currentLevel) === 0
+            ? this.isTop = true : this.isTop = false
+          this.floors.indexOf(this.currentLevel) === this.floors.length - 1
+            ? this.isBottom = true : this.isBottom = false
+        },
+        generateLevel(){
           var levelArr = []; var max = 0; var min = 0
           !(this.maxLevel > this.minLevel ? () => {
             max = this.maxLevel
@@ -83,36 +91,54 @@
               levelArr.push({ name: 'B' + Math.abs(i), level: i })
             }
           }
-          return levelArr.reverse()
+          this.floors = levelArr.reverse();
         },
-        dispalyLevel() {
-          var currentLevelIndex = this.generateLevel.indexOf(this.currentLevel)
-
-          if (this.generateLevel.length < this.size) return this.generateLevel
-    
+        generateDispalyLevel(){
+          if (this.floors.length < this.size){
+            this.dispalyLevel = this.floors
+            return
+          } 
+          let currentLevelIndex = this.floors.indexOf(this.currentLevel);
           if (currentLevelIndex >= Math.floor(this.size / 2)) {
-            return this.generateLevel.slice(
-              currentLevelIndex - Math.floor(this.size / 2) > this.generateLevel.length - this.size
-                ? this.generateLevel.length - this.size : currentLevelIndex - Math.floor(this.size / 2),
-              currentLevelIndex + Math.ceil(this.size / 2) >= this.generateLevel.length ? this.generateLevel.length : currentLevelIndex + Math.ceil(this.size / 2)
+            this.dispalyLevel = this.floors.slice(
+              currentLevelIndex - Math.floor(this.size / 2) > this.floors.length - this.size
+                ? this.floors.length - this.size : currentLevelIndex - Math.floor(this.size / 2),
+              currentLevelIndex + Math.ceil(this.size / 2) >= this.floors.length ? this.floors.length : currentLevelIndex + Math.ceil(this.size / 2)
             )
           } else {
-            return this.generateLevel.slice(0, this.size)
+            this.dispalyLevel = this.floors.slice(0, this.size)
           }
+        },
+        setCurrentFloor(floor){
+          setTimeout(() => {
+            this.currentLevel = this.floors.filter((item) => item.level === floor)[0]
+          }, 100);
         }
       },
       watch: {
-        currentLevel() {
+        floors(){
+          this.generateDispalyLevel()
+        },
+        currentLevel(){
+          this.generateDispalyLevel()
           this.currentIndex = this.dispalyLevel.indexOf(this.currentLevel)
-          this.generateLevel.indexOf(this.currentLevel) === 0
-            ? this.isTop = true : this.isTop = false
-          this.generateLevel.indexOf(this.currentLevel) === this.generateLevel.length - 1
-            ? this.isBottom = true : this.isBottom = false
+        },
+        currentIndex(){
+          this.generateDispalyLevel()
+          this.isVertex()
+        },
+        minLevel(){
+          this.generateLevel()
+        },
+        maxLevel(){
+          this.generateLevel()
         }
       },
       beforeMount() {
-        this.currentLevel = this.generateLevel.filter((item) => item.level === this.currentFloor)[0]
-        this.currentIndex = this.dispalyLevel.indexOf[this.currentLevel]
+        this.generateLevel()
+        this.currentLevel = this.floors.filter((item) => item.level === this.currentFloor)[0]
+        this.generateDispalyLevel()
+        this.currentIndex = this.dispalyLevel.indexOf(this.currentLevel)
       }
     }
 </script>
@@ -173,4 +199,3 @@
 
     .vue-floor-up:before { content: "\e603"; }
 </style>
-

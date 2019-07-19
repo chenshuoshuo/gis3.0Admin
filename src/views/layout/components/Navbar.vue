@@ -9,8 +9,11 @@
       <el-tooltip effect="dark" :content="$t('navbar.screenfull')" placement="bottom">
         <screenfull class="screenfull right-menu-item"></screenfull>
       </el-tooltip>
-      <el-tooltip effect="dark" content="地图同步" placement="bottom">
-        <el-button type="primary" class="theme-switch right-menu-item" size="small" :loading="mapSyn" @click="handleClick">GIS</el-button>
+      <el-tooltip effect="dark" content="从CMIPS推送到CMGIS" placement="bottom">
+        <el-button type="success" class="theme-switch right-menu-item" size="small" :loading="gisSyn" @click="handleCmips">IPS</el-button>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="从CMGIS同步到CMIPS" placement="bottom">
+        <el-button type="primary" class="theme-switch right-menu-item" size="small" :loading="mapSyn" @click="handleCmgis">GIS</el-button>
       </el-tooltip>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -25,17 +28,44 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog
+      title="从CMIPS推送到CMGIS"
+      :visible.sync="cmips"
+      width="450px">
+       <el-table :data="campus" :show-header='false' max-height="250">
+        <el-table-column prop="name"></el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button type="success" size="mini" :disabled="gisSyn" :loading="scope.row.pushing" @click="handlePush(scope.row)">推送</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <el-dialog
+      title="从CMGIS同步到CMIPS"
+      :visible.sync="cmgis"
+      width="450px">
+       <el-table :data="campus" :show-header='false' max-height="250">
+        <el-table-column prop="name"></el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" :disabled="mapSyn" :loading="scope.row.syncing" @click="handleSync(scope.row)">同步</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </el-menu>
 </template>
 
 <script>
+import { campusList } from '@/api/campus'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
-import { mapSynchronize } from '@/api/map'
+import { pushDataToGis, mapSynchronize } from '@/api/synData'
 
 export default {
   components: {
@@ -53,21 +83,47 @@ export default {
   },
   data() {
     return {
+      campus: [],
+      cmips: false,
+      cmgis: false,
       mapSyn: false,
+      gisSyn: false,
       avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
     }
   },
+  beforeMount() {
+    campusList().then(res => {
+      if (res.data.code === 200) {
+        this.campus = res.data.data.content
+        this.campus.forEach(item => {
+          item.pushing = false
+          item.syncing = false
+        })
+      }
+    })
+  },
   methods: {
-    handleClick() {
+    handleSync(row) {
+      row.syncing = true
       this.mapSyn = true
-      mapSynchronize().then(res => {
+      const id = row.zones.filter(item => item.mapZoneByZoneId.is2D)[0].zoneId
+      mapSynchronize(id).then(res => {
         this.mapSyn = false
-        if (res.data.code === 0) {
-          this.$notify({
-            title: '成功',
-            message: '地图数据同步成功',
-            type: 'success'
-          })
+        row.syncing = false
+        if (res.data.code === 200) {
+          if (!res.data.data.synStatus) {
+            this.$notify({
+              title: '失败',
+              message: res.data.data.errMsg,
+              type: 'error'
+            })
+          } else {
+            this.$notify({
+              title: '成功',
+              message: '地图数据同步成功',
+              type: 'success'
+            })
+          }
         } else {
           this.$notify({
             title: '失败',
@@ -75,7 +131,49 @@ export default {
             type: 'error'
           })
         }
+      }).catch(err => {
+        this.mapSyn = false
+        row.syncing = false
       })
+    },
+    handlePush(row) {
+      row.pushing = true
+      this.gisSyn = true
+      const id = row.zones.filter(item => item.mapZoneByZoneId.is2D)[0].zoneId
+      pushDataToGis(id).then(res => {
+        this.gisSyn = false
+        row.pushing = false
+        if (res.data.code === 200) {
+          if (!res.data.data.synStatus) {
+            this.$notify({
+              title: '失败',
+              message: res.data.data.errMsg,
+              type: 'error'
+            })
+          } else {
+            this.$notify({
+              title: '成功',
+              message: '地图数据推送成功',
+              type: 'success'
+            })
+          }
+        } else {
+          this.$notify({
+            title: '失败',
+            message: '地图数据推送失败',
+            type: 'error'
+          })
+        }
+      }).catch(err => {
+        row.pushing = false
+        this.gisSyn = false
+      })
+    },
+    handleCmips() {
+      this.cmips = true
+    },
+    handleCmgis() {
+      this.cmgis = true
     },
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
@@ -88,6 +186,15 @@ export default {
   }
 }
 </script>
+
+<style>
+  .navbar .el-dialog__body{
+    padding: 0 10px;
+  }
+  .navbar .el-dialog__header{
+    padding: 10px;
+  }
+</style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {

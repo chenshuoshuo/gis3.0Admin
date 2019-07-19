@@ -54,11 +54,11 @@
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="二维位置绑定:" prop="location" class="required" required :show-message="false">
-                            <el-input v-model="postForm.location" disabled placeholder="请在地图上选择"></el-input>
+                            <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
                         </el-form-item>
                         <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" required :show-message="false">
                             <span @click="openRaster">
-                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" disabled></el-input>
+                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" readonly="readonly"></el-input>
                             </span>
                         </el-form-item>
                         <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
@@ -84,7 +84,7 @@
         <el-dialog
         title="三维位置绑定"
         :visible.sync="isOpenRaster"
-        width="50%">
+        width="90%" top="5vh">
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
                 <el-button type="info" @click="isOpenRaster = false;postForm.rasterLngLatString = ''" size="small">取 消</el-button>
@@ -93,7 +93,7 @@
         </el-dialog>
         <div class="tool-box">
             <div class="level-box">
-                <level-selector v-if="floor.floorShow && postForm.leaf" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
                 :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
             </div>
             <div class="zoom-box">
@@ -119,7 +119,7 @@
         left: 0;
         bottom: 0;
         #rasterMap{
-            height: 50vh;
+            height: 80vh;
         }
         .el-dialog__body{
             padding: 0;

@@ -39,8 +39,6 @@
 	    },
 	    websocketonmessage(e) { // 数据接收
 	      const arr = JSON.parse(e.data)
-	
-	      console.log(arr)
 	      if (arr.length > 0) {
 	        var _this = this
 	

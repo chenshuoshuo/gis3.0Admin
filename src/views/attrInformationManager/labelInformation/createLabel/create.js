@@ -13,7 +13,7 @@ export default {
     return {
       picUrl: '',
       fileList: [],
-      has3D:false,
+      has3D: false,
       loaddingMap: true,
       isOver: false,
       isFisrt: true,
@@ -23,7 +23,7 @@ export default {
       campus: [],
       state: '',
       rasterMap: null,
-      token:getToken(),
+      token: getToken(),
       typeArr: [],
       floor: {
         minLevel: 0,
@@ -107,6 +107,9 @@ export default {
             this.postForm.pointName = ''
             this.fileList = []
             this.postForm.mapPointImgList = []
+            this.$nextTick(() => {
+              this.$refs.ruleForm.clearValidate()
+            })
           } else {
             this.$message({
               type: 'error',
@@ -194,17 +197,34 @@ export default {
       }
       this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
       this.postForm.lngLatString = `${e.lngLat.lng},${e.lngLat.lat}`
-      this.postForm.codeIsBuilding = feature && feature.properties ? /building/.test(JSON.stringify(feature.properties)) : false
-      this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
+      // this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
     },
     inintMap() {
       var marker = null
       this.vectorMap.on('load', () => {
-        this.vectorMap.on('zoom', () => {
-          if (this.vectorMap.getZoom() > 17 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
+        // 重写moveend方法
+        this.vectorMap.on('moveend', () => {
+          if (this.vectorMap.getZoom() >= 18) {
+            this.postForm.leaf = true
+          } else {
+            this.postForm.leaf = false
+          }
+          // 调用sdk中的moveend回调
+          this.vectorMap.floorComponent.onCameraMoveEnd()
+          if (this.vectorMap.getZoom() >= 18 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
+            if (this.floor.currentLevel && !this.floor.maxLevel) {
+              this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+              this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+              this.setLevel(this.floor.currentLevel)
+            } else {
+              this.floor.currentLevel = this.vectorMap.floorComponent.nowLevelIndex
+              this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+              this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+              if (this.$refs.level) {
+                this.$refs.level.setCurrentFloor(this.vectorMap.floorComponent.nowLevelIndex)
+              }
+            }
             this.floor.floorShow = true
-            this.floor.minLevel = Number(this.vectorMap.getMinLevel())
-            this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
           } else {
             this.floor.floorShow = false
           }
@@ -216,7 +236,6 @@ export default {
           marker = new window.creeper.Marker({
             draggable: true
           }).setLngLat(e.lngLat).addTo(this.vectorMap)
-
           marker.on('dragend', () => {
             var features = this.vectorMap.queryRenderedFeatures(marker._pos)
             var feature = null
@@ -225,8 +244,7 @@ export default {
             }
             this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
             this.postForm.lngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
-            this.postForm.codeIsBuilding = feature && feature.properties ? /building/.test(JSON.stringify(feature.properties)) : false
-            this.postForm.mapCode = feature.properties.id
+            // this.postForm.mapCode = feature.properties.id
           })
           this.setPostForm(e)
         })
@@ -244,18 +262,19 @@ export default {
               }
               this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
               this.postForm.lngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
-              this.postForm.codeIsBuilding = feature && feature.properties ? /building/.test(JSON.stringify(feature.properties)) : false
-              this.postForm.mapCode = feature.properties.id
+              // this.postForm.mapCode = feature.properties.id
             })
-            this.vectorMap.flyTo({
-              center: lngLat,
-              zoom: 18
-            })
-            setTimeout(() => {
-              if (this.floor.currentLevel) {
-                this.setLevel(this.floor.currentLevel)
-              }
-            }, 1000)
+            if (this.floor.currentLevel === 0 || this.floor.currentLevel) {
+              this.vectorMap.flyTo({
+                center: lngLat,
+                zoom: 20
+              })
+            } else {
+              this.vectorMap.flyTo({
+                center: lngLat,
+                zoom: 17
+              })
+            }
           }
         }, 500)
         this.loaddingMap = false
@@ -264,15 +283,15 @@ export default {
     getCampusList() {
       return new Promise((resolve, reject) => {
         campusList().then(res => {
-          if (res.data.code === 0) {
-            let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
-            this.campus = arr.map(item=>{
-              item.map2D = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
-              item.map3D = item.zones.filter(element=>!element.mapZoneByZoneId.is2D)
+          if (res.data.code === 200) {
+            const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
+            this.campus = arr.map(item => {
+              item.map2D = item.zones.filter(element => element.mapZoneByZoneId.is2D)
+              item.map3D = item.zones.filter(element => !element.mapZoneByZoneId.is2D)
               return item
             })
             if (this.state === 'add') {
-              this.campusId = this.campus[0].map2D[this.campus[0].map2D.length-1].mapZoneByZoneId.id
+              this.campusId = this.campus[0].map2D[this.campus[0].map2D.length - 1].mapZoneByZoneId.id
               this.postForm.campusCode = this.campusId
             }
             resolve()
@@ -289,13 +308,13 @@ export default {
       setTimeout(() => {
         var res = null
         this.campus.forEach(item => {
-          item.map2D.forEach(element=>{
+          item.map2D.forEach(element => {
             if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
-              res = item.map3D[item.map3D.length-1]
+              res = item.map3D[item.map3D.length - 1]
             }
           })
         })
-        this.rasterMap = new window.creeper.VectorMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
+        this.rasterMap = new window.creeper.RasterMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
         this.rasterMap.on('load', () => {
           var marker = null
           this.rasterMap.on('click', (e) => {
@@ -332,15 +351,13 @@ export default {
   watch: {
     campusId(cur) {
       this.has3D = false
-      console.log(this.campusId);
       this.campus.forEach(item => {
-        item.map2D.forEach(element=>{
+        item.map2D.forEach(element => {
           if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
             this.has3D = true
           }
         })
       })
-      console.log(this.has3D);
       if (this.state === 'update' && this.isFisrt) {
         this.isFisrt = false
         this.getPointTypeList()
@@ -391,7 +408,7 @@ export default {
   },
   mounted() {
     if (this.state === 'update') {
-      this.getCampusList().then(res=>{
+      this.getCampusList().then(res => {
         getPointInfo(this.postForm.PointCode).then(res => {
           if (res.data.code === 200) {
             this.postForm = res.data.data
@@ -400,14 +417,14 @@ export default {
             })
             this.campusId = res.data.data.campusCode
             this.typeArr = [res.data.data.mapPointType.parentCode, res.data.data.mapPointType.typeCode]
-            this.floor.currentLevel = this.postForm.leaf === null ? 0 : this.postForm.leaf
-            this.postForm.leaf = !!this.postForm.leaf
+            this.floor.currentLevel = this.postForm.leaf
+            this.postForm.leaf = (this.postForm.leaf == 0 && this.postForm.leaf)
             this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
             this.inintMap()
           } else {
             this.$message({
               type: 'warning',
-              message: '应用信息获取失败'
+              message: '系统内该地图不存在'
             })
             this.$router.back(-1)
           }

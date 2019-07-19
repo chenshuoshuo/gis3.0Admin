@@ -11,10 +11,10 @@
                         <el-form-item label="大楼名称:" prop="buildingName" class="required" required :show-message="false">
                             <el-input v-model="postForm.buildingName" id="name"></el-input>
                         </el-form-item>
-                        <el-form-item label="英文名称:" prop="enName" class="required" required :show-message="false">
+                        <el-form-item label="英文名称:" prop="enName" :show-message="false">
                             <el-input v-model="postForm.enName" id="name"></el-input>
                         </el-form-item>
-                        <el-form-item label="别名:" prop="alias" class="required" required :show-message="false">
+                        <el-form-item label="别名:" prop="alias" :show-message="false">
                             <el-input v-model="postForm.alias" id="name"></el-input>
                         </el-form-item>
                         <el-form-item label="大楼类别:" prop="typeCode" class="required"  required :show-message="false">

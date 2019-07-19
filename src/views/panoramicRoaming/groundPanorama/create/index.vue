@@ -18,12 +18,17 @@
                                 v-for="item in campus"
                                 :key="item.groupId"
                                 :label="item.name"
-                                :value="item.zones[item.zones.length-1].mapZoneByZoneId.id">
+                                :value="item.map2D[item.map2D.length-1].mapZoneByZoneId.id">
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="位置绑定:" prop="location" class="required" required>
-                            <el-input v-model="postForm.location" disabled placeholder="请在地图上选择"></el-input>
+                        <el-form-item label="二维位置:" prop="location" class="required" required>
+                            <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
+                        </el-form-item>
+                        <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLat" class="required" required>
+                            <span @click="openRaster">
+                                <el-input v-model="postForm.rasterLngLat" placeholder="点击打开三维地图" readonly></el-input>
+                            </span>
                         </el-form-item>
                         <el-form-item label="排序:" prop="region">
                             <el-input v-model="postForm.orderId"></el-input>
@@ -32,6 +37,16 @@
                             <el-button type="primary" class="btn-sub" @click="handleSub">提交</el-button>
                         </el-form-item>
                     </el-form>
+                    <el-dialog
+                    title="三维位置绑定"
+                    :visible.sync="isOpenRaster"
+                    width="90%" top="5vh">
+                        <div id="rasterMap"></div>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button type="info" @click="isOpenRaster = false;postForm.rasterLngLat = ''" size="small">取 消</el-button>
+                            <el-button type="primary" @click="isOpenRaster = false" size="small">确 定</el-button>
+                        </span>
+                    </el-dialog>
                 </div>
             </el-scrollbar>
         </div>
@@ -58,6 +73,28 @@
         right: 0;
         left: 0;
         bottom: 0;
+        #rasterMap{
+            height: 80vh;
+        }
+        .el-dialog__body{
+            padding: 0;
+        }
+        .el-dialog__header{
+            padding: 6px 20px;
+            .el-dialog__title{
+                font-size: 14px;
+                font-weight: bold;
+            }
+        }
+        .el-dialog__headerbtn{
+            top: 12px;
+        }
+        .el-dialog__footer{
+            padding: 6px 20px;
+            .el-button--small{
+                padding: 6px 12px;
+            }
+        }
         .el-form-item.is-required .el-form-item__label:before{
             display: none;
         }

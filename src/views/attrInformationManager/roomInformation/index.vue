@@ -34,7 +34,6 @@
                 <el-button style="margin-left: 10px;" v-waves type="temp"  @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
                 <el-button type="import" v-waves @click="handleImportExecel" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button>
                 <el-button type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
-                <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" :loading="isRefreash" >地图刷新</el-button>
             </el-form>
         </div>
         <el-table :data="list" v-loading="listLoading" element-loading-text="加载中..." border fit
@@ -71,12 +70,17 @@
             </el-table-column>
             <el-table-column align="center" label="门牌号">
                 <template slot-scope="scope">
-                    <span>{{scope.row.roomCode}}</span>
+                    <span>{{scope.row.hourseNumber}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="校区">
                 <template slot-scope="scope">
                     <span>{{scope.row.campusName}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column align="center" label="所属大楼">
+                <template slot-scope="scope">
+                    <span>{{scope.row.buildingName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="房间类别">

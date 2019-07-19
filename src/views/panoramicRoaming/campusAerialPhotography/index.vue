@@ -38,7 +38,7 @@
             </el-table-column>
             <el-table-column :label="$t('table.campus')" align="center">
                 <template slot-scope="scope">
-                <span>{{scope.row.campusCode}}</span>
+                <span>{{scope.row.campusName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" :label="$t('table.flyCamUrl')">

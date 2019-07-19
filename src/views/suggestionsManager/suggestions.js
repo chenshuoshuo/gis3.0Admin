@@ -28,7 +28,7 @@ export default {
         this.listQuery.page++
         if (res.data.code === 200) {
           this.list = res.data.data.content
-          this.total = res.data.data.totalCount
+          this.total = res.data.data.totalElements
         } else {
           this.$message({
             type: 'warning',

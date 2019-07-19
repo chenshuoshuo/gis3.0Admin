@@ -4,31 +4,26 @@ import { refreshToken } from '@/api/zk'
 const TokenKey = 'Admin-Token'
 const RefreshToken = 'Refresh_token'
 const ExpirationDate = 'timeCookie'
-const CASTGC = 'CASTGC'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return localStorage.getItem(Cookies.get(TokenKey))
 }
 export function getRefresh() {
-  return Cookies.get(RefreshToken)
+  return localStorage.getItem(Cookies.get(RefreshToken))
 }
 export function getExpirationDate() {
   return Cookies.get(ExpirationDate)
 }
-export function setCASTGC(ticekt) {
-  Cookies.set(CASTGC, ticekt)
-}
-export function getCASTGC() {
-  return Cookies.get(CASTGC)
-}
 
 export function setToken(token, time) {
-  Cookies.set(TokenKey, token, { expires: new Date(new Date().getTime() + time * 1000) })
+  Cookies.set(TokenKey, TokenKey, { expires: new Date(new Date().getTime() + time * 1000) })
+  localStorage.setItem(TokenKey, token)
   Cookies.set(ExpirationDate, new Date(new Date().getTime() + time * 1000), { expires: new Date(new Date().getTime() + time * 1000) })
 }
 
 export function setRefreshToken(refresh, expires = 7) {
-  Cookies.set(RefreshToken, refresh, { expires: expires })
+  Cookies.set(RefreshToken, RefreshToken, { expires: expires })
+  localStorage.setItem(RefreshToken, refresh)
 }
 
 export function setAdminToken(token) {
@@ -55,6 +50,7 @@ export function autoGetToken(token, time) {
     refreshToken(token).then(res => {
       if (res.data.access_token) {
         setToken(res.data.access_token, res.data.expires_in)
+        // setRefreshToken(res.data.refresh_token)
         time = res.data.expires_in * 1000
         autoGetToken(res.data.refresh_token, time)
       }

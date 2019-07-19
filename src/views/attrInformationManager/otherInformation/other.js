@@ -11,6 +11,7 @@ import { mapOthersPolygonDownload } from '@/api/download'
 import { listOthersPolygonType } from '@/api/typeManager'
 import importDialog from '@/components/ImportDialog'
 export default {
+  name: 'information-other',
   inject: ['baseUrl'],
   directives: {
     waves
@@ -56,10 +57,10 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 0) {
-          let arr = res.data.data.content.filter(item=>item.zones.filter(element=>element.mapZoneByZoneId.is2D).length > 0)
-          this.campus = arr.map(item=>{
-            item.zones = item.zones.filter(element=>element.mapZoneByZoneId.is2D)
+        if (res.data.code === 200) {
+          const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
+          this.campus = arr.map(item => {
+            item.zones = item.zones.filter(element => element.mapZoneByZoneId.is2D)
             return item
           })
         }

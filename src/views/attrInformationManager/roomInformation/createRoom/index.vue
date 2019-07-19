@@ -9,14 +9,14 @@
                         <el-form-item label="房间名称:" prop="roomName" class="required" required :show-message="false">
                             <el-input v-model="postForm.roomName" id="name"></el-input>
                         </el-form-item>
-                        <el-form-item label="别名:" prop="alias" class="required" required :show-message="false">
+                        <el-form-item label="别名:" prop="alias" :show-message="false">
                             <el-input v-model="postForm.alias" id="alias"></el-input>
                         </el-form-item>
-                        <el-form-item label="英文名:" prop="enName" class="required" required :show-message="false">
+                        <el-form-item label="英文名:" prop="enName" :show-message="false">
                             <el-input v-model="postForm.enName" id="enName"></el-input>
                         </el-form-item>
                         <el-form-item label="门牌号:" prop="roomCode" class="required" required :show-message="false">
-                            <el-input v-model="postForm.roomCode" id="roomNumber"></el-input>
+                            <el-input v-model="postForm.hourseNumber" id="roomNumber"></el-input>
                         </el-form-item>
                         <el-form-item label="房间类别:" prop="typeCode" class="required">
                             <el-select v-model="postForm.typeCode" placeholder="请选择房间类别">
