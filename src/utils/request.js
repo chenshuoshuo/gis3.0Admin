@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
-import { getToken } from '@/utils/auth'
+import { getRefresh } from '@/utils/auth'
 // import store from '@/store'
 // import { getCookie } from '@/utils/auth'
 // const Base64 = require('js-base64').Base64
@@ -12,9 +12,9 @@ const service = axios.create({
 })
 // request interceptor
 service.interceptors.request.use(config => {
-  if (getToken()) {
+  if (getRefresh()) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    config.headers['Authorization'] = 'Bearer ' + getToken()
+    config.headers['Authorization'] = 'Bearer ' + getRefresh()
   }
   return config
 }, error => {

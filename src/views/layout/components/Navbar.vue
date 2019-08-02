@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { campusList } from '@/api/campus'
+import { campusList, taskState } from '@/api/campus'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -104,6 +104,12 @@ export default {
   },
   methods: {
     handleSync(row) {
+      taskState(row.groupId).then(res => {
+        console.log(res)
+        if (res.status) {
+
+        }
+      })
       row.syncing = true
       this.mapSyn = true
       const id = row.zones.filter(item => item.mapZoneByZoneId.is2D)[0].zoneId

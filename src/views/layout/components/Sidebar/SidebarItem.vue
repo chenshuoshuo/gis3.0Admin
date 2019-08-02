@@ -32,12 +32,15 @@
           </router-link>
         </template>
       </el-submenu>
-
     </template>
+    <div class="support">
+      <span v-if="!isCollapse">版本：&nbsp;V{{version}}</span>
+    </div>
   </div>
 </template>
 
 <script>
+const packgeJson = require('../../../../../package.json')
 import { mapGetters } from 'vuex'
 import { generateTitle } from '@/utils/i18n'
 
@@ -50,6 +53,11 @@ export default {
     isNest: {
       type: Boolean,
       default: false
+    }
+  },
+  data() {
+    return {
+      version: packgeJson.version
     }
   },
   methods: {

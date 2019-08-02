@@ -8,7 +8,7 @@
   }
   // 侧边栏
   .sidebar-container {
-    transition: width 0.28s;
+    transition: width 0.2s;
     width: 180px !important;
     height: 100%;
     position: fixed;
@@ -19,8 +19,22 @@
     z-index: 1001;
     overflow: hidden;
     //reset element-ui css
-    .horizontal-collapse-transition {
-      transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+    // .horizontal-collapse-transition {
+    //   transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+    // }
+    .support{
+      transition: width 0.2s;
+      width: 180px !important;
+      position: fixed;
+      height: 80px;
+      bottom: 0;
+      left: 0;
+      color: #bbb;
+      font-size: 14px;
+      text-align: center;
+      line-height: 80px;
+      background: rgb(48, 65, 86);
+      z-index: 1001;
     }
     .scrollbar-wrapper {
       overflow-x: hidden!important;
@@ -46,7 +60,7 @@
     }
   }
   .hideSidebar {
-    .sidebar-container {
+    .sidebar-container,.support {
       width: 36px !important;
     }
     .main-container {

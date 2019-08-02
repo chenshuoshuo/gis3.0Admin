@@ -1,6 +1,6 @@
 {
-  "name": "vue-element-admin",
-  "version": "3.7.0",
+  "name": "cmips-admin",
+  "version": "1.0.2",
   "description": "A magical vue admin. Typical templates for enterprise applications. Newest development stack of vue. Lots of awesome features",
   "license": "MIT",
   "scripts": {

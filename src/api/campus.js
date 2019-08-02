@@ -9,3 +9,12 @@ export function campusList() {
     })
   })
 }
+export function taskState(ids) {
+  return new Promise((resolve, reject) => {
+    axios.get(window.g.BASE_GIS + `/map/v3/task/zone/${ids}`).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
