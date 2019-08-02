@@ -104,42 +104,45 @@ export default {
   },
   methods: {
     handleSync(row) {
-      taskState(row.groupId).then(res => {
-        console.log(res)
-        if (res.status) {
+      taskState(row.groupId).then(response => {
+        console.log(response)
 
-        }
-      })
-      row.syncing = true
-      this.mapSyn = true
-      const id = row.zones.filter(item => item.mapZoneByZoneId.is2D)[0].zoneId
-      mapSynchronize(id).then(res => {
-        this.mapSyn = false
-        row.syncing = false
-        if (res.data.code === 200) {
-          if (!res.data.data.synStatus) {
-            this.$notify({
-              title: '失败',
-              message: res.data.data.errMsg,
-              type: 'error'
-            })
-          } else {
-            this.$notify({
-              title: '成功',
-              message: '地图数据同步成功',
-              type: 'success'
-            })
-          }
+        if (response.data.status && response.data.data.status == 2) {
+          row.syncing = true
+          this.mapSyn = true
+          const id = row.zones.filter(item => item.mapZoneByZoneId.is2D)[0].zoneId
+          mapSynchronize(id).then(res => {
+            this.mapSyn = false
+            row.syncing = false
+            if (res.data.code === 200) {
+              if (!res.data.data.synStatus) {
+                this.$notify({
+                  title: '失败',
+                  message: res.data.data.errMsg,
+                  type: 'error'
+                })
+              } else {
+                this.$notify({
+                  title: '成功',
+                  message: '地图数据同步成功',
+                  type: 'success'
+                })
+              }
+            } else {
+              this.$notify({
+                title: '失败',
+                message: '地图数据同步失败',
+                type: 'error'
+              })
+            }
+          })
         } else {
           this.$notify({
             title: '失败',
-            message: '地图数据同步失败',
+            message: response.data.data.message,
             type: 'error'
           })
         }
-      }).catch(err => {
-        this.mapSyn = false
-        row.syncing = false
       })
     },
     handlePush(row) {
@@ -170,9 +173,6 @@ export default {
             type: 'error'
           })
         }
-      }).catch(err => {
-        row.pushing = false
-        this.gisSyn = false
       })
     },
     handleCmips() {
