@@ -62,7 +62,7 @@ export default {
     },
     handleDeletMany() {
       if (this.multipleSelection.length > 0) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删选中的意见反馈, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -90,7 +90,7 @@ export default {
       }
     },
     handleModifyStatus(fileid) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该意见反馈, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

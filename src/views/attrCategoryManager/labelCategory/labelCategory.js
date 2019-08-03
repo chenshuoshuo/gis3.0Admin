@@ -37,7 +37,7 @@ export default {
       fields: [],
       func: treeToArray,
       rasterIcon: '',
-      token:getToken(),
+      token: getToken(),
       vectorIcon: '',
       state: '',
       columns: [
@@ -237,7 +237,7 @@ export default {
     },
     handleDeletMany() {
       if (this.multipleSelection.length > 0) {
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除选中的标注类别, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -312,7 +312,7 @@ export default {
       }
     },
     handleModifyStatus(fileid) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该标注类别, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -352,7 +352,7 @@ export default {
       })
     },
     handleImportExecel() {
-      this.$refs.upload.openUpload();
+      this.$refs.upload.openUpload()
     },
     handleExport() {
       this.isExport = true
