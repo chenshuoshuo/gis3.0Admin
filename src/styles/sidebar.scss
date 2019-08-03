@@ -10,11 +10,10 @@
   .sidebar-container {
     transition: width 0.2s;
     width: 180px !important;
-    height: 100%;
     position: fixed;
     font-size: 0px;
     top: 0;
-    bottom: 0;
+    bottom: 80px;
     left: 0;
     z-index: 1001;
     overflow: hidden;
