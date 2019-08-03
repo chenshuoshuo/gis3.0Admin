@@ -5,9 +5,8 @@ window.g = {
   // 地图门户管理接口地址
   BASE_IPS: 'http://192.168.4.241:6062',
   // CMGIS 接口地址
-  BASE_GIS: 'http://192.168.4.241/cmgis-server/'
+  BASE_GIS: 'https://testgis.you07.com/cmgis-server/'
 }
-var gisBaseServerUrl = 'http://192.168.4.241:7070/admin#/applications'
 // 地图token
 if (window.creeper) { window.creeper.CreeperConfig.token = 'cWluY2hlbmdqaWU6MTIzNDU2' }
 

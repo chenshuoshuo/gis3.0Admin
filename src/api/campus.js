@@ -10,9 +10,9 @@ export function campusList() {
     })
   })
 }
-export function taskState(zonid) {
+export function taskState(zoneId) {
   return cmgis({
-    url: `/map/v2/geo/flush/${zonid}`,
-    method: 'post'
+    url: `/map/v3/geo/flush/status/${zoneId}`,
+    method: 'get'
   })
 }
