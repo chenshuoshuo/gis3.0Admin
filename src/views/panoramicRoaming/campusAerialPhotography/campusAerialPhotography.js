@@ -4,7 +4,8 @@ import {
   updateRoam,
   delRoam,
   infoRoam,
-  pageRoam
+  pageRoam,
+  bulkDeleteRoam
 } from '@/api/roam'
 import { campusList } from '@/api/campus'
 export default {
@@ -104,7 +105,20 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-
+          bulkDeleteRoam(this.multipleSelection.map(item => item.roamId)).then(res => {
+            if (res.data.code === 200) {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+              this.getList()
+            } else {
+              this.$message({
+                type: 'warning',
+                message: '删除失败'
+              })
+            }
+          })
         })
       } else {
         this.$alert('请选择要删除的数据', '消息提示', {
