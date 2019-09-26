@@ -65,6 +65,7 @@
             </el-pagination>
           </div>
           <el-dialog
+            :close-on-click-modal="false"
             :title="$t('button.'+state)"
             width="450px" :visible.sync="showForm" @close="handleClose">
             <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form" status-icon :show-message="false">
@@ -84,7 +85,21 @@
               <el-form-item :label="$t('form.flyCamUrl')+':'" prop="roamnUrl" required>
                   <el-input v-model="formData.roamnUrl"></el-input>
               </el-form-item>
-              <el-form-item :label="$t('form.sort')+':'" prop="orderId" required>
+              <el-form-item label="航拍文件:">
+                <el-upload
+                    ref="upload"
+                    :headers="{
+                        'Authorization':'Bearer ' + token
+                    }"
+                    accept=".zip,.rar"
+                    :action="baseUrl + '/roam/upload'"
+                    :on-success="handleSuccess"
+                    :limit="1">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">支持文件格式:.rar,.zip</div>
+                </el-upload>
+              </el-form-item>
+              <el-form-item :label="$t('form.sort')+':'" prop="orderId">
                   <el-input v-model="formData.orderId"></el-input>
               </el-form-item>
             </el-form>
@@ -115,6 +130,11 @@
         } 
         .el-dialog__body{
             padding-bottom: 0;
+        }
+        .el-upload__tip {
+            margin-left: 20px;
+            display: inline-block;
+            color: #8c939d;
         }
     }
 </style>

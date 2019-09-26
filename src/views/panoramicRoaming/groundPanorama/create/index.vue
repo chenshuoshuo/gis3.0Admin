@@ -12,6 +12,20 @@
                         <el-form-item label="全景地址:" prop="roamnUrl" class="required" required>
                             <el-input v-model="postForm.roamnUrl" id="name"></el-input>
                         </el-form-item>
+                        <el-form-item label="全景文件:">
+                            <el-upload
+                                ref="upload"
+                                :headers="{
+                                    'Authorization':'Bearer ' + token
+                                }"
+                                accept=".zip,.rar"
+                                :action="baseUrl + '/roam/upload'"
+                                :on-success="handleSuccess"
+                                :limit="1">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                                <div slot="tip" class="el-upload__tip">支持文件格式:.rar,.zip</div>
+                            </el-upload>
+                        </el-form-item>
                         <el-form-item label="校区:" prop="campusId" class="required">
                             <el-select v-model="campusId"  placeholder="请选择校区">
                                 <el-option

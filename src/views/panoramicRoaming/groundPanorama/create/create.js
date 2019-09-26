@@ -2,6 +2,7 @@ import LevelSelector from '@/components/LevelSelector'
 import { addRoam, infoRoam, updateRoam } from '@/api/roam'
 import { campusList } from '@/api/campus'
 import { Message } from 'element-ui'
+import { getToken } from '@/utils/auth'
 
 export default {
   inject: ['baseUrl'],
@@ -10,6 +11,7 @@ export default {
   },
   data() {
     return {
+      token: getToken(),
       picUrl: '',
       isOver: false,
       isFisrt: true,
@@ -32,6 +34,11 @@ export default {
     }
   },
   methods: {
+    handleSuccess(res) {
+      if (res.status) {
+        this.$set(this.postForm, 'roamnUrl', this.baseUrl + '/' + res.data)
+      }
+    },
     openRaster() {
       this.isOpenRaster = true
       setTimeout(() => {

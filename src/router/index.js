@@ -27,7 +27,8 @@ import Layout from '@/views/layout/Layout'
 export const constantRouterMap = [
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
-  { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true }
+  { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
+  { path: '/mylogin', component: () => import('@/views/login'), hidden: true }
 ]
 
 export default new Router({

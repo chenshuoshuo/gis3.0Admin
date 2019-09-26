@@ -15,6 +15,9 @@
       <el-tooltip effect="dark" content="从CMGIS同步到CMIPS" placement="bottom">
         <el-button type="primary" class="theme-switch right-menu-item" size="small" :loading="mapSyn" @click="handleCmgis">GIS</el-button>
       </el-tooltip>
+      <el-tooltip effect="dark" content="从CMIPS推送到elsticsearch" placement="bottom">
+        <el-button type="warning" class="theme-switch right-menu-item" size="small" :loading="elsSyn" @click="handleEls">Els</el-button>
+      </el-tooltip>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
@@ -54,6 +57,19 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+    <el-dialog
+      title="从CMIPS推送到elsticsearch"
+      :visible.sync="elsticsearch"
+      width="450px">
+       <el-table :data="campus" :show-header='false' max-height="250">
+        <el-table-column prop="name"></el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button type="success" size="mini" :loading="scope.row.pushing" @click="handleElsPush(scope.row)">推送</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </el-menu>
 </template>
 
@@ -65,7 +81,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
-import { pushDataToGis, mapSynchronize } from '@/api/synData'
+import { pushDataToGis, mapSynchronize, pushDataToEls } from '@/api/synData'
 
 export default {
   components: {
@@ -86,8 +102,10 @@ export default {
       campus: [],
       cmips: false,
       cmgis: false,
+      elsticsearch: false,
       mapSyn: false,
       gisSyn: false,
+      elsSyn: false,
       avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
     }
   },
@@ -105,8 +123,6 @@ export default {
   methods: {
     handleSync(row) {
       taskState(row.groupId).then(response => {
-        console.log(response)
-
         if (response.data.status && response.data.data.status == 2) {
           row.syncing = true
           this.mapSyn = true
@@ -175,11 +191,36 @@ export default {
         }
       })
     },
+    handleElsPush(row) {
+      this.$set(row, 'pushing', true)
+      this.elsSyn = true
+      const id = row.zones.filter(item => item.mapZoneByZoneId.is2D)[0].zoneId
+      pushDataToEls(id).then(res => {
+        this.elsSyn = false
+        this.$set(row, 'pushing', false)
+        if (res.data.status) {
+          this.$notify({
+            title: '成功',
+            message: '地图数据推送成功',
+            type: 'success'
+          })
+        } else {
+          this.$notify({
+            title: '失败',
+            message: '地图数据推送失败',
+            type: 'error'
+          })
+        }
+      })
+    },
     handleCmips() {
       this.cmips = true
     },
     handleCmgis() {
       this.cmgis = true
+    },
+    handleEls() {
+      this.elsticsearch = true
     },
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')

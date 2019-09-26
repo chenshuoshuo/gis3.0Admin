@@ -8,12 +8,15 @@ import {
   bulkDeleteRoam
 } from '@/api/roam'
 import { campusList } from '@/api/campus'
+import { getToken } from '@/utils/auth'
 export default {
+  inject: ['baseUrl'],
   directives: {
     waves
   },
   data() {
     return {
+      token: getToken(),
       state: '',
       showForm: false,
       multipleSelection: [],
@@ -50,6 +53,11 @@ export default {
         this.listQuery.page++
       })
     },
+    handleSuccess(res) {
+      if (res.status) {
+        this.$set(this.formData, 'roamnUrl', this.baseUrl + '/' + res.data)
+      }
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
@@ -71,6 +79,7 @@ export default {
     handleClose() {
       this.formData = { roamType: 1 }
       this.$refs.postForm.resetFields()
+      this.$refs.upload.clearFiles()
     },
     handleEdit(id) {
       this.state = 'edit'
@@ -128,45 +137,49 @@ export default {
       }
     },
     handleSubmit() {
-      this.isSub = true
-      if (this.state === 'add') {
-        addRoam(this.formData).then(res => {
-          if (res.data.code === 200) {
-            this.$message({
-              type: 'success',
-              message: '添加成功'
-            })
-            this.getList()
-            this.showForm = false
-          } else {
-            this.$message({
-              type: 'warning',
-              message: '添加失败'
-            })
-          }
-        }).finally(() => {
-          this.isSub = false
-        })
-      } else if (this.state === 'edit') {
-        delete this.formData.lngLat
-        updateRoam(this.formData.roamId, this.formData).then(res => {
-          if (res.data.code === 200) {
-            this.$message({
-              type: 'success',
-              message: '更新成功'
-            })
-            this.getList()
-            this.showForm = false
-          } else {
-            this.$message({
-              type: 'warning',
-              message: '更新失败'
+      this.$refs['postForm'].validate(val => {
+        if (val) {
+          this.isSub = true
+          if (this.state === 'add') {
+            addRoam(this.formData).then(res => {
+              if (res.data.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: '添加成功'
+                })
+                this.getList()
+                this.showForm = false
+              } else {
+                this.$message({
+                  type: 'warning',
+                  message: '添加失败'
+                })
+              }
             }).finally(() => {
               this.isSub = false
             })
+          } else if (this.state === 'edit') {
+            delete this.formData.lngLat
+            updateRoam(this.formData.roamId, this.formData).then(res => {
+              if (res.data.code === 200) {
+                this.$message({
+                  type: 'success',
+                  message: '更新成功'
+                })
+                this.getList()
+                this.showForm = false
+              } else {
+                this.$message({
+                  type: 'warning',
+                  message: '更新失败'
+                }).finally(() => {
+                  this.isSub = false
+                })
+              }
+            })
           }
-        })
-      }
+        }
+      })
     },
     handleModifyStatus(fileid) {
       this.$confirm('此操作将永久删除该航拍, 是否继续?', '提示', {

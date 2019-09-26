@@ -25,13 +25,19 @@ export function pushDataToGis(zoneId) {
   return service({
     url: `/portalInit/pushDataToGis/${zoneId}`,
     method: 'post',
-    data:zoneId
+    data: zoneId
   })
 }
 
 export function mapSynchronize(zoneId) {
   return service({
     url: `/portalInit/init/${zoneId}`,
+    method: 'get'
+  })
+}
+export function pushDataToEls(zoneId) {
+  return service({
+    url: `/search/pushData/push/${zoneId}`,
     method: 'get'
   })
 }
