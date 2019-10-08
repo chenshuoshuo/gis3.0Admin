@@ -40,3 +40,10 @@ export function pageRoam(params) {
     params: params
   })
 }
+export function listRoam(params) {
+  return service({
+    url: `/roam/listQuery`,
+    method: 'get',
+    params: params
+  })
+}

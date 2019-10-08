@@ -75,6 +75,29 @@
                 </div>
             </div>
         </div>
+        <div class="search-box">
+            <el-select
+                v-model="keyWord"
+                filterable
+                remote
+                placeholder="请输入内容"
+                :remote-method="remoteMethod"
+                :loading="loading">
+                <el-option
+                v-for="item in POIList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+                </el-option>
+            </el-select>
+            <span class="el-icon-search"></span>
+        </div>
+        <div v-if="this.state !== 'add'" class="display-ground-panorama">
+            <span>显示全部地面全景</span>
+            <el-switch
+                v-model="display">
+            </el-switch>
+        </div>
     </div>
 </template>
 
@@ -87,6 +110,46 @@
         right: 0;
         left: 0;
         bottom: 0;
+        .display-ground-panorama{
+            position: absolute;
+            display: flex;
+            align-items: center;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            width: 200px;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(4, 4, 4, .2);
+            background: #fff;
+            z-index: 2;
+            span{
+                flex: 1;
+                font-size: 14px;
+                text-align: center;
+            }
+        }
+        .search-box{
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 20px;
+            left: 470px;
+            width: 210px;
+            box-shadow: 0 2px 4px rgba(4, 4, 4, .2);
+            background: #fff;
+            span{
+                padding: 0 6px;
+            }
+            .el-input{
+                height: 40px;
+                width: 100%;
+                .el-input__inner{
+                    border: none;
+                    height: 40px;
+                    line-height: 40px;
+                }
+            }
+        }
         #rasterMap{
             height: 80vh;
         }
@@ -149,6 +212,7 @@
         }
         #slider-height{
             position: absolute;
+            background: #fff;
             top: 20px;
             bottom:60px;
         }

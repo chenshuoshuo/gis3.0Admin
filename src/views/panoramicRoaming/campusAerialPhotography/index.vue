@@ -82,7 +82,7 @@
                         </el-option>
                     </el-select>
               </el-form-item>
-              <el-form-item :label="$t('form.flyCamUrl')+':'" prop="roamnUrl" required>
+              <el-form-item :label="$t('form.flyCamUrl')+':'" prop="roamnUrl">
                   <el-input v-model="formData.roamnUrl"></el-input>
               </el-form-item>
               <el-form-item label="航拍文件:">

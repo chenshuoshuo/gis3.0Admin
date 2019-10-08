@@ -1,5 +1,5 @@
 import LevelSelector from '@/components/LevelSelector'
-import { addRoam, infoRoam, updateRoam } from '@/api/roam'
+import { addRoam, infoRoam, updateRoam, listRoam } from '@/api/roam'
 import { campusList } from '@/api/campus'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
@@ -11,7 +11,13 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      markers: [],
+      POIList: [],
+      poiComponent: null,
       token: getToken(),
+      keyWord: '',
+      display: false,
       picUrl: '',
       isOver: false,
       isFisrt: true,
@@ -37,6 +43,28 @@ export default {
     handleSuccess(res) {
       if (res.status) {
         this.$set(this.postForm, 'roamnUrl', this.baseUrl + '/' + res.data)
+      }
+    },
+    // poi
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true
+        this.poiComponent.searchRequest({ keywords: query, querytype: 'key' }, (res) => {
+          this.loading = false
+          if (res.status) {
+            this.POIList = res.data.list.filter(item => item.systemType === 'map')
+          } else {
+            this.$message.error(res.data.message)
+          }
+        }, () => {}, {
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Authorization': 'Basic Q21HaXNScGM6Q01naXNUISQmKCo='
+          }
+        })
+      } else {
+        this.options = []
       }
     },
     openRaster() {
@@ -101,7 +129,7 @@ export default {
           this.postForm.campusCode = this.campusId
           if (this.state === 'add') {
             addRoam(this.postForm).then(res => {
-              if (res.data.code === 200) {
+              if (res.data.status) {
                 this.$message({
                   type: 'success',
                   message: '添加成功'
@@ -121,7 +149,6 @@ export default {
                   type: 'success',
                   message: '更新成功'
                 })
-                this.$router.go(-1)
               } else {
                 this.$message({
                   type: 'error',
@@ -180,9 +207,54 @@ export default {
         roamType: 2,
         location: ''
       }
+    },
+    getListRoam() {
+      this.markers.forEach(item => {
+        item.remove()
+      })
+      listRoam({ campusCode: this.postForm.campusCode, roamType: 2 }).then(res => {
+        if (res.data.status) {
+          res.data.data.forEach(item => {
+            const markerIcon = new Image()
+            markerIcon.src = require('../../../../assets/images/roam.png')
+            markerIcon.style.cursor = 'pointer'
+            markerIcon.id = item.roamId
+            markerIcon.onclick = () => {
+              infoRoam(item.roamId).then(res => {
+                if (res.data.code === 200) {
+                  this.postForm = res.data.data
+                  this.postForm.lngLat = this.postForm.lngLat.coordinates.join(',')
+                  this.postForm.rasterLngLat = res.data.data.rasterLngLat ? res.data.data.rasterLngLat.coordinates.join(',')
+                    : ''
+                } else {
+                  this.$message({
+                    type: 'warning',
+                    message: '应用信息获取失败'
+                  })
+                  this.$router.back(-1)
+                }
+              })
+              // event.preventDefault()
+              // event.stopPropagation()
+            }
+            this.markers.push(
+              new window.creeper.Marker(markerIcon).setLngLat(item.lngLat.coordinates).addTo(this.vectorMap)
+            )
+          })
+        } else {
+          this.$message.error(res.data.message)
+        }
+      })
     }
   },
   watch: {
+    display() {
+      this.display
+        ? this.getListRoam()
+        : this.markers.forEach(item => {
+          item.remove()
+        })
+    },
     campusId() {
       this.has3D = false
       this.campus.forEach(item => {
@@ -192,8 +264,6 @@ export default {
           }
         })
       })
-      console.log(this.has3D)
-
       if (this.state === 'update' && this.isFisrt) {
         this.isFisrt = false
       } else {
@@ -203,6 +273,15 @@ export default {
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
         this.initMap()
       }
+      this.poiComponent = new window.creeper.searchEngine(window.g.BASE_GIS, this.campusId)
+      this.display && this.getListRoam()
+    },
+    keyWord() {
+      const target = this.POIList.find(item => item.id === this.keyWord)
+      target.center && this.vectorMap.flyTo({
+        zoom: this.vectorMap.configComponent.mapZone.maxZoom,
+        center: target.center.coordinates
+      })
     }
   },
   beforeMount() {
@@ -235,8 +314,6 @@ export default {
             item.map3D = item.zones.filter(element => !element.mapZoneByZoneId.is2D)
             return item
           })
-          console.log(this.campus)
-
           this.campusId = this.campus[0].map2D[this.campus[0].map2D.length - 1].mapZoneByZoneId.id
           this.postForm.campusCode = this.campusId
           this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
