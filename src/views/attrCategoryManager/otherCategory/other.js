@@ -48,7 +48,7 @@ export default {
       pageOthersPolygonType(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -77,7 +77,7 @@ export default {
         'columnId': id,
         'typeCode': this.typeCode
       }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -96,7 +96,7 @@ export default {
         element.typeCode = this.typeCode
       })
       addMapOptExtendsDefine(params).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.$message({
             type: 'success',
             message: '添加成功'
@@ -115,7 +115,7 @@ export default {
     handleEdit(id) {
       this.state = 'edit'
       infoOthersPolygonType(id).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.formData = res.data.data
           this.showForm = true
         } else {
@@ -129,7 +129,7 @@ export default {
     handleConfig(typeCode) {
       this.typeCode = typeCode
       getMapOptExtendsDefine(typeCode).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.fields = res.data.data
           this.$refs.config.open()
         } else {
@@ -168,7 +168,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeleteOthersPolygonType(this.multipleSelection.map(item => item.typeCode).join(',')).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -203,7 +203,7 @@ export default {
         this.isSub = true
         if (this.state === 'add') {
           createOthersPolygonType(this.formData).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '添加成功'
@@ -221,7 +221,7 @@ export default {
           })
         } else if (this.state === 'edit') {
           updateOthersPolygonType(this.formData).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '更新成功'
@@ -247,7 +247,7 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteOthersPolygonType(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'

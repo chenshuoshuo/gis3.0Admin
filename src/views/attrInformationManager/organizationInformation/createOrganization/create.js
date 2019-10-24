@@ -72,7 +72,7 @@ export default {
       }
     },
     handleSuccess(res) {
-      if (res.code === 200) {
+      if (res.status) {
         this.fileList.push({ url: window.g.BASE_IPS + res.data })
         this.postForm.mapOrganizationImgList.push({ imgUrl: res.data })
       } else {
@@ -96,7 +96,7 @@ export default {
           this.postForm.mapOrganizationExtendsList.push({ columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
         })
         addOrganizationInfo(this.postForm).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '添加成功'
@@ -119,7 +119,7 @@ export default {
         })
         delete this.postForm.mapOrganizationType
         updateOrganizationInfo(this.postForm).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '更新成功'
@@ -136,7 +136,7 @@ export default {
     },
     getOrganizationTypeList() {
       listOrganizationType({ campusCode: this.campusId }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.types = res.data.data
         } else {
           this.$message({
@@ -149,7 +149,7 @@ export default {
     initExtendsDefine() {
       if (this.postForm.typeCode) {
         getMapOtExtendsDefine(this.postForm.typeCode).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             if (this.postForm.mapOrganizationExtendsList && this.postForm.mapOrganizationExtendsList.length > 0) {
               this.postForm.mapOrganizationExtendsList.forEach(value => {
                 res.data.data.forEach(element => {
@@ -282,7 +282,7 @@ export default {
     getCampusList() {
       return new Promise((resolve, reject) => {
         campusList().then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
             this.campus = arr.map(item => {
               item.map2D = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -406,7 +406,7 @@ export default {
     if (this.state === 'update') {
       this.getCampusList().then(() => {
         getOrganizationInfo(this.postForm.organizationCode).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.postForm = res.data.data
             res.data.data.mapOrganizationImgList.forEach(element => {
               this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })

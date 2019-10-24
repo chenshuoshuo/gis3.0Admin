@@ -37,7 +37,7 @@ export default {
       this.listLoading = true
       this.listQuery.page--
       pageRoam(this.listQuery).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -56,7 +56,7 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
           this.campus = arr.map(item => {
             item.zones = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -76,7 +76,7 @@ export default {
     handleEdit(id) {
       this.state = 'edit'
       infoRoam(id).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.formData = res.data.data
           this.showForm = true
         } else {
@@ -107,7 +107,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeleteRoam(this.multipleSelection.map(item => item.roamId)).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -132,7 +132,7 @@ export default {
       this.isSub = true
       if (this.state === 'add') {
         addRoam(this.formData).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '添加成功'
@@ -151,7 +151,7 @@ export default {
       } else if (this.state === 'edit') {
         delete this.formData.lngLat
         updateRoam(this.formData.roamId, this.formData).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '更新成功'
@@ -176,7 +176,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delRoam(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'

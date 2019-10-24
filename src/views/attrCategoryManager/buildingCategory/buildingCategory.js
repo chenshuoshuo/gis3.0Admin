@@ -50,7 +50,7 @@ export default {
       pageBuildingType(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -63,7 +63,7 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.campus = res.data.data
         }
       })
@@ -86,7 +86,7 @@ export default {
         'columnId': id,
         'typeCode': this.typeCode
       }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -105,7 +105,7 @@ export default {
         element.typeCode = this.typeCode
       })
       addMapBtExtendsDefine(params).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.$message({
             type: 'success',
             message: '添加成功'
@@ -124,7 +124,7 @@ export default {
     handleEdit(id) {
       this.state = 'edit'
       infoBuildingType(id).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.formData = res.data.data
           this.showForm = true
         } else {
@@ -138,7 +138,7 @@ export default {
     handleConfig(typeCode) {
       this.typeCode = typeCode
       getMapBtExtendsDefine(typeCode).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.fields = res.data.data
           this.$refs.config.open()
         } else {
@@ -177,7 +177,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeleteBuildingType(this.multipleSelection.map(item => item.typeCode).join(',')).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -211,7 +211,7 @@ export default {
       this.isSub = true
       if (this.state === 'add') {
         createBuildingType(this.formData).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '添加成功'
@@ -229,7 +229,7 @@ export default {
         })
       } else if (this.state === 'edit') {
         updateBuildingType(this.formData).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '更新成功'
@@ -254,7 +254,7 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteBuildingType(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'

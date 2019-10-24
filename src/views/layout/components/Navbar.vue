@@ -111,7 +111,7 @@ export default {
   },
   beforeMount() {
     campusList().then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.campus = res.data.data.content
         this.campus.forEach(item => {
           item.pushing = false
@@ -130,7 +130,7 @@ export default {
           mapSynchronize(id).then(res => {
             this.mapSyn = false
             row.syncing = false
-            if (res.data.code === 200) {
+            if (res.data.status) {
               if (!res.data.data.synStatus) {
                 this.$notify({
                   title: '失败',
@@ -168,7 +168,7 @@ export default {
       pushDataToGis(id).then(res => {
         this.gisSyn = false
         row.pushing = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           if (!res.data.data.synStatus) {
             this.$notify({
               title: '失败',

@@ -144,7 +144,7 @@ export default {
             })
           } else if (this.state === 'update') {
             updateRoam(this.postForm.roamId, this.postForm).then(res => {
-              if (res.data.code === 200) {
+              if (res.data.status) {
                 this.$message({
                   type: 'success',
                   message: '更新成功'
@@ -221,7 +221,7 @@ export default {
             markerIcon.id = item.roamId
             markerIcon.onclick = () => {
               infoRoam(item.roamId).then(res => {
-                if (res.data.code === 200) {
+                if (res.data.status) {
                   this.postForm = res.data.data
                   this.postForm.lngLat = this.postForm.lngLat.coordinates.join(',')
                   this.postForm.rasterLngLat = res.data.data.rasterLngLat ? res.data.data.rasterLngLat.coordinates.join(',')
@@ -307,7 +307,7 @@ export default {
   mounted() {
     if (this.state === 'add') {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
           this.campus = arr.map(item => {
             item.map2D = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -321,7 +321,7 @@ export default {
       })
     } else {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
           this.campus = arr.map(item => {
             item.map2D = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -329,7 +329,7 @@ export default {
             return item
           })
           infoRoam(this.postForm.roamId).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.postForm = res.data.data
               this.postForm.rasterLngLat = res.data.data.rasterLngLat ? res.data.data.rasterLngLat.coordinates.join(',')
                 : ''

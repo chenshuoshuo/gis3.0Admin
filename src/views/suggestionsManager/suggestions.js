@@ -26,7 +26,7 @@ export default {
       this.listQuery.page--
       pageFeedback(this.listQuery).then(res => {
         this.listQuery.page++
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -68,7 +68,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeleteFeedback(this.multipleSelection.map(item => item.feedbackId)).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -96,7 +96,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delFeedback(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'

@@ -35,7 +35,7 @@ Object.keys(filters).forEach(key => {
 Vue.config.productionTip = false
 
 axios.get(window.g.BASE_CCR + '/center/store/v1/configuration/runtimeConfig').then(res => {
-  if (res.data.code === 0) {
+  if (res.data.status) {
     var data = JSON.parse(res.data.data)
     window.g.MAP_URL = data.mapAPI
   } else {

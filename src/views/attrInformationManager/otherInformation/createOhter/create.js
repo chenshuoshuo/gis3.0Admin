@@ -102,7 +102,7 @@ export default {
       }
     },
     handleSuccess(res) {
-      if (res.code === 200) {
+      if (res.status) {
         this.fileList.push({ url: window.g.BASE_IPS + res.data })
         this.postForm.mapOthersPolygonImgList.push({ imgUrl: res.data })
       } else {
@@ -120,7 +120,7 @@ export default {
             //   this.postForm.mapOthersExtendsList.push({ columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
             // })
             // addOthersInfo(this.postForm).then(res => {
-            //   if (res.data.code === 200) {
+            //   if (res.data.status) {
             //     this.$message({
             //       type: 'success',
             //       message: '添加成功'
@@ -142,7 +142,7 @@ export default {
             })
             delete this.postForm.mapOthersType
             updateOthersInfo(this.postForm).then(res => {
-              if (res.data.code === 200) {
+              if (res.data.status) {
                 this.$message({
                   type: 'success',
                   message: '更新成功'
@@ -160,7 +160,7 @@ export default {
     },
     getOthersTypeList() {
       listOthersPolygonType({ campusCode: this.campusId }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.types = res.data.data
         } else {
           this.$message({
@@ -173,7 +173,7 @@ export default {
     initExtendsDefine() {
       if (this.postForm.typeCode) {
         getMapOptExtendsDefine(this.postForm.typeCode).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             if (this.postForm.mapOthersExtendsList && this.postForm.mapOthersExtendsList.length > 0) {
               this.postForm.mapOthersExtendsList.forEach(value => {
                 res.data.data.forEach(element => {
@@ -255,7 +255,7 @@ export default {
   mounted() {
     // debugger
     getOthersInfo(this.postForm.polygonCode).then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.postForm = res.data.data
         res.data.data.mapOthersPolygonImgList.forEach(element => {
           this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })

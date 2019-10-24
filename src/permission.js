@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
       var userinfoStr = window.atob(getToken().split('.')[1])
       const userInfo = JSON.parse(userinfoStr)
       getUserInfo(userInfo.user_name).then(res => {
-        if (res.data.code === 0) {
+        if (res.data.status) {
           window.cmips_userId = res.data.data.userId
           const roles = res.data.data.authorities.filter(item => item.type === 'ips_menu')
           store.dispatch('GenerateRoutes', roles).then(() => { // 根据roles权限生成可访问的路由表

@@ -96,7 +96,7 @@ export default {
       }
     },
     handleSuccess(res) {
-      if (res.code === 200) {
+      if (res.status) {
         this.fileList.push({ url: window.g.BASE_IPS + res.data })
         this.postForm.mapBuildingImgList.push({ imgUrl: res.data })
       } else {
@@ -114,7 +114,7 @@ export default {
             //   this.postForm.mapBuildingExtendsList.push({ columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
             // })
             // addBuildingInfo(this.postForm).then(res => {
-            //   if (res.data.code === 200) {
+            //   if (res.data.status) {
             //     this.$message({
             //       type: 'success',
             //       message: '添加成功'
@@ -136,7 +136,7 @@ export default {
             })
             delete this.postForm.mapBuildingType
             updateBuildingInfo(this.postForm).then(res => {
-              if (res.data.code === 200) {
+              if (res.data.status) {
                 this.$message({
                   type: 'success',
                   message: '更新成功'
@@ -155,7 +155,7 @@ export default {
     },
     getBuildingTypeList() {
       listBuildingType({ campusCode: this.campusId }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.types = res.data.data
         } else {
           this.$message({
@@ -168,7 +168,7 @@ export default {
     initExtendsDefine() {
       if (this.postForm.typeCode) {
         getMapBtExtendsDefine(this.postForm.typeCode).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             if (this.postForm.mapBuildingExtendsList && this.postForm.mapBuildingExtendsList.length > 0) {
               this.postForm.mapBuildingExtendsList.forEach(value => {
                 res.data.data.forEach(element => {
@@ -227,7 +227,7 @@ export default {
   },
   mounted() {
     getBuildingInfo(this.postForm.buildingCode).then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.postForm = res.data.data
         res.data.data.mapBuildingImgList.forEach(element => {
           this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })

@@ -86,7 +86,7 @@ export default {
       pagePointType(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
           this.$forceUpdate()
@@ -100,7 +100,7 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.campus = res.data.data
         }
       })
@@ -123,7 +123,7 @@ export default {
         'columnId': id,
         'typeCode': this.typeCode
       }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -142,7 +142,7 @@ export default {
         element.typeCode = this.typeCode
       })
       addMapPtExtendsDefine(params).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.$message({
             type: 'success',
             message: '添加成功'
@@ -162,7 +162,7 @@ export default {
       this.state = 'edit'
       this.getParentCategorys()
       infoPointType(id).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.formData = res.data.data
           this.rasterIcon = this.formData.vectorIcon ? this.baseUrl + this.formData.rasterIcon : ''
           this.vectorIcon = this.formData.vectorIcon ? this.baseUrl + this.formData.vectorIcon : ''
@@ -177,7 +177,7 @@ export default {
     },
     getParentCategorys() {
       queryPonitParentList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.parentCategorys = res.data.data
         } else {
           this.$message({
@@ -190,7 +190,7 @@ export default {
     handleConfig(typeCode) {
       this.typeCode = typeCode
       getMapPtExtendsDefine(typeCode).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.fields = res.data.data
           this.$refs.config.open()
         } else {
@@ -214,7 +214,7 @@ export default {
       this.getList()
     },
     handleVectorIcon(res, file) {
-      if (res.code === 200) {
+      if (res.status) {
         this.vectorIcon = URL.createObjectURL(file.raw)
         this.formData.vectorIcon = res.data
       } else {
@@ -225,7 +225,7 @@ export default {
       }
     },
     handleRasterIcon(res, file) {
-      if (res.code === 200) {
+      if (res.status) {
         this.formData.rasterIcon = res.data
         this.rasterIcon = URL.createObjectURL(file.raw)
       } else {
@@ -243,7 +243,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeletePointType(this.multipleSelection.map(item => item.typeCode).join(',')).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -275,7 +275,7 @@ export default {
       this.isSub = true
       if (this.state === 'add') {
         createPointType(this.formData).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '添加成功'
@@ -293,7 +293,7 @@ export default {
         })
       } else if (this.state === 'edit') {
         updatePointType(this.formData).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '更新成功'
@@ -318,7 +318,7 @@ export default {
         type: 'warning'
       }).then(() => {
         deletePointType(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'

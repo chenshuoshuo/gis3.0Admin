@@ -42,7 +42,7 @@ export default {
       pageOrganizationInfo(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -55,7 +55,7 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
           this.campus = arr.map(item => {
             item.zones = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -89,7 +89,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeleteOrganizationInfo(this.multipleSelection.map(item => item.organizationCode).join(',')).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -156,7 +156,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delOrganizationInfo(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'
@@ -175,7 +175,7 @@ export default {
   watch: {
     compusCode() {
       listOrganizationType({ campusCode: this.listQuery.campusCode }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.types = res.data.data
         } else {
           this.$message({

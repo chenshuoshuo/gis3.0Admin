@@ -44,7 +44,7 @@ export default {
       pagePointInfo(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -67,7 +67,7 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
           this.campus = arr.map(item => {
             item.zones = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -102,7 +102,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeletePointInfo(this.multipleSelection.map(item => item.pointCode).join(',')).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -169,7 +169,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delPointInfo(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'
@@ -189,7 +189,7 @@ export default {
     this.getList()
     this.getCampus()
     listPointType().then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.categories = this.parseCascader(res.data.data)
       } else {
         this.$message({
@@ -199,7 +199,7 @@ export default {
       }
     })
     queryPonitParentList().then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.parentCategories = res.data.data
       } else {
         this.$message({

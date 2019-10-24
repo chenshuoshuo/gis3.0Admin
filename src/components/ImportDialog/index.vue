@@ -37,7 +37,7 @@
         type: String,
         require: true
       },
-      update:{
+      update: {
         type: Function,
         require: true
       }
@@ -48,8 +48,8 @@
         hasFile: false,
         showUpload: false,
         progressValue: 0,
-        form:{
-          fileName: '',
+        form: {
+          fileName: ''
         }
       }
     },
@@ -89,14 +89,14 @@
         }
       },
       subFile() {
-        this.$refs.form.validate(val=>{
+        this.$refs.form.validate(val => {
           if (val) {
             this.hasFile = true
             const form = new FormData()
             form.append('file', this.file)
             form.append('userId', window.cmips_userId)
-            importExcel(this.uploadUrl,form).then(res => {
-              if (res.data.code === 0) {
+            importExcel(this.uploadUrl, form).then(res => {
+              if (res.data.status) {
                 this.$notify({
                   title: '成功',
                   message: '数据导入成功',

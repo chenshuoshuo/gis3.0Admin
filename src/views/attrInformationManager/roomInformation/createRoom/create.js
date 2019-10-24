@@ -102,7 +102,7 @@ export default {
       }
     },
     handleSuccess(res) {
-      if (res.code === 200) {
+      if (res.status) {
         this.fileList.push({ url: window.g.BASE_IPS + res.data })
         this.postForm.mapRoomImgList.push({ imgUrl: res.data })
       } else {
@@ -120,7 +120,7 @@ export default {
             //   this.postForm.mapRoomExtendsList.push({ columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
             // })
             // addRoomInfo(this.postForm).then(res => {
-            //   if (res.data.code === 200) {
+            //   if (res.data.status) {
             //     this.$message({
             //       type: 'success',
             //       message: '添加成功'
@@ -142,7 +142,7 @@ export default {
             })
             delete this.postForm.mapRoomType
             updateRoomInfo(this.postForm).then(res => {
-              if (res.data.code === 200) {
+              if (res.data.status) {
                 this.$message({
                   type: 'success',
                   message: '更新成功'
@@ -161,7 +161,7 @@ export default {
     },
     getRoomTypeList() {
       listRoomType({ campusCode: this.campusId }).then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.types = res.data.data
         } else {
           this.$message({
@@ -174,7 +174,7 @@ export default {
     initExtendsDefine() {
       if (this.postForm.typeCode) {
         getMapRtExtendsDefine(this.postForm.typeCode).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             if (this.postForm.mapRoomExtendsList && this.postForm.mapRoomExtendsList.length > 0) {
               this.postForm.mapRoomExtendsList.forEach(value => {
                 res.data.data.forEach(element => {
@@ -248,7 +248,7 @@ export default {
   },
   mounted() {
     getRoomInfo(this.postForm.roomCode).then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.postForm = res.data.data
         res.data.data.mapRoomImgList.forEach(element => {
           this.fileList.push({ id: element.imgId, url: `${window.g.BASE_IPS}${element.imgUrl}` })

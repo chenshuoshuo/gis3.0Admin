@@ -45,7 +45,7 @@ export default {
       pageBuildingInfo(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false
-        if (res.data.code === 200) {
+        if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
         } else {
@@ -58,7 +58,7 @@ export default {
     },
     getCampus() {
       campusList().then(res => {
-        if (res.data.code === 200) {
+        if (res.data.status) {
           const arr = res.data.data.content.filter(item => item.zones.filter(element => element.mapZoneByZoneId.is2D).length > 0)
           this.campus = arr.map(item => {
             item.zones = item.zones.filter(element => element.mapZoneByZoneId.is2D)
@@ -82,7 +82,7 @@ export default {
       this.isRefreash = true
       mapBuildingSynData({ userId: window.cmips_userId }).then(res => {
         this.isRefreash = false
-        if (res.data.code === 0) {
+        if (res.data.status) {
           this.$notify({
             title: '成功',
             message: '大楼数据刷新成功',
@@ -108,7 +108,7 @@ export default {
           type: 'warning'
         }).then(() => {
           bulkDeleteBuildingInfo(this.multipleSelection.map(item => item.buildingCode).join(',')).then(res => {
-            if (res.data.code === 200) {
+            if (res.data.status) {
               this.$message({
                 type: 'success',
                 message: '删除成功'
@@ -175,7 +175,7 @@ export default {
         type: 'warning'
       }).then(() => {
         delBuildingInfo(fileid).then(res => {
-          if (res.data.code === 200) {
+          if (res.data.status) {
             this.$message({
               type: 'success',
               message: '删除成功'
@@ -195,7 +195,7 @@ export default {
     this.getList()
     this.getCampus()
     listBuildingType().then(res => {
-      if (res.data.code === 200) {
+      if (res.data.status) {
         this.categories = res.data.data
       } else {
         this.$message({
