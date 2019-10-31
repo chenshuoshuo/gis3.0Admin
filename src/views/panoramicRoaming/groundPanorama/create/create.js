@@ -42,7 +42,7 @@ export default {
   methods: {
     handleSuccess(res) {
       if (res.status) {
-        this.$set(this.postForm, 'roamnUrl', this.baseUrl + '/' + res.data)
+        this.$set(this.postForm, 'roamnUrl', this.baseUrl + '/' + res.data.data)
       }
     },
     // poi

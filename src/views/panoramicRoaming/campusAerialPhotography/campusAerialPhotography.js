@@ -55,7 +55,7 @@ export default {
     },
     handleSuccess(res) {
       if (res.status) {
-        this.$set(this.formData, 'roamnUrl', this.baseUrl + '/' + res.data)
+        this.$set(this.formData, 'roamnUrl', this.baseUrl + '/' + res.data.data)
       }
     },
     handleSelectionChange(val) {
