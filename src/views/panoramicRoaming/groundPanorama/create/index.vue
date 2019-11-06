@@ -40,7 +40,7 @@
                             <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
                         </el-form-item>
                         <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLat" class="required" required>
-                            <span @click="openRaster">
+                            <span @click="openRaster"> 
                                 <el-input v-model="postForm.rasterLngLat" placeholder="点击打开三维地图" readonly></el-input>
                             </span>
                         </el-form-item>
@@ -65,6 +65,10 @@
             </el-scrollbar>
         </div>
         <div class="tool-box">
+            <div class="level-box">
+                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
+            </div>
             <div class="zoom-box">
                 <div class="item" @click="zoomIn">
                     <i class="el-icon-ips-jia"></i>

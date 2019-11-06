@@ -21,7 +21,7 @@ export default {
       picUrl: '',
       isOver: false,
       isFisrt: true,
-      has3D: false,
+      has3D: true,
       isOpenRaster: false,
       types: [],
       campusId: null,
@@ -35,6 +35,12 @@ export default {
         roamType: 2,
         location: '',
         campusCode: null
+      },
+      floor: {
+        minLevel: 0,
+        maxLevel: 0,
+        floorShow: false,
+        currentLevel: 0
       },
       vectorMap: null
     }
@@ -163,6 +169,33 @@ export default {
     initMap() {
       var marker = null
       this.vectorMap.on('load', () => {
+        // 重写moveend方法
+        this.vectorMap.on('moveend', () => {
+          if (this.vectorMap.getZoom() >= 18) {
+            this.has3D = false
+          } else {
+            this.has3D = true
+          }
+          // 调用sdk中的moveend回调
+          this.vectorMap.floorComponent.onCameraMoveEnd()
+          if (this.vectorMap.getZoom() >= 18 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
+            if (this.floor.currentLevel && !this.floor.maxLevel) {
+              this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+              this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+              this.setLevel(this.floor.currentLevel)
+            } else {
+              this.floor.currentLevel = this.vectorMap.floorComponent.nowLevelIndex
+              this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+              this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+              if (this.$refs.level) {
+                this.$refs.level.setCurrentFloor(this.vectorMap.floorComponent.nowLevelIndex)
+              }
+            }
+            this.floor.floorShow = true
+          } else {
+            this.floor.floorShow = false
+          }
+        })
         this.vectorMap.on('click', (e) => {
           if (marker !== null) {
             marker.remove()
@@ -256,11 +289,11 @@ export default {
         })
     },
     campusId() {
-      this.has3D = false
+      // this.has3D = false
       this.campus.forEach(item => {
         item.map2D.forEach(element => {
           if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
-            this.has3D = true
+            // this.has3D = true
           }
         })
       })
