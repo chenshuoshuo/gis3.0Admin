@@ -1,6 +1,6 @@
 {
   "name": "cmips-admin",
-  "version": "1.0.4",
+  "version": "1.0.41",
   "description": "CMIPS-MANAGER",
   "scripts": {
     "dev": "cross-env BABEL_ENV=development webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
