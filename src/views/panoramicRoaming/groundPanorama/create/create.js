@@ -155,6 +155,7 @@ export default {
                   type: 'success',
                   message: '更新成功'
                 })
+                this.$router.go(-1)
               } else {
                 this.$message({
                   type: 'error',
@@ -200,6 +201,8 @@ export default {
           if (marker !== null) {
             marker.remove()
           }
+          // console.log(this.vectorMap.floorComponent.nowLevelIndex)
+          this.$set(this.postForm, 'leaf', this.vectorMap.floorComponent.nowLevelIndex)
           marker = new window.creeper.Marker({
             draggable: true
           }).setLngLat(e.lngLat).addTo(this.vectorMap)
@@ -362,6 +365,7 @@ export default {
             return item
           })
           infoRoam(this.postForm.roamId).then(res => {
+            console.log('mapid', res)
             if (res.data.status) {
               this.postForm = res.data.data
               this.postForm.rasterLngLat = res.data.data.rasterLngLat ? res.data.data.rasterLngLat.coordinates.join(',')
