@@ -84,7 +84,7 @@ export default {
             }
           })
         })
-        this.rasterMap = new window.creeper.RasterMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
+        this.rasterMap = new creeper.RasterMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
         this.rasterMap.on('load', () => {
           var marker = null
           this.rasterMap.on('click', (e) => {
@@ -119,6 +119,8 @@ export default {
     },
     setLevel(num) {
       this.vectorMap.setLevel(num)
+      this.postForm.leaf = num
+      this.display && this.getListRoam()
     },
     getTotalLevel() {
       return this.vectorMap.getMaxLevel() - this.vectorMap.getMinLevel()
@@ -168,6 +170,7 @@ export default {
       })
     },
     initMap() {
+      this.postForm.leaf = null
       var marker = null
       this.vectorMap.on('load', () => {
         // 重写moveend方法
@@ -184,12 +187,14 @@ export default {
               this.floor.minLevel = Number(this.vectorMap.getMinLevel())
               this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
               this.setLevel(this.floor.currentLevel)
+              this.$set(this.postForm, 'leaf', this.floor.currentLevel)
             } else {
               this.floor.currentLevel = this.vectorMap.floorComponent.nowLevelIndex
               this.floor.minLevel = Number(this.vectorMap.getMinLevel())
               this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
               if (this.$refs.level) {
                 this.$refs.level.setCurrentFloor(this.vectorMap.floorComponent.nowLevelIndex)
+                this.$set(this.postForm, 'leaf', this.vectorMap.floorComponent.nowLevelIndex)
               }
             }
             this.floor.floorShow = true
@@ -201,8 +206,12 @@ export default {
           if (marker !== null) {
             marker.remove()
           }
-          // console.log(this.vectorMap.floorComponent.nowLevelIndex)
-          this.$set(this.postForm, 'leaf', this.vectorMap.floorComponent.nowLevelIndex)
+          // 室外不传楼层
+          if (this.vectorMap.getZoom() < 18) {
+            delete this.postForm.leaf
+          } else {
+            this.$set(this.postForm, 'leaf', this.vectorMap.floorComponent.nowLevelIndex)
+          }
           marker = new window.creeper.Marker({
             draggable: true
           }).setLngLat(e.lngLat).addTo(this.vectorMap)
@@ -248,7 +257,7 @@ export default {
       this.markers.forEach(item => {
         item.remove()
       })
-      listRoam({ campusCode: this.postForm.campusCode, roamType: 2 }).then(res => {
+      listRoam({ campusCode: this.postForm.campusCode, roamType: 2, leaf: this.postForm.leaf }).then(res => {
         if (res.data.status) {
           res.data.data.forEach(item => {
             const markerIcon = new Image()
@@ -273,8 +282,9 @@ export default {
               // event.preventDefault()
               // event.stopPropagation()
             }
+
             this.markers.push(
-              new window.creeper.Marker(markerIcon).setLngLat(item.lngLat.coordinates).addTo(this.vectorMap)
+              new window.creeper.Marker(markerIcon).setLngLat(JSON.parse(item.lngLat).coordinates).addTo(this.vectorMap)
             )
           })
         } else {
