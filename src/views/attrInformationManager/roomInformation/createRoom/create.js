@@ -18,7 +18,7 @@ export default {
       id: null,
       state: '',
       loaddingMap: true,
-      token:getToken(),
+      token: getToken(),
       fileList: [],
       postForm: {
         brief: '',
@@ -204,6 +204,7 @@ export default {
             center: this.postForm.geoJson.geometry.coordinates[0][0],
             zoom: 18
           })
+          console.log('this.floor.currentLevel', this.floor.currentLevel)
           this.setLevel(this.floor.currentLevel)
         }, 200)
         this.addLayer()

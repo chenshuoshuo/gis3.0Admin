@@ -135,7 +135,6 @@ export default {
       this.$refs.ruleForm.validate(val => {
         if (val) {
           this.postForm.campusCode = this.campusId
-          console.log('this.postForm', this.postForm)
           if (this.state === 'add') {
             addRoam(this.postForm).then(res => {
               if (res.data.status) {
@@ -316,7 +315,7 @@ export default {
       } else {
         this.typeArr = []
         this.loaddingMap = true
-        this.resetForm()
+        // this.resetForm()
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
         this.initMap()
       }

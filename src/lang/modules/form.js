@@ -20,12 +20,12 @@ export default {
     buildCategoryName: '大楼类别名称',
     roomCategoryName: '房间类别名称',
     number: '编号',
-    flyCamName: '航拍名称',
+    flyCamName: '全景名称',
     flyCamUrl: '航拍地址',
     positionName: '位置名称',
     username: '姓名',
     workNumber: '学/工号',
-    suggestion: '反馈类容'
+    suggestion: '反馈内容'
   },
   en: {
     campus: 'Campus',

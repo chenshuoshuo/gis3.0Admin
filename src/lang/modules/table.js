@@ -24,11 +24,11 @@ export default {
     flyCamUrl: '航拍地址',
     updateTime: '更新时间',
     position: '位置',
-    correctContent: '纠错类容',
+    correctContent: '纠错内容',
     username: '姓名',
     workNumber: '学工号',
     commitTime: '提交时间',
-    suggestion: '反馈类容'
+    suggestion: '反馈内容'
   },
   en: {
     sort: 'Sort',

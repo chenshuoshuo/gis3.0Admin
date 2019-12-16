@@ -67,8 +67,12 @@
                         <el-form-item label="官网地址:" prop="officialWebsite">
                             <el-input v-model="postForm.officialWebsite"></el-input>
                         </el-form-item>
-                        <el-form-item label="排序:" orderIdprop="orderId">
-                            <el-input v-model="postForm.orderId"></el-input>
+                        <el-form-item
+                            label="排序:"
+                            prop="orderId"
+                            :rules="[{type: 'number', message: '请输入数字值'}]"
+                            >
+                            <el-input type="orderId" v-model.number="postForm.orderId"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:" prop="memo">
                             <el-input v-model="postForm.memo"></el-input>
