@@ -76,6 +76,13 @@ export default {
       campus: [],
       showReviewer: false,
       formData: {
+      },
+      rules: {
+        typeName: [{ required: true, message: '请填写类别名称', trigger: 'blur' }],
+        displayLevel: [{ required: true, message: '请填写显示级数', trigger: 'blur' }],
+        click: [{ required: true, message: '选择是否点击', trigger: 'blur' }],
+        display: [{ required: true, message: '选择是否显示', trigger: 'blur' }],
+        search: [{ required: true, message: '选择是否可搜索', trigger: 'blur' }]
       }
     }
   },
@@ -109,6 +116,8 @@ export default {
       this.multipleSelection = val
     },
     handleAdd() {
+      this.vectorIcon = null
+      this.rasterIcon = null
       this.state = 'add'
       this.getParentCategorys()
       this.showForm = true

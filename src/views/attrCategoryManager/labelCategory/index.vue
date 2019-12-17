@@ -58,7 +58,7 @@
         <el-dialog
         :title="$t('button.'+state)"
         width="800px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" status-icon :show-message="false" label-position="right" label-width="100px" class="post-form">
+            <el-form :model="formData" ref="postForm" :rules="rules" status-icon label-position="right" label-width="100px" class="post-form">
                 <el-form-item label="二维图标:" prop="vectorIcon">
                     <el-upload
                     class="avatar-uploader"

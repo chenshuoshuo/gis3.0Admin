@@ -43,19 +43,19 @@ export default {
       campus: [],
       rules: {
         campusCode: [
-          { required: true, message: '请选择校区' }
+          { required: true, message: '请选择校区', trigger: 'change' }
         ],
         menuIcon: [
-          { required: true, message: '请上传图片' }
+          { required: true, message: '请上传图片', trigger: 'change' }
         ],
         searchIcon: [
-          { required: true, message: '请上传图片' }
+          { required: true, message: '请上传图片', trigger: 'change' }
         ],
         typeName: [
-          { required: true, message: '请填写类别名称', tigger: 'blur' }
+          { required: true, message: '请填写类别名称', trigger: 'blur' }
         ],
         orderId: [
-          { type: 'number', required: true, message: '请填写排序,必须由数字组成', tigger: 'blur' }
+          { type: 'number', required: true, message: '请填写排序,必须由数字组成', trigger: 'blur' }
         ]
       },
       list: null,
@@ -197,10 +197,12 @@ export default {
 
     },
     handleAvatarSuccess(res, file) {
+      this.$refs.menuImage.clearValidate()
       this.formData.menuIcon = res.data
       this.picUrl = URL.createObjectURL(file.raw)
     },
     handleSearchSuccess(res, file) {
+      this.$refs.searchImage.clearValidate()
       this.formData.searchIcon = res.data
       this.searchIconUrl = URL.createObjectURL(file.raw)
     },

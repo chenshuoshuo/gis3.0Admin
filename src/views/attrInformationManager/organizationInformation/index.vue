@@ -23,7 +23,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="机构名称:">
-                    <el-input v-model="listQuery.organizationName">
+                    <el-input v-model.trim="listQuery.organizationName">
                     </el-input>
                 </el-form-item>
                 <el-button type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}</el-button>

@@ -19,7 +19,7 @@
       </div>
       <div class="item" v-for="(item,index) of fields" :key="index">
         <div class="name">
-          <el-input type="text" v-model="item.columnCnname" placeholder="请输入内容"></el-input>
+          <el-input type="text" v-model="item.columnCnname" placeholder="请输入内容" maxlength="12"></el-input>
         </div>
         <div class="type">
           <el-select v-model="item.columnType" placeholder="请选择">

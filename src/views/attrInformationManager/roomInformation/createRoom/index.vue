@@ -5,8 +5,8 @@
         <div :class="{'slider-over':isOver}" class="slider">
             <el-scrollbar style="height:100%">
                 <div class="slider-content" id="slider-content">
-                    <el-form :model="postForm"  ref="ruleForm" status-icon label-width="80px" class="demo-ruleForm"  required :show-message="false">
-                        <el-form-item label="房间名称:" prop="roomName" class="required" required :show-message="false">
+                    <el-form :model="postForm"  ref="ruleForm" :rules="rules" status-icon label-width="80px" class="demo-ruleForm"  required>
+                        <el-form-item label="房间名称:" prop="roomName" class="required">
                             <el-input v-model="postForm.roomName" id="name"></el-input>
                         </el-form-item>
                         <el-form-item label="别名:" prop="alias" :show-message="false">
@@ -15,7 +15,7 @@
                         <el-form-item label="英文名:" prop="enName" :show-message="false">
                             <el-input v-model="postForm.enName" id="enName"></el-input>
                         </el-form-item>
-                        <el-form-item label="门牌号:" prop="roomCode" class="required" required :show-message="false">
+                        <el-form-item label="门牌号:" prop="hourseNumber" class="required">
                             <el-input v-model="postForm.hourseNumber" id="roomNumber"></el-input>
                         </el-form-item>
                         <el-form-item label="房间类别:" prop="typeCode" class="required">
@@ -67,8 +67,8 @@
         </div>
         <div class="tool-box">
             <div class="level-box">
-                <!-- <level-selector v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
-                :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  /> -->
+                <level-selector v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
             </div>
             <div class="zoom-box">
                 <div class="item" @click="zoomIn">

@@ -42,6 +42,11 @@ export default {
           'coordinates': [[]],
           'type': 'Polygon'
         }
+      },
+      rules: {
+        roomName: [{ required: true, message: '请输入房间名称', trigger: 'blur' }],
+        hourseNumber: [{ required: true, message: '请输入门牌号', trigger: 'blur' }],
+        typeCode: [{ required: true, message: '请选择房间类别', trigger: 'change' }]
       }
     }
   },
@@ -204,8 +209,29 @@ export default {
             center: this.postForm.geoJson.geometry.coordinates[0][0],
             zoom: 18
           })
-          console.log('this.floor.currentLevel', this.floor.currentLevel)
-          this.setLevel(this.floor.currentLevel)
+          // 楼层展示
+          this.vectorMap.on('moveend', () => {
+            this.vectorMap.floorComponent.onCameraMoveEnd()
+            if (this.vectorMap.getZoom() >= 15 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
+              if (this.floor.currentLevel && !this.floor.maxLevel) {
+                this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+                this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+                this.setLevel(this.floor.currentLevel)
+              } else {
+                this.floor.currentLevel = this.vectorMap.floorComponent.nowLevelIndex
+                this.floor.minLevel = Number(this.vectorMap.getMinLevel())
+                this.floor.maxLevel = Number(this.vectorMap.getMaxLevel())
+                if (this.$refs.level) {
+                  this.$refs.level.setCurrentFloor(this.vectorMap.floorComponent.nowLevelIndex)
+                }
+              }
+              this.floor.floorShow = true
+            } else {
+              this.floor.floorShow = false
+            }
+            console.log('this.floor.currentLevel', this.floor.currentLevel)
+          })
+          // this.setLevel(this.floor.currentLevel)
         }, 200)
         this.addLayer()
         this.$refs.ruleForm.clearValidate()

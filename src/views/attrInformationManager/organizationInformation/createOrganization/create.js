@@ -41,7 +41,15 @@ export default {
         extendsFields: []
       },
       loaddingMap: true,
-      vectorMap: null
+      vectorMap: null,
+      rules: {
+        organizationName: [{ required: true, message: '请输入机构名称', trigger: 'blur' }],
+        // campusId: [{ required: true, message: '请选择校区', trigger: 'change' }],
+        typeCode: [{ required: true, message: '请选择机构类别', trigger: 'change' }],
+        codeIsBuilding: [{ required: true, message: '请选择楼层', trigger: 'change' }],
+        location: [{ required: true, message: '请选择二维位置', trigger: 'blur' }],
+        rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'blur' }]
+      }
     }
   },
   methods: {
@@ -102,6 +110,7 @@ export default {
               message: '添加成功'
             })
             this.resetForm()
+            this.$router.go(-1)
           } else {
             this.$message({
               type: 'error',
@@ -362,7 +371,7 @@ export default {
         this.postForm.typeCode = null
         this.getOrganizationTypeList()
         this.loaddingMap = true
-        this.resetForm()
+        // this.resetForm()
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
         this.initMap()
       }

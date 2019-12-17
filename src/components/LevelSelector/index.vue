@@ -39,8 +39,8 @@
       },
       data() {
         return {
-          floors:[],
-          dispalyLevel:[],
+          floors: [],
+          dispalyLevel: [],
           currentLevel: null,
           currentIndex: 0,
           isTop: false,
@@ -68,13 +68,13 @@
           this.currentIndex = this.dispalyLevel.indexOf(this.currentLevel)
           this.$emit('change-level', this.currentLevel.level)
         },
-        isVertex(){
+        isVertex() {
           this.floors.indexOf(this.currentLevel) === 0
             ? this.isTop = true : this.isTop = false
           this.floors.indexOf(this.currentLevel) === this.floors.length - 1
             ? this.isBottom = true : this.isBottom = false
         },
-        generateLevel(){
+        generateLevel() {
           var levelArr = []; var max = 0; var min = 0
           !(this.maxLevel > this.minLevel ? () => {
             max = this.maxLevel
@@ -91,14 +91,14 @@
               levelArr.push({ name: 'B' + Math.abs(i), level: i })
             }
           }
-          this.floors = levelArr.reverse();
-        },
-        generateDispalyLevel(){
-          if (this.floors.length < this.size){
+          this.floors = levelArr.reverse()
+    },
+        generateDispalyLevel() {
+          if (this.floors.length < this.size) {
             this.dispalyLevel = this.floors
             return
-          } 
-          let currentLevelIndex = this.floors.indexOf(this.currentLevel);
+          }
+          const currentLevelIndex = this.floors.indexOf(this.currentLevel)
           if (currentLevelIndex >= Math.floor(this.size / 2)) {
             this.dispalyLevel = this.floors.slice(
               currentLevelIndex - Math.floor(this.size / 2) > this.floors.length - this.size
@@ -109,28 +109,28 @@
             this.dispalyLevel = this.floors.slice(0, this.size)
           }
         },
-        setCurrentFloor(floor){
+        setCurrentFloor(floor) {
           setTimeout(() => {
             this.currentLevel = this.floors.filter((item) => item.level === floor)[0]
-          }, 100);
-        }
+          }, 100)
+    }
       },
       watch: {
-        floors(){
+        floors() {
           this.generateDispalyLevel()
         },
-        currentLevel(){
+        currentLevel() {
           this.generateDispalyLevel()
           this.currentIndex = this.dispalyLevel.indexOf(this.currentLevel)
         },
-        currentIndex(){
+        currentIndex() {
           this.generateDispalyLevel()
           this.isVertex()
         },
-        minLevel(){
+        minLevel() {
           this.generateLevel()
         },
-        maxLevel(){
+        maxLevel() {
           this.generateLevel()
         }
       },

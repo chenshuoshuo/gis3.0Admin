@@ -12,7 +12,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="标注类别:"  prop="typeCode" >
+                <el-form-item label="标注类别:" prop="typeCode" >
                     <el-cascader
                     clearable
                     expand-trigger="hover"

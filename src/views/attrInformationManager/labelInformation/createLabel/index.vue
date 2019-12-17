@@ -87,7 +87,7 @@
         width="90%" top="5vh">
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="info" @click="isOpenRaster = false;postForm.rasterLngLatString = ''" size="small">取 消</el-button>
+                <el-button type="info" @click="isOpenRaster = false;" size="small">取 消</el-button>
                 <el-button type="primary" @click="isOpenRaster = false" size="small">确 定</el-button>
             </span>
         </el-dialog>

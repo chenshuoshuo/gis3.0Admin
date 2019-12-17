@@ -110,6 +110,7 @@ export default {
             this.$nextTick(() => {
               this.$refs.ruleForm.clearValidate()
             })
+            this.$router.go(-1)
           } else {
             this.$message({
               type: 'error',

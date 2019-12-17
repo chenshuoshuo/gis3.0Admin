@@ -74,6 +74,7 @@
 </template>
 
 <script>
+// import { logout } from '@/api/mylogin'
 import { campusList, taskState } from '@/api/campus'
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -226,9 +227,11 @@ export default {
       this.$store.dispatch('toggleSideBar')
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
-      })
+      // console.log('11111', this.$store.dispatch('LogOut'))
+      // this.$store.dispatch('LogOut').then(() => {
+      //   location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+      // })
+      location.reload()
     }
   }
 }

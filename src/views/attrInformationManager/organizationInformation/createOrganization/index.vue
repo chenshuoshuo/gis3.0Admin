@@ -5,12 +5,12 @@
         <div :class="{'slider-over':isOver}" class="slider">
             <el-scrollbar style="height:100%">
                 <div class="slider-content" id="slider-content">
-                    <el-form :model="postForm"  ref="postForm" status-icon label-width="80px" class="demo-ruleForm">
-                        <el-form-item label="机构名称:" prop="organizationName" class="required" required :show-message="false">
+                    <el-form :model="postForm" :rules="rules" ref="postForm" status-icon label-width="80px" class="demo-ruleForm">
+                        <el-form-item label="机构名称:" prop="organizationName" class="required">
                             <el-input v-model="postForm.organizationName"></el-input>
                         </el-form-item>
-                        <el-form-item label="校区:" prop="campusCode" class="required" :show-message="false">
-                            <el-select v-model="campusId"  placeholder="请选择校区">
+                        <el-form-item label="校区:" prop="campusId" class="required">
+                            <el-select v-model="campusId" placeholder="请选择校区">
                                 <el-option
                                 v-for="item in campus"
                                 :key="item.groupId"
@@ -19,7 +19,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="机构类别:" prop="typeCode" class="required" required :show-message="false">
+                        <el-form-item label="机构类别:" prop="typeCode" class="required">
                             <el-select v-model="postForm.typeCode" placeholder="请选择机构类别">
                                 <el-option
                                     v-for="item in types"
@@ -29,7 +29,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="楼层:" prop="codeIsBuilding" class="required" required :show-message="false">
+                        <el-form-item label="楼层:" prop="codeIsBuilding" class="required">
                             <el-select v-model="postForm.codeIsBuilding" placeholder="请选择楼层">
                                 <el-option label="室外" :value="true"></el-option>
                                 <el-option label="室内" :value="false"></el-option>
@@ -52,12 +52,12 @@
                                 <i class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="二维位置:" prop="location" class="required" required :show-message="false">
+                        <el-form-item label="二维位置:" prop="location" class="required" required>
                             <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
                         </el-form-item>
-                        <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLatString" class="required" required :show-message="false">
+                        <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLatString" class="required" ref="raster">
                             <span @click="openRaster">
-                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" readonly="readonly"></el-input>
+                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图"></el-input>
                             </span>
                         </el-form-item>
                         <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
@@ -70,7 +70,7 @@
                         <el-form-item
                             label="排序:"
                             prop="orderId"
-                            :rules="[{type: 'number', message: '请输入数字值'}]"
+                            :rules="[{type: 'number', message: '请输入数字值', trigger: 'blur'}]"
                             >
                             <el-input type="orderId" v-model.number="postForm.orderId"></el-input>
                         </el-form-item>
@@ -93,8 +93,8 @@
         width="90%" top="5vh">
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="info" @click="isOpenRaster = false;postForm.rasterLngLatString = ''" size="small">取 消</el-button>
-                <el-button type="primary" @click="isOpenRaster = false" size="small">确 定</el-button>
+                <el-button type="info" @click="isOpenRaster = false;" size="small">取 消</el-button>
+                <el-button type="primary" @click="isOpenRaster = false;$refs.raster.clearValidate()" size="small">确 定</el-button>
             </span>
         </el-dialog>
         <div class="tool-box">

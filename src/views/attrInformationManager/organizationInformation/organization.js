@@ -194,5 +194,8 @@ export default {
   beforeMount() {
     this.getList()
     this.getCampus()
+  },
+  activated() {
+    this.getList()
   }
 }

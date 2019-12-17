@@ -81,13 +81,16 @@ export default {
     },
     handlerSearch() {
       if (this.typeCode.length > 0) {
-        this.listQuery.typeCode = this.typeCode[1]
+        this.$set(this.listQuery, 'typeCode', this.typeCode[1])
+      } else {
+        this.listQuery.typeCode = null
       }
       this.listQuery.page = 1
       this.getList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
+      this.listQuery.page = 1
       this.getList()
     },
     handleCurrentChange(val) {
@@ -208,5 +211,8 @@ export default {
         })
       }
     })
+  },
+  activated() {
+    this.getList()
   }
 }

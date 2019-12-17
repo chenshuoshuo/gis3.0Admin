@@ -375,7 +375,6 @@ export default {
             return item
           })
           infoRoam(this.postForm.roamId).then(res => {
-            console.log('mapid', res)
             if (res.data.status) {
               this.postForm = res.data.data
               this.postForm.rasterLngLat = res.data.data.rasterLngLat ? res.data.data.rasterLngLat.coordinates.join(',')

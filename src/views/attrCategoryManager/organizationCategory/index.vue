@@ -24,7 +24,7 @@
                 </el-button>
                 <el-button class="filter-item" style="margin-left: 10px;" v-waves type="temp" @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
                 <el-button class="filter-item" type="import" v-waves @click="handleImportExecel" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button>
-                <el-button class="filter-item"type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
+                <el-button class="filter-item" type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
                 <!-- <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" >地图刷新</el-button> -->
             </el-form>
         </div>
@@ -93,7 +93,7 @@
                     </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="机构类别图标:" prop="menuIcon"  class="required">
+              <el-form-item label="机构类别图标:" prop="menuIcon"  class="required" ref="menuImage">
                   <el-upload
                     class="avatar-uploader"
                     :action="baseUrl+'/mapOrganizationType/uploadImg'"
@@ -106,7 +106,7 @@
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="移动端图标:" prop="searchIcon"  class="required">
+              <el-form-item label="移动端图标:" prop="searchIcon"  class="required" ref="searchImage">
                   <el-upload
                     class="avatar-uploader"
                     :action="baseUrl+'/mapOrganizationType/uploadImg'"
