@@ -2,7 +2,7 @@
     <div class="app-container campus-aerial">
         <div class="filter-container">
             <el-form ref="form" label-position="left" :model="listQuery"  :inline="true">
-                <el-form-item :label="$t('form.flyCamName')+':'">
+                <el-form-item :label="$t('form.roamCamName')+':'">
                     <el-input class="filter-item" v-model="listQuery.roamName">
                     </el-input>
                 </el-form-item>
