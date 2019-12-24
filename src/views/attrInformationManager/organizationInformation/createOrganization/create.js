@@ -49,7 +49,8 @@ export default {
         codeIsBuilding: [{ required: true, message: '请选择楼层', trigger: 'change' }],
         location: [{ required: true, message: '请选择二维位置', trigger: 'blur' }],
         rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'blur' }]
-      }
+      },
+      beforeThreeLatLon: ''
     }
   },
   methods: {
@@ -310,6 +311,9 @@ export default {
     },
     openRaster() {
       this.isOpenRaster = true
+      if (this.state === 'update') {
+        this.beforeThreeLatLon = this.postForm.rasterLngLatString
+      }
       setTimeout(() => {
         var res = null
         this.campus.forEach(item => {

@@ -41,7 +41,16 @@ export default {
         mapPointImgList: [],
         extendsFields: []
       },
-      vectorMap: null
+      vectorMap: null,
+      rules: {
+        pointName: [{ required: true, message: '请输入标注名称', trigger: 'blur' }],
+        // campusId: [{ required: true, message: '请选择校区', trigger: 'change' }],
+        // typeCode: [{ required: true, message: '请选择标注类别', trigger: 'change' }],
+        // leaf: [{ required: true, message: '请选择楼层', trigger: 'change' }],
+        location: [{ required: true, message: '请选择二维位置', trigger: 'blur' }],
+        rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }]
+      },
+      beforeThreeLatLon: ''
     }
   },
   methods: {
@@ -86,9 +95,29 @@ export default {
       }
     },
     handleSub() {
+      // const p1 = new Promise((resolve, reject) => {
+      //   this.$refs.typeRef.validate(valid => {
+      //     if (valid) {
+      //       resolve()
+      //     }
+      //   })
+      // })
+      // const p2 = new Promise((resolve, reject) => {
+      //   this.$refs.ruleForm.validate(valid => {
+      //     if (valid) {
+      //       resolve()
+      //     }
+      //   })
+      // })
+      // Promise.all([p2, p1]).then(() => {
+      //   this.saveInfo()
+      // })
       this.$refs.ruleForm.validate(val => {
         if (val) {
           this.saveInfo()
+          // this.$nextTick(() => {
+          //   this.$refs.typeRef.clearValidate()
+          // })
         }
       })
     },
@@ -109,6 +138,7 @@ export default {
             this.postForm.mapPointImgList = []
             this.$nextTick(() => {
               this.$refs.ruleForm.clearValidate()
+              this.$refs.typeRef.clearValidate()
             })
             this.$router.go(-1)
           } else {
@@ -201,6 +231,9 @@ export default {
       // this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
     },
     inintMap() {
+      this.$nextTick(() => {
+        this.$refs.typeRef.clearValidate()
+      })
       var marker = null
       this.vectorMap.on('load', () => {
         // 重写moveend方法
@@ -306,6 +339,9 @@ export default {
     },
     openRaster() {
       this.isOpenRaster = true
+      if (this.state === 'update') {
+        this.beforeThreeLatLon = this.postForm.rasterLngLatString
+      }
       setTimeout(() => {
         var res = null
         this.campus.forEach(item => {

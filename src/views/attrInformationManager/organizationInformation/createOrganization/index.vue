@@ -90,10 +90,11 @@
         <el-dialog
         title="三维位置绑定"
         :visible.sync="isOpenRaster"
-        width="90%" top="5vh">
+        width="90%" top="5vh"
+        @close="state==='add'?postForm.rasterLngLatString = '':postForm.rasterLngLatString=beforeThreeLatLon">
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="info" @click="isOpenRaster = false;" size="small">取 消</el-button>
+                <el-button type="info" @click="isOpenRaster = false;state==='add'?postForm.rasterLngLatString = '':postForm.rasterLngLatString=beforeThreeLatLon" size="small">取 消</el-button>
                 <el-button type="primary" @click="isOpenRaster = false;$refs.raster.clearValidate()" size="small">确 定</el-button>
             </span>
         </el-dialog>

@@ -5,8 +5,8 @@
         <div :class="{'slider-over':isOver}" class="slider" id="slider">
             <el-scrollbar style="height:100%">
                 <div class="slider-content" id="slider-content">
-                    <el-form :model="postForm" status-icon ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                        <el-form-item label="标注名称:" prop="pointName" class="required" required :show-message="false">
+                    <el-form :model="postForm" status-icon ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
+                        <el-form-item label="标注名称:" prop="pointName" class="required">
                             <el-input v-model="postForm.pointName" id="name"></el-input>
                         </el-form-item>
                         <el-form-item label="校区:" prop="campusId" class="required">
@@ -19,7 +19,8 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="标注类别:" class="required">
+                        <el-form-item label="标注类别:" class="required" prop="typeCode" ref="typeRef"
+                        :rules="{ required: true, message: '请选择标注类别', trigger: 'change' }">
                             <el-cascader
                                 expand-trigger="hover"
                                 :options="types"
@@ -31,7 +32,7 @@
                                 v-model="typeArr">
                             </el-cascader>
                         </el-form-item>
-                        <el-form-item label="楼层:" prop="leaf" class="required" required :show-message="false">
+                        <el-form-item label="楼层:" prop="leaf" class="required">
                             <el-select v-model="postForm.leaf" placeholder="请选择楼层">
                                 <el-option label="室外" :value="false"></el-option>
                                 <el-option label="室内" :value="true"></el-option>
@@ -53,12 +54,12 @@
                                 <i class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="二维位置绑定:" prop="location" class="required" required :show-message="false">
+                        <el-form-item label="二维位置绑定:" prop="location" class="required" required>
                             <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
                         </el-form-item>
-                        <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" required :show-message="false">
+                        <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" ref="raster">
                             <span @click="openRaster">
-                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" readonly="readonly"></el-input>
+                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图"></el-input>
                             </span>
                         </el-form-item>
                         <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
@@ -84,10 +85,11 @@
         <el-dialog
         title="三维位置绑定"
         :visible.sync="isOpenRaster"
-        width="90%" top="5vh">
+        width="90%" top="5vh"
+        >
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="info" @click="isOpenRaster = false;" size="small">取 消</el-button>
+                <el-button type="info" @click="isOpenRaster = false;state==='add'?postForm.rasterLngLatString = '':postForm.rasterLngLatString=beforeThreeLatLon" size="small">取 消</el-button>
                 <el-button type="primary" @click="isOpenRaster = false" size="small">确 定</el-button>
             </span>
         </el-dialog>

@@ -35,6 +35,9 @@ export default {
       types: []
     }
   },
+  activated() {
+    this.getList()
+  },
   methods: {
     getList() {
       this.listQuery.page--

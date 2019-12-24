@@ -37,6 +37,9 @@ export default {
       categories: []
     }
   },
+  activated() {
+    this.getList()
+  },
   methods: {
     getList() {
       this.listQuery.page--
@@ -211,8 +214,5 @@ export default {
         })
       }
     })
-  },
-  activated() {
-    this.getList()
   }
 }
