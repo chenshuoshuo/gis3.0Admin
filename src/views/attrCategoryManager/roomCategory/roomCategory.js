@@ -11,7 +11,7 @@ import {
   delMapRtExtendsDefine
 } from '@/api/typeManager'
 import { mapBuildingTypeDownloadTemplate } from '@/api/downloadTemplate'
-import { mapBuildingTypeDownload } from '@/api/download'
+import { mapRoomTypeDownload } from '@/api/download'
 import configFiled from '../components/configFiled'
 export default {
   inject: ['baseUrl'],
@@ -288,7 +288,7 @@ export default {
     },
     handleExport() {
       this.isExport = true
-      mapBuildingTypeDownload({ userId: window.cmips_userId }).then(res => {
+      mapRoomTypeDownload({ userId: window.cmips_userId }).then(res => {
         this.isExport = false
         if (res.data) {
           var blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })

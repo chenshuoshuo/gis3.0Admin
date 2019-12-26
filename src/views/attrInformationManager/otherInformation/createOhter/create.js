@@ -18,7 +18,7 @@ export default {
       id: null,
       state: '',
       loaddingMap: true,
-      token:getToken(),
+      token: getToken(),
       fileList: [],
       postForm: {
         brief: '',
@@ -26,6 +26,7 @@ export default {
         campusId: null,
         typeCode: '',
         mapOthersExtendsList: [],
+        mapOthersPolygonExtendsList: [], // 新增
         mapOthersImgList: [],
         extendsFields: []
       },
@@ -141,6 +142,8 @@ export default {
               this.postForm.mapOthersExtendsList.push({ polygonCode: this.postForm.polygonCode, columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
             })
             delete this.postForm.mapOthersType
+            // 修正字段传错bug
+            this.postForm.mapOthersPolygonExtendsList = this.postForm.extendsFields
             updateOthersInfo(this.postForm).then(res => {
               if (res.data.status) {
                 this.$message({

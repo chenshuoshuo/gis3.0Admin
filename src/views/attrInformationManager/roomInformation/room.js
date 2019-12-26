@@ -203,5 +203,8 @@ export default {
         })
       }
     })
+  },
+  activated() {
+    this.getList()
   }
 }
