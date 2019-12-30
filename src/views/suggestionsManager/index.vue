@@ -3,15 +3,15 @@
         <div class="filter-container">
             <el-form ref="form" label-position="right"  :inline="true">
                 <el-form-item :label="$t('form.suggestion')+':'">
-                    <el-input class="filter-item" v-model="listQuery.description">
+                    <el-input class="filter-item" v-model.trim="listQuery.description">
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('form.username')+':'">
-                    <el-input class="filter-item" v-model="listQuery.userName">
+                    <el-input class="filter-item" v-model.trim="listQuery.userName">
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('form.workNumber')+':'">
-                    <el-input class="filter-item" v-model="listQuery.userCode">
+                    <el-input class="filter-item" v-model.trim="listQuery.userCode">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}

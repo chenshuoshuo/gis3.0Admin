@@ -39,6 +39,18 @@ export default {
     this.getList()
   },
   methods: {
+    listOrganizationType() {
+      listOrganizationType({ campusCode: this.listQuery.campusCode }).then(res => {
+        if (res.data.status) {
+          this.types = res.data.data
+        } else {
+          this.$message({
+            type: 'error',
+            message: '分类信息获取失败'
+          })
+        }
+      })
+    },
     getList() {
       this.listQuery.page--
       this.listLoading = true
@@ -177,16 +189,17 @@ export default {
   },
   watch: {
     compusCode() {
-      listOrganizationType({ campusCode: this.listQuery.campusCode }).then(res => {
-        if (res.data.status) {
-          this.types = res.data.data
-        } else {
-          this.$message({
-            type: 'error',
-            message: '分类信息获取失败'
-          })
-        }
-      })
+      // listOrganizationType({ campusCode: this.listQuery.campusCode }).then(res => {
+      //   if (res.data.status) {
+      //     this.types = res.data.data
+      //   } else {
+      //     this.$message({
+      //       type: 'error',
+      //       message: '分类信息获取失败'
+      //     })
+      //   }
+      // })
+      this.listOrganizationType()
     }
   },
   computed: {
@@ -197,8 +210,6 @@ export default {
   beforeMount() {
     this.getList()
     this.getCampus()
-  },
-  activated() {
-    this.getList()
+    this.listOrganizationType()
   }
 }

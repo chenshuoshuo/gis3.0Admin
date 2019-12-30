@@ -80,9 +80,9 @@ export default {
       rules: {
         typeName: [{ required: true, message: '请填写类别名称', trigger: 'blur' }],
         displayLevel: [{ required: true, message: '请填写显示级数', trigger: 'blur' }],
-        click: [{ required: true, message: '选择是否点击', trigger: 'blur' }],
-        display: [{ required: true, message: '选择是否显示', trigger: 'blur' }],
-        search: [{ required: true, message: '选择是否可搜索', trigger: 'blur' }]
+        click: [{ required: true, message: '选择是否点击', trigger: 'change' }],
+        display: [{ required: true, message: '选择是否显示', trigger: 'change' }],
+        search: [{ required: true, message: '选择是否可搜索', trigger: 'change' }]
       }
     }
   },
@@ -116,6 +116,9 @@ export default {
       this.multipleSelection = val
     },
     handleAdd() {
+      this.$nextTick(() => {
+        this.$refs.postForm.clearValidate()
+      })
       this.vectorIcon = null
       this.rasterIcon = null
       this.state = 'add'
@@ -168,6 +171,9 @@ export default {
       })
     },
     handleEdit(id) {
+      this.$nextTick(() => {
+        this.$refs.postForm.clearValidate()
+      })
       this.state = 'edit'
       this.getParentCategorys()
       infoPointType(id).then(res => {
@@ -291,6 +297,9 @@ export default {
             })
             this.getList()
             this.showForm = false
+            this.$nextTick(() => {
+              this.$refs.postForm.clearValidate()
+            })
           } else {
             this.$message({
               type: 'warning',
@@ -309,6 +318,9 @@ export default {
             })
             this.getList()
             this.showForm = false
+            this.$nextTick(() => {
+              this.$refs.postForm.clearValidate()
+            })
           } else {
             this.$message({
               type: 'warning',

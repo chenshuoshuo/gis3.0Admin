@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
                 <el-form-item :label="$t('form.positionName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.locationName">
+                    <el-input class="filter-item" v-model.trim="listQuery.locationName">
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('form.campus')+':'">
@@ -23,11 +23,11 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item :label="$t('form.username')+':'">
-                    <el-input class="filter-item" v-model="listQuery.userName">
+                    <el-input class="filter-item" v-model.trim="listQuery.userName">
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('form.workNumber')+':'">
-                    <el-input class="filter-item" v-model="listQuery.userCode">
+                    <el-input class="filter-item" v-model.trim="listQuery.userCode">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}

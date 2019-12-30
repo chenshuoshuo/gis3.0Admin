@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-form ref="form" label-position="left"  :inline="true">
                 <el-form-item :label="$t('form.roomCategoryName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.typeName">
+                    <el-input class="filter-item" v-model.trim="listQuery.typeName">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
@@ -12,7 +12,7 @@
                 </el-button>
                 <!-- <el-button style="margin-left: 10px;" v-waves type="temp"  @click="downloadTemplate" icon="el-icon-ips-shuju" :loading="downloading" >下载导入模板</el-button>
                 <el-button type="import" v-waves @click="handleImport" icon="el-icon-ips-daoru" :loading="isImport" >导入</el-button> -->
-                <el-button type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
+                <el-button class="filter-item" type="export" v-waves @click="handleExport" icon="el-icon-ips-daochu" :loading="isExport" >导出</el-button>
                 <!-- <el-button type="warning" v-waves @click="handleRefreash" icon="el-icon-ips-shuaxin" >地图刷新</el-button> -->
             </el-form>
         </div>

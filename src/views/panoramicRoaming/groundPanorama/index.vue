@@ -3,7 +3,7 @@
         <div class="filter-container">
             <el-form ref="form" label-position="left" :model="listQuery"  :inline="true">
                 <el-form-item :label="$t('form.roamCamName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.roamName">
+                    <el-input class="filter-item" v-model.trim="listQuery.roamName">
                     </el-input>
                 </el-form-item>
                 <el-form-item :label="$t('form.campus')+':'" prop="campusCode">

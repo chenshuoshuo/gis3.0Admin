@@ -64,7 +64,9 @@ export const asyncRouterMap = [
         name: 'create-organization',
         hidden: true,
         meta: {
-          title: 'create-organization'
+          title: 'create-organization',
+          guidePath: true,
+          jumpPath: '/information-manager/organization'
         }
       },
       {
@@ -81,7 +83,9 @@ export const asyncRouterMap = [
         name: 'create-label',
         hidden: true,
         meta: {
-          title: 'create-label'
+          title: 'create-label',
+          guidePath: true,
+          jumpPath: '/information-manager/label'
         }
       },
       {
@@ -98,7 +102,9 @@ export const asyncRouterMap = [
         name: 'create-building',
         hidden: true,
         meta: {
-          title: 'create-building'
+          title: 'create-building',
+          guidePath: true,
+          jumpPath: '/information-manager/building'
         }
       },
       {
@@ -115,7 +121,9 @@ export const asyncRouterMap = [
         name: 'edit-room',
         hidden: true,
         meta: {
-          title: 'edit-room'
+          title: 'edit-room',
+          guidePath: true,
+          jumpPath: '/information-manager/room'
         }
       },
       {
@@ -132,7 +140,9 @@ export const asyncRouterMap = [
         name: 'edit-other',
         hidden: true,
         meta: {
-          title: 'edit-other'
+          title: 'edit-other',
+          guidePath: true,
+          jumpPath: '/information-manager/other'
         }
       }
     ]
@@ -222,7 +232,9 @@ export const asyncRouterMap = [
         component: () => import('@/views/panoramicRoaming/groundPanorama/create'),
         name: 'add-panorama',
         meta: {
-          title: '编辑地面全景'
+          title: '编辑地面全景',
+          guidePath: true,
+          jumpPath: '/panoramic-roaming/groundPanorama'
         },
         hidden: true
       }

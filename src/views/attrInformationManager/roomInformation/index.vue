@@ -23,7 +23,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="房间名称:">
-                    <el-input class="filter-item" v-model="listQuery.roomName">
+                    <el-input class="filter-item" v-model.trim="listQuery.roomName">
                     </el-input>
                 </el-form-item>
                 <el-button type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}</el-button>

@@ -5,17 +5,17 @@
         <div :class="{'slider-over':isOver}" class="slider">
             <el-scrollbar style="height:100%">
                 <div class="slider-content" id="slider-content">
-                    <el-form :model="postForm"  ref="ruleForm" status-icon label-width="80px" class="demo-ruleForm">
-                        <el-form-item label="名称:" prop="polygonName" class="required" required :show-message="false">
-                            <el-input v-model="postForm.polygonName" id="name"></el-input>
+                    <el-form :model="postForm" ref="ruleForm" :rules="rules" status-icon label-width="80px" class="demo-ruleForm">
+                        <el-form-item label="名称:" prop="polygonName" class="required">
+                            <el-input v-model="postForm.polygonName" id="name" placeholder="请输入名称"></el-input>
                         </el-form-item>
                         <el-form-item label="别名:" prop="alias" :show-message="false">
-                            <el-input v-model="postForm.alias" id="alias"></el-input>
+                            <el-input v-model="postForm.alias" id="alias" placeholder="请输入别名"></el-input>
                         </el-form-item>
                         <el-form-item label="英文名:" prop="enName" :show-message="false">
-                            <el-input v-model="postForm.enName" id="enName"></el-input>
+                            <el-input v-model="postForm.enName" id="enName" placeholder="请输入英文名"></el-input>
                         </el-form-item>
-                        <el-form-item label="类别:" prop="category" class="required">
+                        <el-form-item label="类别:" prop="typeCode" class="required">
                             <el-select v-model="postForm.typeCode" placeholder="请选择类别">
                             <el-option
                                 v-for="item in types"
@@ -42,9 +42,15 @@
                                 <i class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
-                            <el-input v-if="item.columnType===0" v-model="item.extendsValue" type="text"></el-input>
-                            <el-input v-if="item.columnType===2" v-model="item.extendsValue" type="textarea" :rows="3" ></el-input>
+                        <el-form-item
+                        v-for="(item,index) of postForm.extendsFields"
+                        :label="item.columnCnname+':'"
+                        :key="index" v-if="item.show"
+                        :class="{'required':item.required}"
+                        :rules="{required:item.required,message:'请输入内容',trigger: 'blur'}"
+                        :prop="'extendsFields['+index+'].extendsValue'">
+                            <el-input v-if="item.columnType===0" v-model="item.extendsValue" type="text" placeholder="请输入内容"></el-input>
+                            <el-input v-if="item.columnType===2" v-model="item.extendsValue" type="textarea" :rows="3" placeholder="请输入内容"></el-input>
                         </el-form-item>
                         <el-form-item label="排序:" prop="region">
                             <el-input v-model="postForm.orderId"></el-input>

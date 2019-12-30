@@ -44,6 +44,10 @@ export default {
           'coordinates': [[]],
           'type': 'Polygon'
         }
+      },
+      rules: {
+        polygonName: [{ required: true, message: '请输入内容', trigger: 'blur' }],
+        typeCode: [{ required: true, message: '请选择一个类型', trigger: 'change' }]
       }
     }
   },
@@ -149,6 +153,10 @@ export default {
                 this.$message({
                   type: 'success',
                   message: '更新成功'
+                })
+                this.$router.back(-1)
+                this.$nextTick(() => {
+                  this.$refs.ruleForm.clearValidate()
                 })
               } else {
                 this.$message({

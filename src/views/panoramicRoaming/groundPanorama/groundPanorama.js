@@ -32,6 +32,9 @@ export default {
       }
     }
   },
+  activated() {
+    this.getList()
+  },
   methods: {
     getList() {
       this.listLoading = true

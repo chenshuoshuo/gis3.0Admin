@@ -37,6 +37,9 @@ export default {
       categories: []
     }
   },
+  activated() {
+    this.getList()
+  },
   methods: {
     getList() {
       this.listQuery.page--

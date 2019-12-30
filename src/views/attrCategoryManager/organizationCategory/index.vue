@@ -13,7 +13,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item :label="$t('form.categoryName')+':'">
-                    <el-input class="filter-item" v-model="listQuery.typeName">
+                    <el-input class="filter-item" v-model.trim="listQuery.typeName">
                     </el-input>
                 </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
