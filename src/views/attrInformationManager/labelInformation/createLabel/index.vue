@@ -52,14 +52,15 @@
                                 :file-list="fileList"
                                 list-type="picture-card">
                                 <i class="el-icon-plus avatar-uploader-icon"></i>
+                                <div slot="tip" class="el-upload__tip">建议尺寸26x26px,图片大小不超过1M</div>
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="二维位置绑定:" prop="location" class="required" required>
-                            <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
+                            <el-input v-model="postForm.location" placeholder="请在地图上选择" :readonly="true"></el-input>
                         </el-form-item>
                         <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" ref="raster">
                             <span @click="openRaster">
-                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图"></el-input>
+                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" :readonly="true"></el-input>
                             </span>
                         </el-form-item>
                         <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
@@ -86,11 +87,12 @@
         title="三维位置绑定"
         :visible.sync="isOpenRaster"
         width="90%" top="5vh"
+        @close="cancelMarker"
         >
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="info" @click="isOpenRaster = false;state==='add'?postForm.rasterLngLatString = '':postForm.rasterLngLatString=beforeThreeLatLon" size="small">取 消</el-button>
-                <el-button type="primary" @click="isOpenRaster = false" size="small">确 定</el-button>
+                <el-button type="info" @click="cancelMarker" size="small">取 消</el-button>
+                <el-button type="primary" @click="isOpenRaster = false;postForm.rasterLngLatString?isEnsure = true:isEnsure = false;$refs.raster.clearValidate()" size="small">确 定</el-button>
             </span>
         </el-dialog>
         <div class="tool-box">
@@ -163,11 +165,6 @@
         .avatar-uploader .el-upload:hover {
             border-color: #409EFF;
         }
-        .el-upload__tip{
-            margin-left: 20px;
-            display: inline-block;
-            color: #8c939d;
-        }
         .avatar-uploader-icon {
             font-size: 28px;
             color: #8c939d;
@@ -175,6 +172,13 @@
             height: 62px;
             line-height: 62px;
             text-align: center;
+        }
+        .el-upload__tip {
+            display: block;
+            margin-left: 0px;
+            margin-bottom: -20px;
+            margin-top: -5px;
+            color: 8c939d
         }
         .map-box{
             position: absolute;
