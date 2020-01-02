@@ -104,9 +104,10 @@
                     :show-file-list="false">
                     <img v-if="picUrl" :src="picUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div slot="tip" class="el-upload__tip">图片尺寸:66px*66px</div>
                 </el-upload>
               </el-form-item>
-              <el-form-item label="移动端图标:" prop="searchIcon"  class="required" ref="searchImage">
+              <el-form-item label="移动端图标:" prop="searchIcon" class="required" ref="searchImage">
                   <el-upload
                     class="avatar-uploader"
                     :action="baseUrl+'/mapOrganizationType/uploadImg'"
@@ -117,6 +118,7 @@
                     :show-file-list="false">
                     <img v-if="searchIconUrl" :src="searchIconUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    <div slot="tip" class="el-upload__tip">图片尺寸:66px*66px</div>
                 </el-upload>
               </el-form-item>
               <el-form-item :label="$t('form.categoryName')+':'" class="required" prop="typeName" ref="typeName">
@@ -158,6 +160,11 @@
             height: 66px;
             line-height: 66px;
             text-align: center;
+        }
+        .el-upload__tip {
+            display: inline-block;
+            margin-left: 20px;
+            color: #8c939d;
         }
         .avatar {
             width: 66px;

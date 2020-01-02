@@ -50,7 +50,7 @@ export default {
         location: [{ required: true, message: '请选择二维位置', trigger: 'blur' }],
         rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }]
       },
-      beforeThreeLatLon: ''
+      isEnsure: false
     }
   },
   methods: {
@@ -337,11 +337,16 @@ export default {
         })
       })
     },
+    cancelMarker() {
+      this.isOpenRaster = false
+      if (this.state === 'add') {
+        if (!this.isEnsure) {
+          this.postForm.rasterLngLatString = ''
+        }
+      }
+    },
     openRaster() {
       this.isOpenRaster = true
-      if (this.state === 'update') {
-        this.beforeThreeLatLon = this.postForm.rasterLngLatString
-      }
       setTimeout(() => {
         var res = null
         this.campus.forEach(item => {
