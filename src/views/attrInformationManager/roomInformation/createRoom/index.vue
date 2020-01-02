@@ -43,7 +43,7 @@
                                 :file-list="fileList"
                                 list-type="picture-card">
                                 <i class="el-icon-plus avatar-uploader-icon"></i>
-                                <div slot="tip" class="el-upload__tip">建议尺寸26x26,图片大小不超过1M</div>
+                                <div slot="tip" class="el-upload__tip">建议尺寸26x26px,图片大小不超过1M</div>
                             </el-upload>
                         </el-form-item>
                         <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
