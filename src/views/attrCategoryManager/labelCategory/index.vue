@@ -57,8 +57,8 @@
         </div>
         <el-dialog
         :title="$t('button.'+state)"
-        width="800px" :visible.sync="showForm" @close="handleClose" top="5vh">
-            <el-form :model="formData" ref="postForm" :rules="rules" status-icon label-position="right" label-width="100px" class="post-form">
+        width="720px" :visible.sync="showForm" @close="handleClose" top="5vh">
+            <el-form :model="formData" ref="postForm" :rules="rules" status-icon label-position="right" label-width="140px" class="post-form">
                 <el-form-item label="二维图标:" prop="vectorIcon">
                     <el-upload
                     class="avatar-uploader"
@@ -90,7 +90,16 @@
                 <el-form-item :label="$t('form.categoryName')+':'" prop="typeName" required>
                     <el-input type="text" v-model="formData.typeName"></el-input>
                 </el-form-item>
-                
+                <el-form-item label="类别文字颜色选择:" prop="fontColor" ref="fontColor">
+                    <el-input v-model="formData.fontColor" readonly></el-input>
+                    <el-color-picker v-model="formData.fontColor"></el-color-picker>
+                </el-form-item>
+                <el-form-item label="文字是否加粗:" prop="fontBold" ref="fontBold">
+                    <el-select v-model="formData.fontBold" placeholder="请选择">
+                        <el-option label="加粗" :value="true"></el-option>
+                        <el-option label="不加粗" :value="false"></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item :label="$t('form.parentCategory')+':'">
                     <el-select v-model="formData.parentCode" placeholder="">
                     <el-option
@@ -105,24 +114,24 @@
                     <el-input v-model="formData.displayLevel"></el-input>
                 </el-form-item>
                 <div class="radio">
-                <el-form-item :label="$t('form.click')+':'" prop="click" required>
-                    <el-radio-group v-model="formData.click">
-                        <el-radio :label="true">是</el-radio>
-                        <el-radio :label="false">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item :label="$t('form.display')+':'" prop="display" required>
-                    <el-radio-group v-model="formData.display">
-                        <el-radio :label="true">是</el-radio>
-                        <el-radio :label="false">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item :label="$t('form.search')+':'" prop="search" required>
-                    <el-radio-group v-model="formData.search">
-                        <el-radio :label="true">是</el-radio>
-                        <el-radio :label="false">否</el-radio>
-                    </el-radio-group>
-                </el-form-item>
+                    <el-form-item :label="$t('form.click')+':'" prop="click" required label-width="80px">
+                        <el-radio-group v-model="formData.click">
+                            <el-radio :label="true">是</el-radio>
+                            <el-radio :label="false">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item :label="$t('form.display')+':'" prop="display" required label-width="80px">
+                        <el-radio-group v-model="formData.display">
+                            <el-radio :label="true">是</el-radio>
+                            <el-radio :label="false">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item :label="$t('form.search')+':'" prop="search" required label-width="80px">
+                        <el-radio-group v-model="formData.search">
+                            <el-radio :label="true">是</el-radio>
+                            <el-radio :label="false">否</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
                 </div>
                 <el-form-item :label="$t('form.description')+':'" prop="description">
                     <el-input v-model="formData.description"></el-input>
@@ -146,6 +155,16 @@
 <style lang='scss'>
     .label-category{
         padding: 20px;
+        /deep/.el-dialog__body{
+            max-height: 55vh;
+            overflow: auto;
+        }
+        /deep/.el-color-picker__trigger{
+            position: absolute;
+            left: -39px;
+            top: 12px;
+            border: none;
+        }
         .tip{
             position: absolute;
             top: 40px;

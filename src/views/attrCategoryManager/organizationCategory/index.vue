@@ -124,6 +124,16 @@
               <el-form-item :label="$t('form.categoryName')+':'" class="required" prop="typeName" ref="typeName">
                   <el-input v-model="formData.typeName"></el-input>
               </el-form-item>
+              <el-form-item label="类别文字颜色选择:" prop="fontColor" ref="fontColor">
+                  <el-input v-model="formData.fontColor" readonly></el-input>
+                  <el-color-picker v-model="formData.fontColor"></el-color-picker>
+              </el-form-item>
+              <el-form-item label="文字是否加粗:" prop="fontBold" ref="fontBold">
+                <el-select v-model="formData.fontBold" placeholder="请选择">
+                    <el-option label="加粗" :value="true"></el-option>
+                    <el-option label="不加粗" :value="false"></el-option>
+                </el-select>
+              </el-form-item>
               <el-form-item :label="$t('form.sort')+':'" class="required" prop="orderId" ref="orderId">
                   <el-input v-model.number="formData.orderId"></el-input>
               </el-form-item>
@@ -142,6 +152,16 @@
 
 <style lang='scss'>
     .attr-organization{
+        /deep/.el-dialog__body{
+            max-height: 55vh;
+            overflow: auto;
+        }
+        /deep/.el-color-picker__trigger{
+            position: absolute;
+            top: 12px;
+            right: 3px;
+            border: none;
+        }
         padding: 20px;
         .avatar-uploader .el-upload {
             border: 1px dashed #d9d9d9;
