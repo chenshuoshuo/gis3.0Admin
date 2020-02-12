@@ -82,7 +82,11 @@ export default {
         displayLevel: [{ required: true, message: '请填写显示级数', trigger: 'blur' }],
         click: [{ required: true, message: '选择是否点击', trigger: 'change' }],
         display: [{ required: true, message: '选择是否显示', trigger: 'change' }],
-        search: [{ required: true, message: '选择是否可搜索', trigger: 'change' }]
+        search: [{ required: true, message: '选择是否可搜索', trigger: 'change' }],
+        description: [{ required: true, message: '请填写描述', trigger: 'blur' }],
+        orderId: [
+          { type: 'number', required: true, message: '请填写排序,必须由数字组成', trigger: 'blur' }
+        ]
       }
     }
   },
