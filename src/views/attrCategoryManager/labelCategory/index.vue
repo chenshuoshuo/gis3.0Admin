@@ -133,10 +133,10 @@
                         </el-radio-group>
                     </el-form-item>
                 </div>
-                <el-form-item :label="$t('form.description')+':'" required prop="description">
+                <el-form-item :label="$t('form.description')+':'" prop="description">
                     <el-input v-model="formData.description"></el-input>
                 </el-form-item>
-                <el-form-item :label="$t('form.sort')+':'" required prop="orderId">
+                <el-form-item :label="$t('form.sort')+':'" prop="orderId">
                     <el-input v-model.number="formData.orderId"></el-input>
                 </el-form-item>
             </el-form>
