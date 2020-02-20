@@ -23,6 +23,8 @@ export default {
       isFisrt: true,
       has3D: true,
       isOpenRaster: false,
+      oldRasterLngLat: '',
+      saveRaster: false,
       types: [],
       campusId: null,
       campus: [],
@@ -34,7 +36,8 @@ export default {
       postForm: {
         roamType: 2,
         location: '',
-        campusCode: null
+        campusCode: null,
+        rasterLngLat: ''
       },
       floor: {
         minLevel: 0,
@@ -86,6 +89,7 @@ export default {
         })
         this.rasterMap = new creeper.RasterMap('rasterMap', res.mapZoneByZoneId.id, window.g.MAP_URL)
         this.rasterMap.on('load', () => {
+          this.saveRaster = false
           var marker = null
           this.rasterMap.on('click', (e) => {
             if (marker !== null) {
@@ -101,6 +105,7 @@ export default {
           })
           setTimeout(() => {
             if (this.postForm.rasterLngLat) {
+              this.oldRasterLngLat = this.postForm.rasterLngLat;
               const lngLat = this.postForm.rasterLngLat.split(',')
               this.rasterMap.flyTo({
                 center: lngLat,
@@ -116,6 +121,12 @@ export default {
           }, 500)
         })
       }, 200)
+    },
+    // dialog关闭时判断是否保存,防止选中新点后,点击取消或者右上角关闭导致的问题
+    rasterClose() {
+      if (!this.saveRaster) {
+        this.postForm.rasterLngLat = this.oldRasterLngLat
+      }
     },
     setLevel(num) {
       this.vectorMap.setLevel(num)
@@ -301,7 +312,7 @@ export default {
           item.remove()
         })
     },
-    campusId() {
+    campusId(newVal, oldVal) {
       // this.has3D = false
       this.campus.forEach(item => {
         item.map2D.forEach(element => {
@@ -321,6 +332,10 @@ export default {
       }
       this.poiComponent = new window.creeper.searchEngine(window.g.BASE_GIS, this.campusId)
       this.display && this.getListRoam()
+      if (oldVal != null) {
+        this.postForm.location = ''
+        this.postForm.rasterLngLat = ''
+      }
     },
     keyWord() {
       const target = this.POIList.find(item => item.id === this.keyWord)

@@ -40,7 +40,7 @@
                             <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
                         </el-form-item>
                         <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLat" class="required" required>
-                            <span @click="openRaster"> 
+                            <span @click="openRaster">
                                 <el-input v-model="postForm.rasterLngLat" placeholder="点击打开三维地图" readonly></el-input>
                             </span>
                         </el-form-item>
@@ -54,11 +54,12 @@
                     <el-dialog
                     title="三维位置绑定"
                     :visible.sync="isOpenRaster"
+                    @close="rasterClose"
                     width="90%" top="5vh">
                         <div id="rasterMap"></div>
                         <span slot="footer" class="dialog-footer">
-                            <el-button type="info" @click="isOpenRaster = false;postForm.rasterLngLat = ''" size="small">取 消</el-button>
-                            <el-button type="primary" @click="isOpenRaster = false" size="small">确 定</el-button>
+                            <el-button type="info" @click="isOpenRaster = false;saveRaster = false" size="small">取 消</el-button>
+                            <el-button type="primary" @click="isOpenRaster = false;saveRaster = true" size="small">确 定</el-button>
                         </span>
                     </el-dialog>
                 </div>
@@ -66,7 +67,7 @@
         </div>
         <div class="tool-box">
             <div class="level-box">
-                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel'
                 :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
             </div>
             <div class="zoom-box">
