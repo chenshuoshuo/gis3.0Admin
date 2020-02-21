@@ -391,7 +391,7 @@ export default {
     }
   },
   watch: {
-    campusId(cur) {
+    campusId(cur, oldVal) {
       this.has3D = false
       this.campus.forEach(item => {
         item.map2D.forEach(element => {
@@ -413,6 +413,10 @@ export default {
         this.postForm.rasterLngLatString = ''
       }
       this.postForm.campusCode = cur
+      if (oldVal != null) {
+        this.postForm.location = ''
+        this.postForm.lngLatString = ''
+      }
     },
     typeArr() {
       this.postForm.typeCode = this.typeArr[this.typeArr.length - 1]

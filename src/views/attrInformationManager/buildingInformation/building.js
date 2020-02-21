@@ -72,6 +72,9 @@ export default {
     },
     handlerSearch() {
       this.listQuery.page = 1
+      if (this.listQuery.buildingName === undefined || this.listQuery.buildingName === '') {
+        delete this.listQuery.buildingName
+      }
       this.getList()
     },
     handleSizeChange(val) {
