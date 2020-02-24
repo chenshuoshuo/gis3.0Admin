@@ -39,6 +39,9 @@ export default {
   },
   methods: {
     getList() {
+      if (this.listQuery.page < 1) {
+        return
+      }
       this.listQuery.page--
       this.listLoading = true
       pageRoomInfo(this.listQuery).then(res => {

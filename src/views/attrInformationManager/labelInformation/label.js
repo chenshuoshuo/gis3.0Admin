@@ -42,6 +42,9 @@ export default {
   },
   methods: {
     getList() {
+      if (this.listQuery.page < 1) {
+        return
+      }
       this.listQuery.page--
       this.listLoading = true
       pagePointInfo(this.listQuery).then(res => {

@@ -50,7 +50,7 @@
                                 :file-list="fileList"
                                 list-type="picture-card">
                                 <i class="el-icon-plus avatar-uploader-icon"></i>
-                                <div slot="tip" class="el-upload__tip">建议尺寸26x26,图片大小不超过1M</div>
+                                <div slot="tip" class="el-upload__tip">建议尺寸26x26px,图片大小不超过1M</div>
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="二维位置:" prop="location" class="required" required>
@@ -97,12 +97,12 @@
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
                 <el-button type="info" @click="cancelMarker" size="small">取 消</el-button>
-                <el-button type="primary" @click="isOpenRaster = false;!!postForm.rasterLngLatString?isEnsure = true:isEnsure = fasle;$refs.raster.clearValidate()" size="small">确 定</el-button>
+                <el-button type="primary" @click="isOpenRaster = false;!!postForm.rasterLngLatString?isEnsure = true:isEnsure = false;$refs.raster.clearValidate()" size="small">确 定</el-button>
             </span>
         </el-dialog>
         <div class="tool-box">
             <div class="level-box">
-                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel'
                 :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
             </div>
             <div class="zoom-box">

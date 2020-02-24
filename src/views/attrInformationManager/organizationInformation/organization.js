@@ -52,8 +52,11 @@ export default {
       })
     },
     getList() {
-      this.listQuery.page--
       this.listLoading = true
+      if (this.listQuery.page < 1) {
+        return
+      }
+      this.listQuery.page--
       pageOrganizationInfo(this.listQuery).then(res => {
         this.listQuery.page++
         this.listLoading = false

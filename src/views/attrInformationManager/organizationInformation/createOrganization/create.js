@@ -47,10 +47,13 @@ export default {
         // campusId: [{ required: true, message: '请选择校区', trigger: 'change' }],
         typeCode: [{ required: true, message: '请选择机构类别', trigger: 'change' }],
         codeIsBuilding: [{ required: true, message: '请选择楼层', trigger: 'change' }],
-        location: [{ required: true, message: '请选择二维位置', trigger: 'blur' }],
+        location: [{ required: true, message: '请选择二维位置', trigger: 'change' }],
+        officialWebsite: [{ required: false, message: '请输入正确的网址', trigger: 'change',
+          pattern: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ }],
         rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }]
       },
-      isEnsure: false
+      isEnsure: false,
+      oldRasterLngLat: ''
     }
   },
   methods: {
@@ -311,14 +314,14 @@ export default {
     },
     cancelMarker() {
       this.isOpenRaster = false
-      if (this.state === 'add') {
-        if (!this.isEnsure) {
-          this.postForm.rasterLngLatString = ''
-        }
+      if (!this.isEnsure) {
+        // this.postForm.rasterLngLatString = ''
+        this.postForm.rasterLngLatString = this.oldRasterLngLat
       }
     },
     openRaster() {
       this.isOpenRaster = true
+      this.isEnsure = false
       setTimeout(() => {
         var res = null
         this.campus.forEach(item => {
@@ -345,6 +348,7 @@ export default {
           })
           setTimeout(() => {
             if (this.postForm.rasterLngLatString) {
+              this.oldRasterLngLat = this.postForm.rasterLngLatString
               const lngLat = this.postForm.rasterLngLatString.split(',')
               this.rasterMap.flyTo({
                 center: lngLat,
@@ -363,7 +367,7 @@ export default {
     }
   },
   watch: {
-    campusId(cur) {
+    campusId(cur, oldVal) {
       this.has3D = false
       this.campus.forEach(item => {
         item.map2D.forEach(element => {
@@ -383,6 +387,11 @@ export default {
         // this.resetForm()
         this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
         this.initMap()
+      }
+      if (oldVal != null) {
+        this.postForm.location = ''
+        this.postForm.rasterLngLatString = ''
+        this.postForm.lngLatString = ''
       }
     },
     typeCode() {

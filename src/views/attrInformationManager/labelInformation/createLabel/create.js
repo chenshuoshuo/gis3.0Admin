@@ -47,10 +47,11 @@ export default {
         // campusId: [{ required: true, message: '请选择校区', trigger: 'change' }],
         // typeCode: [{ required: true, message: '请选择标注类别', trigger: 'change' }],
         // leaf: [{ required: true, message: '请选择楼层', trigger: 'change' }],
-        location: [{ required: true, message: '请选择二维位置', trigger: 'blur' }],
+        location: [{ required: true, message: '请选择二维位置', trigger: 'change' }],
         rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }]
       },
-      isEnsure: false
+      isEnsure: false,
+      oldRasterLngLat: ''
     }
   },
   methods: {
@@ -339,14 +340,13 @@ export default {
     },
     cancelMarker() {
       this.isOpenRaster = false
-      if (this.state === 'add') {
-        if (!this.isEnsure) {
-          this.postForm.rasterLngLatString = ''
-        }
+      if (!this.isEnsure) {
+        this.postForm.rasterLngLatString = this.oldRasterLngLat
       }
     },
     openRaster() {
       this.isOpenRaster = true
+      this.isEnsure = false
       setTimeout(() => {
         var res = null
         this.campus.forEach(item => {
@@ -373,6 +373,7 @@ export default {
           })
           setTimeout(() => {
             if (this.postForm.rasterLngLatString) {
+              this.oldRasterLngLat = this.postForm.rasterLngLatString
               const lngLat = this.postForm.rasterLngLatString.split(',')
               this.rasterMap.flyTo({
                 center: lngLat,

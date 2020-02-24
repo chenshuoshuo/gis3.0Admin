@@ -88,7 +88,7 @@
           </el-table>
           <div class="pagination-container">
             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                            :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize"
+                            :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize"
                             layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
           </div>
@@ -109,7 +109,7 @@
             .el-form-item{
                 display: flex;
             }
-        } 
+        }
         .el-form--inline .el-form-item__label{
             width: 84px;
             text-align: right;

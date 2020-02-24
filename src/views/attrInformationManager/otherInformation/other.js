@@ -194,7 +194,7 @@ export default {
     }
   },
   beforeMount() {
-    this.getList()
+    // this.getList()
     this.getCampus()
     listOthersPolygonType().then(res => {
       if (res.data.status) {

@@ -41,6 +41,9 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
+      if (this.listQuery.page < 1) {
+        return
+      }
       this.listQuery.page--
       pageBuildingInfo(this.listQuery).then(res => {
         this.listQuery.page++
@@ -207,5 +210,8 @@ export default {
         })
       }
     })
+  },
+  activated() {
+    this.getList()
   }
 }

@@ -91,13 +91,13 @@
         >
             <div id="rasterMap"></div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="info" @click="cancelMarker" size="small">取 消</el-button>
-                <el-button type="primary" @click="isOpenRaster = false;postForm.rasterLngLatString?isEnsure = true:isEnsure = false;$refs.raster.clearValidate()" size="small">确 定</el-button>
+                <el-button type="info" @click="isOpenRaster = false;isEnsure = false" size="small">取 消</el-button>
+                <el-button type="primary" @click="oldRasterLngLat = postForm.rasterLngLatString;isOpenRaster = false;postForm.rasterLngLatString?isEnsure = true:isEnsure = false;$refs.raster.clearValidate()" size="small">确 定</el-button>
             </span>
         </el-dialog>
         <div class="tool-box">
             <div class="level-box">
-                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                <level-selector ref="level" v-if="floor.floorShow" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel'
                 :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
             </div>
             <div class="zoom-box">

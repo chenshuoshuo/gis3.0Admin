@@ -105,7 +105,7 @@ export default {
           })
           setTimeout(() => {
             if (this.postForm.rasterLngLat) {
-              this.oldRasterLngLat = this.postForm.rasterLngLat;
+              this.oldRasterLngLat = this.postForm.rasterLngLat
               const lngLat = this.postForm.rasterLngLat.split(',')
               this.rasterMap.flyTo({
                 center: lngLat,

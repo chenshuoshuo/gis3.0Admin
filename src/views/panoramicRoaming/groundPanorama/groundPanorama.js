@@ -38,6 +38,9 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
+      if (this.listQuery.page < 1) {
+        return
+      }
       this.listQuery.page--
       pageRoam(this.listQuery).then(res => {
         if (res.data.status) {
