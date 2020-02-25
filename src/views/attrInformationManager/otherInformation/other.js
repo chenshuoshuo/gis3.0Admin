@@ -42,6 +42,9 @@ export default {
   },
   methods: {
     getList() {
+      if (this.listQuery.page < 1) {
+        return
+      }
       this.listQuery.page--
       this.listLoading = true
       pageOthersInfo(this.listQuery).then(res => {
@@ -96,6 +99,7 @@ export default {
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
+      this.listQuery.page = 1
       this.getList()
     },
     handleCurrentChange(val) {
@@ -194,7 +198,7 @@ export default {
     }
   },
   beforeMount() {
-    // this.getList()
+    this.getList()
     this.getCampus()
     listOthersPolygonType().then(res => {
       if (res.data.status) {

@@ -71,7 +71,7 @@
         </div>
         <div class="tool-box">
             <div class="level-box">
-                <level-selector v-if="floor.floorShow && postForm.leaf" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel' 
+                <level-selector v-if="floor.floorShow && postForm.leaf" :minLevel='floor.minLevel' :maxLevel='floor.maxLevel'
                 :currentFloor="floor.currentLevel" @change-level='setLevel' :size='5'  />
             </div>
             <div class="zoom-box">

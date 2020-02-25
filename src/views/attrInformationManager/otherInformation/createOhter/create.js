@@ -148,6 +148,7 @@ export default {
             delete this.postForm.mapOthersType
             // 修正字段传错bug
             this.postForm.mapOthersPolygonExtendsList = this.postForm.extendsFields
+            // this.postForm.mapOthersPolygonExtendsList.polygonCode = this.postForm.polygonCode
             updateOthersInfo(this.postForm).then(res => {
               if (res.data.status) {
                 this.$message({
@@ -181,9 +182,9 @@ export default {
         }
       })
     },
-    initExtendsDefine() {
+    async initExtendsDefine() {
       if (this.postForm.typeCode) {
-        getMapOptExtendsDefine(this.postForm.typeCode).then(res => {
+        await getMapOptExtendsDefine(this.postForm.typeCode).then(res => {
           if (res.data.status) {
             if (this.postForm.mapOthersExtendsList && this.postForm.mapOthersExtendsList.length > 0) {
               this.postForm.mapOthersExtendsList.forEach(value => {
@@ -193,10 +194,12 @@ export default {
                   }
                 })
               })
-              this.postForm.extendsFields = res.data.data
-            } else {
-              this.postForm.extendsFields = res.data.data
             }
+            this.postForm.extendsFields = res.data.data
+            // 此时页面已经重新渲染完毕,extendsFields为空数组,不得已出此下策
+            const temp = this.postForm.memo
+            this.postForm.memo = ' '
+            this.postForm.memo = temp
           } else {
             this.$message({
               type: 'error',

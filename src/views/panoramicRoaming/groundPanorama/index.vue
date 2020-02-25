@@ -73,7 +73,7 @@
                             layout="total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
           </div>
-<!--          <el-dialog
+          <el-dialog
             :title="$t('button.'+state)"
             width="450px" :visible.sync="showForm" @close="handleClose">
             <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form">
@@ -101,7 +101,7 @@
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>
                 <el-button type="primary" @click="handleSubmit">{{$t('button.submit')}}</el-button>
             </div>
-        </el-dialog>-->
+        </el-dialog>
     </div>
 </template>
 
