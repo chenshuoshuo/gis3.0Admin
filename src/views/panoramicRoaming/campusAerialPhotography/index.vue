@@ -68,11 +68,11 @@
             :close-on-click-modal="false"
             :title="$t('button.'+state)"
             width="450px" :visible.sync="showForm" @close="handleClose">
-            <el-form :model="formData" ref="postForm" label-position="right" label-width="100px" class="post-form" status-icon :show-message="false">
-              <el-form-item :label="$t('form.flyCamName')+':'" prop="roamName" required>
+            <el-form :model="formData" ref="postForm" :rules="rules" label-position="right" label-width="100px" class="post-form" status-icon>
+              <el-form-item :label="$t('form.flyCamName')+':'" prop="roamName">
                   <el-input v-model="formData.roamName"></el-input>
               </el-form-item>
-              <el-form-item :label="$t('form.campus')+':'" prop="campusCode" required>
+              <el-form-item :label="$t('form.campus')+':'" prop="campusCode">
                     <el-select v-model="formData.campusCode" placeholder="请选择">
                         <el-option
                         v-for="item in campus"
@@ -100,7 +100,7 @@
                 </el-upload>
               </el-form-item>
               <el-form-item :label="$t('form.sort')+':'" prop="orderId">
-                  <el-input v-model="formData.orderId"></el-input>
+                  <el-input v-model.number="formData.orderId"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">

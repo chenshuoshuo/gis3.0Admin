@@ -18,7 +18,7 @@
               </el-form-item>
                 <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}
                 </el-button>
-                <router-link :to="{path:'/panoramic-roaming/creategroundPanorama',query:{method:'add'}}">
+                <router-link :to="{path:'/panoramic-roaming/creategroundPanorama',query:{method:'add',total:total}}">
                     <el-button class="filter-item" style="margin-left: 10px;" type="success" icon="el-icon-edit">{{$t('button.add')}}
                 </el-button>
                 </router-link>

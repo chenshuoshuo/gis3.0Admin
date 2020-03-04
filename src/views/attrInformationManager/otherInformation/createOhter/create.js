@@ -148,6 +148,9 @@ export default {
             delete this.postForm.mapOthersType
             // 修正字段传错bug
             this.postForm.mapOthersPolygonExtendsList = this.postForm.extendsFields
+            this.postForm.mapOthersPolygonExtendsList.forEach(item => {
+              item.polygonCode = this.postForm.polygonCode
+            })
             // this.postForm.mapOthersPolygonExtendsList.polygonCode = this.postForm.polygonCode
             updateOthersInfo(this.postForm).then(res => {
               if (res.data.status) {
@@ -186,8 +189,18 @@ export default {
       if (this.postForm.typeCode) {
         await getMapOptExtendsDefine(this.postForm.typeCode).then(res => {
           if (res.data.status) {
-            if (this.postForm.mapOthersExtendsList && this.postForm.mapOthersExtendsList.length > 0) {
-              this.postForm.mapOthersExtendsList.forEach(value => {
+            // 后端返回的已无mapOthersExtendsList列表字段
+            // if (this.postForm.mapOthersExtendsList && this.postForm.mapOthersExtendsList.length > 0) {
+            //   this.postForm.mapOthersExtendsList.forEach(value => {
+            //     res.data.data.forEach(element => {
+            //       if (value.columnId === element.columnId) {
+            //         element.extendsValue = value.extendsValue
+            //       }
+            //     })
+            //   })
+            // }
+            if (this.postForm.mapOthersPolygonExtendsList && this.postForm.mapOthersPolygonExtendsList.length > 0) {
+              this.postForm.mapOthersPolygonExtendsList.forEach(value => {
                 res.data.data.forEach(element => {
                   if (value.columnId === element.columnId) {
                     element.extendsValue = value.extendsValue

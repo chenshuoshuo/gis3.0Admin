@@ -55,7 +55,7 @@ export default {
           { required: true, message: '请填写类别名称', trigger: 'blur' }
         ],
         orderId: [
-          { type: 'number', required: true, message: '请填写排序,必须由数字组成', trigger: 'blur' }
+          { type: 'number', required: true, message: '请填写大于0的数字', trigger: 'blur', min: 1 }
         ]
       },
       list: null,
@@ -104,6 +104,7 @@ export default {
     handleAdd() {
       this.state = 'add'
       this.showForm = true
+      this.formData.orderId = this.total + 1
     },
     handleClose() {
       this.picUrl = ''

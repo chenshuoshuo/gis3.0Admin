@@ -71,7 +71,6 @@
                         <el-form-item
                             label="排序:"
                             prop="orderId"
-                            :rules="[{type: 'number', message: '请输入数字值', trigger: 'blur'}]"
                             >
                             <el-input type="orderId" v-model.number="postForm.orderId"></el-input>
                         </el-form-item>

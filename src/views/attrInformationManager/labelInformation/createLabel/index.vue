@@ -67,8 +67,8 @@
                             <el-input v-if="item.columnType===0" v-model="item.extendsValue" type="text"></el-input>
                             <el-input v-if="item.columnType===2" v-model="item.extendsValue" type="textarea" :rows="3" ></el-input>
                         </el-form-item>
-                         <el-form-item label="排序:" prop="region">
-                            <el-input v-model="postForm.orderId"></el-input>
+                         <el-form-item label="排序:" prop="orderId">
+                            <el-input v-model.number="postForm.orderId"></el-input>
                         </el-form-item>
                         <el-form-item label="备注:" prop="region">
                             <el-input v-model="postForm.memo"></el-input>

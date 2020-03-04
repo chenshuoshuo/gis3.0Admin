@@ -48,7 +48,8 @@ export default {
         // typeCode: [{ required: true, message: '请选择标注类别', trigger: 'change' }],
         // leaf: [{ required: true, message: '请选择楼层', trigger: 'change' }],
         location: [{ required: true, message: '请选择二维位置', trigger: 'change' }],
-        rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }]
+        rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }],
+        orderId: [{ type: 'number', required: true, message: '请输入大于0的数字', trigger: 'blur', min: 1 }]
       },
       isEnsure: false,
       oldRasterLngLat: ''
@@ -405,6 +406,7 @@ export default {
         this.isFisrt = false
         this.getPointTypeList()
       } else {
+        this.postForm.orderId = this.$route.query.total + 1
         this.typeArr = []
         this.getPointTypeList()
         this.loaddingMap = true

@@ -85,7 +85,7 @@ export default {
         search: [{ required: true, message: '选择是否可搜索', trigger: 'change' }],
         description: [{ required: true, message: '请填写描述', trigger: 'blur' }],
         orderId: [
-          { type: 'number', required: true, message: '请填写排序,必须由数字组成', trigger: 'blur' }
+          { type: 'number', required: true, message: '请填写大于0的数字', trigger: 'blur', min: 1 }
         ]
       }
     }
@@ -128,6 +128,7 @@ export default {
       this.state = 'add'
       this.getParentCategorys()
       this.showForm = true
+      this.formData.orderId = this.total + 1
     },
     handleClose() {
       this.picUrl = ''

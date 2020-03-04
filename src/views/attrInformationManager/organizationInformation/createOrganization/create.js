@@ -50,7 +50,8 @@ export default {
         location: [{ required: true, message: '请选择二维位置', trigger: 'change' }],
         officialWebsite: [{ required: false, message: '请输入正确的网址', trigger: 'change',
           pattern: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ }],
-        rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }]
+        rasterLngLatString: [{ required: true, message: '请选择三维位置', trigger: 'change' }],
+        orderId: [{ type: 'number', required: true, message: '请输入大于0的数字', trigger: 'blur', min: 1 }]
       },
       isEnsure: false,
       oldRasterLngLat: ''
@@ -381,6 +382,7 @@ export default {
         this.isFisrt = false
         this.getOrganizationTypeList()
       } else {
+        this.postForm.orderId = this.$route.query.total + 1
         this.postForm.typeCode = null
         this.getOrganizationTypeList()
         this.loaddingMap = true

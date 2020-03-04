@@ -30,7 +30,7 @@
                     </el-input>
                 </el-form-item>
                 <el-button type="primary" v-waves icon="el-icon-search" @click="handlerSearch">{{$t('button.search')}}</el-button>
-                <router-link :to="{path:'/information-manager/createLabel',query:{method:'add'}}">
+                <router-link :to="{path:'/information-manager/createLabel',query:{method:'add',total:total}}">
                     <el-button style="margin-left: 10px;" v-waves type="success" icon="el-icon-edit">{{$t('button.add')}}</el-button>
                 </router-link>
                 <el-button style="margin-left: 10px;" v-waves type="danger"  @click="handleDeletMany" icon="el-icon-delete" >批量删除</el-button>

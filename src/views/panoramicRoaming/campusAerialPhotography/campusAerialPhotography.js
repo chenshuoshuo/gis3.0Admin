@@ -31,6 +31,11 @@ export default {
       },
       formData: {
         roamType: 1
+      },
+      rules: {
+        roamName: [{ required: true, message: '请输入航拍名称', trigger: 'blur' }],
+        campusCode: [{ required: true, message: '请选择校区', trigger: 'change' }],
+        orderId: [{ type: 'number', required: true, message: '请输入大于0的数字', trigger: 'blur', min: 1 }]
       }
     }
   },
@@ -75,6 +80,7 @@ export default {
     handleAdd() {
       this.state = 'add'
       this.showForm = true
+      this.formData.orderId = this.total + 1
     },
     handleClose() {
       this.formData = { roamType: 1 }

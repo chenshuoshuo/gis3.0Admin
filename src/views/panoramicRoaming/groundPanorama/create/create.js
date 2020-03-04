@@ -45,7 +45,15 @@ export default {
         floorShow: false,
         currentLevel: 0
       },
-      vectorMap: null
+      vectorMap: null,
+      rules: {
+        roamName: [{ required: true, message: '请输入全景名称', trigger: 'blur' }],
+        roamnUrl: [{ required: true, message: '请输入全景地址', trigger: 'blur' }],
+        campusCode: [{ required: true, message: '请选择校区', trigger: 'change' }],
+        location: [{ required: true, message: '请在地图上选择二维位置', trigger: 'change' }],
+        rasterLngLat: [{ required: true, message: '请在地图上选择三维位置', trigger: 'change' }],
+        orderId: [{ type: 'number', required: true, message: '请输入大于0的数字', trigger: 'blur', min: 1 }]
+      }
     }
   },
   methods: {
@@ -324,6 +332,7 @@ export default {
       if (this.state === 'update' && this.isFisrt) {
         this.isFisrt = false
       } else {
+        this.postForm.orderId = this.$route.query.total + 1
         this.typeArr = []
         this.loaddingMap = true
         // this.resetForm()

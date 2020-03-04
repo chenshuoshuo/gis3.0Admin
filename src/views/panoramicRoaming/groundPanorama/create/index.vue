@@ -5,11 +5,11 @@
         <div :class="{'slider-over':isOver}" class="slider">
             <el-scrollbar style="height:100%">
                 <div class="slider-content" id="slider-content">
-                    <el-form :model="postForm" status-icon ref="ruleForm" label-width="80px" class="demo-ruleForm" :show-message="false">
-                        <el-form-item label="全景名称:" prop="roamName" class="required" required>
+                    <el-form :model="postForm" :rules="rules" status-icon ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                        <el-form-item label="全景名称:" prop="roamName" class="required">
                             <el-input v-model="postForm.roamName" id="name"></el-input>
                         </el-form-item>
-                        <el-form-item label="全景地址:" prop="roamnUrl" class="required" required>
+                        <el-form-item label="全景地址:" prop="roamnUrl" class="required">
                             <el-input v-model="postForm.roamnUrl" id="name"></el-input>
                         </el-form-item>
                         <el-form-item label="全景文件:">
@@ -36,16 +36,16 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="二维位置:" prop="location" class="required" required>
+                        <el-form-item label="二维位置:" prop="location" class="required">
                             <el-input v-model="postForm.location" placeholder="请在地图上选择"></el-input>
                         </el-form-item>
-                        <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLat" class="required" required>
+                        <el-form-item v-if="has3D" label="三维位置:" prop="rasterLngLat" class="required">
                             <span @click="openRaster">
                                 <el-input v-model="postForm.rasterLngLat" placeholder="点击打开三维地图" readonly></el-input>
                             </span>
                         </el-form-item>
-                        <el-form-item label="排序:" prop="region">
-                            <el-input v-model="postForm.orderId"></el-input>
+                        <el-form-item label="排序:" prop="orderId">
+                            <el-input v-model.number="postForm.orderId"></el-input>
                         </el-form-item>
                         <el-form-item class="btn-item">
                             <el-button type="primary" class="btn-sub" @click="handleSub">提交</el-button>
