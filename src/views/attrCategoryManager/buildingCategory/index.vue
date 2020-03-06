@@ -33,18 +33,18 @@
                     <span>{{scope.row.typeName}}</span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.click')">
+            <!-- <el-table-column align="center" :label="$t('table.click')">
                 <template slot-scope="scope">
                     <span v-if="scope.row.click"><i class="el-icon-ips-gou1"></i></span>
                     <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('table.search')">
+            </el-table-column> -->
+            <!-- <el-table-column align="center" :label="$t('table.search')">
                 <template slot-scope="scope">
                     <span v-if="scope.row.search"><i class="el-icon-ips-gou1"></i></span>
                     <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width" width="260">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
@@ -66,14 +66,14 @@
                 <el-form-item :label="$t('form.buildCategoryName')+':'" prop="typeName" required>
                     <el-input v-model="formData.typeName" ></el-input>
                 </el-form-item>
-                <el-form-item :label="$t('form.click')+':'" required>
+                <!-- <el-form-item :label="$t('form.click')+':'" required>
                     <el-radio v-model="formData.click" :label="true">是</el-radio>
                     <el-radio v-model="formData.click" :label="false">否</el-radio>
                 </el-form-item>
                 <el-form-item :label="$t('form.search')+':'" required>
                     <el-radio v-model="formData.search" :label="true">是</el-radio>
                     <el-radio v-model="formData.search" :label="false">否</el-radio>
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="showForm = false">{{$t('button.cancel')}}</el-button>

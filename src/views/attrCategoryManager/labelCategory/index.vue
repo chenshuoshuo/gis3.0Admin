@@ -23,24 +23,24 @@
             </el-form>
         </div>
         <tree-table :data="list" :columns="columns" border :evalFunc="func" @change-selection="handleSelectionChange" v-loading="listLoading" element-loading-text="加载中...">
-            <el-table-column align="center" :label="$t('table.click')">
+            <!-- <el-table-column align="center" :label="$t('table.click')">
                 <template slot-scope="scope">
                     <span v-if="scope.row.click"><i class="el-icon-ips-gou1"></i></span>
                     <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column align="center" :label="$t('table.display')">
                 <template slot-scope="scope">
                     <span v-if="scope.row.display"><i class="el-icon-ips-gou1"></i></span>
                     <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
             </el-table-column>
-            <el-table-column align="center" :label="$t('table.search')">
+            <!-- <el-table-column align="center" :label="$t('table.search')">
                 <template slot-scope="scope">
                     <span v-if="scope.row.search"><i class="el-icon-ips-gou1"></i></span>
                     <span v-else><i class="el-icon-ips-cha"></i></span>
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width" width="260px">
                 <template slot-scope="scope">
                     <el-button type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
@@ -114,24 +114,24 @@
                     <el-input v-model="formData.displayLevel"></el-input>
                 </el-form-item>
                 <div class="radio">
-                    <el-form-item :label="$t('form.click')+':'" prop="click" required label-width="80px">
+                    <!-- <el-form-item :label="$t('form.click')+':'" prop="click" required label-width="80px">
                         <el-radio-group v-model="formData.click">
                             <el-radio :label="true">是</el-radio>
                             <el-radio :label="false">否</el-radio>
                         </el-radio-group>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item :label="$t('form.display')+':'" prop="display" required label-width="80px">
                         <el-radio-group v-model="formData.display">
                             <el-radio :label="true">是</el-radio>
                             <el-radio :label="false">否</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item :label="$t('form.search')+':'" prop="search" required label-width="80px">
+                    <!-- <el-form-item :label="$t('form.search')+':'" prop="search" required label-width="80px">
                         <el-radio-group v-model="formData.search">
                             <el-radio :label="true">是</el-radio>
                             <el-radio :label="false">否</el-radio>
                         </el-radio-group>
-                    </el-form-item>
+                    </el-form-item> -->
                 </div>
                 <el-form-item :label="$t('form.description')+':'" prop="description">
                     <el-input v-model="formData.description"></el-input>
