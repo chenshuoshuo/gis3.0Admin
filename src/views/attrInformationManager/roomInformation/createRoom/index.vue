@@ -46,7 +46,7 @@
                                 <div slot="tip" class="el-upload__tip">建议尺寸26x26px,图片大小不超过1M</div>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
+                        <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
                             <el-input v-if="item.columnType===0" v-model="item.extendsValue" type="text"></el-input>
                             <el-input v-if="item.columnType===2" v-model="item.extendsValue" type="textarea" :rows="3" ></el-input>
                         </el-form-item>

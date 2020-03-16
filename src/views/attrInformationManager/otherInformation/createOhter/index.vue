@@ -46,7 +46,7 @@
                         <el-form-item
                         v-for="(item,index) of postForm.extendsFields"
                         :label="item.columnCnname+':'"
-                        :key="index" v-if="item.show"
+                        :key="index"
                         :class="{'required':item.required}"
                         :rules="{required:item.required,message:'请输入内容',trigger: 'blur'}"
                         :prop="'extendsFields['+index+'].extendsValue'">

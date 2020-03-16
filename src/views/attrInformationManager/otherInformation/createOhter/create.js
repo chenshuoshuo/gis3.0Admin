@@ -208,11 +208,9 @@ export default {
                 })
               })
             }
-            this.postForm.extendsFields = res.data.data
-            // 此时页面已经重新渲染完毕,extendsFields为空数组,不得已出此下策
-            const temp = this.postForm.memo
-            this.postForm.memo = ' '
-            this.postForm.memo = temp
+            this.postForm = Object.assign({},this.postForm,{
+              extendsFields: res.data.data
+            })
           } else {
             this.$message({
               type: 'error',

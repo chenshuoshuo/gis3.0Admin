@@ -61,7 +61,7 @@
                                 <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" :readonly="true"></el-input>
                             </span>
                         </el-form-item>
-                        <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" v-if="item.show" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
+                        <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">
                             <el-input v-if="item.columnType===0" v-model="item.extendsValue" type="text"></el-input>
                             <el-input v-if="item.columnType===2" v-model="item.extendsValue" type="textarea" :rows="3" ></el-input>
                         </el-form-item>

@@ -209,10 +209,10 @@ export default {
                   }
                 })
               })
-              this.postForm.extendsFields = res.data.data
-            } else {
-              this.postForm.extendsFields = res.data.data
             }
+            this.postForm = Object.assign({},this.postForm,{
+              extendsFields: res.data.data
+            })
           } else {
             this.$message({
               type: 'error',
