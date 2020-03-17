@@ -13,7 +13,7 @@ export default {
     return {
       picUrl: '',
       fileList: [],
-      has3D: false,
+      has3D: true,
       loaddingMap: true,
       isOver: false,
       isFisrt: true,
@@ -242,8 +242,10 @@ export default {
         this.vectorMap.on('moveend', () => {
           if (this.vectorMap.getZoom() >= 18) {
             this.postForm.leaf = true
+            this.has3D = false
           } else {
             this.postForm.leaf = false
+            this.has3D = true
           }
           // 调用sdk中的moveend回调
           this.vectorMap.floorComponent.onCameraMoveEnd()
@@ -394,11 +396,11 @@ export default {
   },
   watch: {
     campusId(cur, oldVal) {
-      this.has3D = false
+      // this.has3D = false
       this.campus.forEach(item => {
         item.map2D.forEach(element => {
           if (element.mapZoneByZoneId.id === this.campusId && item.map3D.length > 0) {
-            this.has3D = true
+            // this.has3D = true
           }
         })
       })
