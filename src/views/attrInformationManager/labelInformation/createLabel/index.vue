@@ -55,12 +55,12 @@
                                 <div slot="tip" class="el-upload__tip">建议尺寸26x26px,图片大小不超过1M</div>
                             </el-upload>
                         </el-form-item>
-                        <el-form-item label="二维位置绑定:" prop="location" class="required" required>
-                            <el-input v-model="postForm.location" placeholder="请在地图上选择" :readonly="true"></el-input>
+                        <el-form-item label="二维位置绑定:" prop="location" class="required">
+                            <el-input v-model="postForm.location" placeholder="请在地图上选择" ></el-input>
                         </el-form-item>
                         <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" ref="raster">
                             <span @click="openRaster">
-                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图" :readonly="true"></el-input>
+                                <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图"></el-input>
                             </span>
                         </el-form-item>
                         <el-form-item v-for="(item,index) of postForm.extendsFields" :label="item.columnCnname+':'" :key="index" :class="{'required':item.required}" :rules="{required:item.required,trigger: 'blur'}" :show-message="false" :prop="'extendsFields['+index+'].extendsValue'">

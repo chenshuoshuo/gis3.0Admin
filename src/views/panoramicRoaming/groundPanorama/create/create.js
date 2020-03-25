@@ -259,6 +259,10 @@ export default {
               draggable: true
             }).setLngLat(this.postForm.lngLat.coordinates)
               .addTo(this.vectorMap)
+            this.vectorMap.flyTo({
+              center: this.postForm.lngLat.coordinates,
+              zoom: 19
+            })
             this.postForm.lngLat = this.postForm.lngLat.coordinates.join(',')
           }
         }, 500)
