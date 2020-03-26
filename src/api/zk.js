@@ -13,3 +13,11 @@ export function getUserInfo(username) {
     method: 'get'
   })
 }
+// 保存版本接口
+export function saveVerManager(data) {
+  return service({
+    url: `/center/ccrVersionSystem/v1/save`,
+    method: 'put',
+    params: data
+  })
+}

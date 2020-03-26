@@ -43,7 +43,7 @@
 const packgeJson = require('../../../../../package.json')
 import { mapGetters } from 'vuex'
 import { generateTitle } from '@/utils/i18n'
-
+import { saveVerManager } from '@/api/zk'
 export default {
   name: 'SidebarItem',
   props: {
@@ -57,10 +57,21 @@ export default {
   },
   data() {
     return {
-      version: packgeJson.version
+      // version: packgeJson.version
+      version: packgeJson.version.split('.')[0] + '.' + packgeJson.version.split('.')[1] + '.' + packgeJson.version.split('.')[2].split('').join('.')
     }
   },
+  mounted() {
+    this.saveVerManager()
+  },
   methods: {
+    saveVerManager() {
+      saveVerManager({
+        systemName: '地图门户管理',
+        moduleName: 'Web后台管理系统',
+        version: this.version
+      }).then().catch(e => console.log(e))
+    },
     hasOneShowingChildren(children) {
       const showingChildren = children.filter(item => {
         return !item.hidden
