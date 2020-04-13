@@ -43,7 +43,7 @@
             </el-table-column> -->
             <el-table-column align="center" :label="$t('table.option')"  class-name="small-padding fixed-width" width="260px">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
+                    <el-button v-if="scope.row.parentCode" type="primary" size="mini" @click="handleConfig(scope.row.typeCode)" >{{$t('button.configField')}}</el-button>
                     <el-button type="success" size="mini" @click="handleEdit(scope.row.typeCode)" >{{$t('button.edit')}}</el-button>
                     <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.typeCode)">{{$t('button.delete')}}</el-button>
                 </template>
