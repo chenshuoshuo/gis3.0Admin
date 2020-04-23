@@ -85,7 +85,7 @@
             </el-table-column>
             <el-table-column width="300" align="center" :label="$t('table.option')"  class-name="small-padding fixed-width">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini"  :disabled="!scope.row.lngLat" @click="handlePos(scope.row.lngLat)">{{$t('button.viewPos')}}</el-button>
+                    <el-button type="primary" size="mini"  :disabled="!scope.row.lngLat" @click="handlePos(scope.row)">{{$t('button.viewPos')}}</el-button>
                     <el-button type="warning" size="mini" :disabled="!scope.row.hasImg" @click="handleView(scope.row.imgList)">{{$t('button.viewPic')}}</el-button>
                     <el-button type="danger" size="mini" @click="handleModifyStatus(scope.row.errorId)">{{$t('button.delete')}}</el-button>
                 </template>

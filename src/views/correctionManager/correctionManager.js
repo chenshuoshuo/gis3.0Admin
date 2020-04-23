@@ -88,17 +88,22 @@ export default {
     },
     handlePos(pos) {
       this.showPos = true
-      this.pos = pos.coordinates
-      if (this.initMap) {
-        this.initMap = false
-        setTimeout(() => {
-          window.creeper.CreeperConfig.token = 'cWluY2hlbmdqaWU6MTIzNDU2'
-          this.vectorMap = new window.creeper.VectorMap('map', 1, window.g.MAP_URL)
-          this.addMaker()
-        }, 200)
-      } else {
+      this.pos = pos.lngLat.coordinates
+      // if (this.initMap) {
+      //   this.initMap = false
+      //   setTimeout(() => {
+      //     window.creeper.CreeperConfig.token = 'cWluY2hlbmdqaWU6MTIzNDU2'
+      //     this.vectorMap = new window.creeper.VectorMap('map', pos.mapCode, window.g.MAP_URL)
+      //     this.addMaker()
+      //   }, 200)
+      // } else {
+      //   this.addMaker()
+      // }
+      setTimeout(() => {
+        window.creeper.CreeperConfig.token = 'cWluY2hlbmdqaWU6MTIzNDU2'
+        this.vectorMap = new window.creeper.VectorMap('map', pos.mapCode, window.g.MAP_URL)
         this.addMaker()
-      }
+      }, 200)
     },
     handleRemoveMaker(done) {
       this.marker.remove()
