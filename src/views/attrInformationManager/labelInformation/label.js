@@ -87,7 +87,11 @@ export default {
     },
     handlerSearch() {
       if (this.typeCode.length > 0) {
-        this.$set(this.listQuery, 'typeCode', this.typeCode[1])
+        if (this.typeCode.length === 1) {
+          this.$set(this.listQuery, 'typeCode', this.typeCode[0])
+        } else {
+          this.$set(this.listQuery, 'typeCode', this.typeCode[1])
+        }
       } else {
         this.listQuery.typeCode = null
       }

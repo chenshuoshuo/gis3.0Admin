@@ -34,7 +34,7 @@
       </el-submenu>
     </template>
     <div class="support">
-      <span v-if="!isCollapse">版本：&nbsp;V{{version}}</span>
+      <!-- <span v-if="!isCollapse">版本：&nbsp;V{{version}}</span> -->
     </div>
   </div>
 </template>

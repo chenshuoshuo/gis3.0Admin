@@ -58,7 +58,7 @@
                         <el-form-item label="二维位置绑定:" prop="location" class="required">
                             <el-input v-model="postForm.location" placeholder="请在地图上选择" ></el-input>
                         </el-form-item>
-                        <el-form-item v-if="has3D" label="三维位置绑定:" prop="rasterLngLatString" class="required" ref="raster">
+                        <el-form-item v-if="!isIndoor" label="三维位置绑定:" prop="rasterLngLatString" class="required" ref="raster">
                             <span @click="openRaster">
                                 <el-input v-model="postForm.rasterLngLatString" placeholder="点击打开三维地图"></el-input>
                             </span>

@@ -37,6 +37,7 @@ export default {
         campusCode: null,
         rasterLngLatString: '',
         typeCode: '',
+        mapCode: '',
         mapPointExtendsList: [],
         mapPointImgList: [],
         extendsFields: []
@@ -52,7 +53,8 @@ export default {
         orderId: [{ type: 'number', required: true, message: '请输入大于0的数字', trigger: 'blur', min: 1 }]
       },
       isEnsure: false,
-      oldRasterLngLat: ''
+      oldRasterLngLat: '',
+      isIndoor: false
     }
   },
   methods: {
@@ -125,6 +127,11 @@ export default {
     },
     saveInfo() {
       this.postForm.leaf = this.postForm.leaf ? this.vectorMap.floorComponent.nowLevelIndex : null
+      if (this.isIndoor) {
+        if (this.postForm.rasterLngLatString) {
+          delete this.postForm.rasterLngLatString
+        }
+      }
       if (this.state === 'add') {
         this.postForm.extendsFields.forEach(element => {
           this.postForm.mapPointExtendsList.push({ columnId: element.columnId, typeCode: this.postForm.typeCode, extendsValue: element.extendsValue })
@@ -210,7 +217,7 @@ export default {
                 })
               })
             }
-            this.postForm = Object.assign({},this.postForm,{
+            this.postForm = Object.assign({}, this.postForm, {
               extendsFields: res.data.data
             })
           } else {
@@ -228,9 +235,17 @@ export default {
       if (features.length > 0) {
         feature = features[0]
       }
+      console.log('feature', feature)
+      if (feature.source === 'indoor') {
+        this.isIndoor = true
+        this.postForm.leaf = true
+      } else {
+        this.isIndoor = false
+        this.postForm.leaf = false
+      }
       this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
       this.postForm.lngLatString = `${e.lngLat.lng},${e.lngLat.lat}`
-      // this.postForm.mapCode = feature && feature.properties ? feature.properties.id : null
+      this.postForm.mapCode = feature && feature.properties.name ? feature.properties.id : null
     },
     inintMap() {
       this.$nextTick(() => {
@@ -240,13 +255,13 @@ export default {
       this.vectorMap.on('load', () => {
         // 重写moveend方法
         this.vectorMap.on('moveend', () => {
-          if (this.vectorMap.getZoom() >= 18) {
-            this.postForm.leaf = true
-            this.has3D = false
-          } else {
-            this.postForm.leaf = false
-            this.has3D = true
-          }
+          // if (this.vectorMap.getZoom() >= 18) {
+          //   this.postForm.leaf = true
+          //   this.has3D = false
+          // } else {
+          //   this.postForm.leaf = false
+          //   this.has3D = true
+          // }
           // 调用sdk中的moveend回调
           this.vectorMap.floorComponent.onCameraMoveEnd()
           if (this.vectorMap.getZoom() >= 18 && Number(this.vectorMap.getMinLevel()) !== Number(this.vectorMap.getMaxLevel())) {
@@ -282,7 +297,7 @@ export default {
             }
             this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
             this.postForm.lngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
-            // this.postForm.mapCode = feature.properties.id
+            this.postForm.mapCode = feature && feature.properties.name ? feature.properties.id : null
           })
           this.setPostForm(e)
         })
@@ -300,7 +315,7 @@ export default {
               }
               this.postForm.location = `${feature && feature.properties.name ? feature.properties.name : '未知位置'}`
               this.postForm.lngLatString = `${marker.getLngLat().lng},${marker.getLngLat().lat}`
-              // this.postForm.mapCode = feature.properties.id
+              this.postForm.mapCode = feature && feature.properties.name ? feature.properties.id : null
             })
             if (this.floor.currentLevel === 0 || this.floor.currentLevel) {
               this.vectorMap.flyTo({
@@ -408,7 +423,7 @@ export default {
         this.isFisrt = false
         this.getPointTypeList()
       } else {
-        this.postForm.orderId = this.$route.query.total + 1
+        this.postForm.orderId = Number(this.$route.query.total) + 1
         this.typeArr = []
         this.getPointTypeList()
         this.loaddingMap = true
@@ -469,7 +484,9 @@ export default {
             this.campusId = res.data.data.campusCode
             this.typeArr = [res.data.data.mapPointType.parentCode, res.data.data.mapPointType.typeCode]
             this.floor.currentLevel = this.postForm.leaf
-            this.postForm.leaf = (this.postForm.leaf == 0 && this.postForm.leaf)
+            // this.postForm.leaf = (this.postForm.leaf == 0 && this.postForm.leaf)
+            this.postForm.leaf = this.postForm.leaf !== null
+            this.isIndoor = this.postForm.leaf
             this.vectorMap = new window.creeper.VectorMap('map', this.campusId, window.g.MAP_URL)
             this.inintMap()
           } else {

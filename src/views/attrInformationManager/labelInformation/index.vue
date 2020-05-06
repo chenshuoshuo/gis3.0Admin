@@ -74,7 +74,7 @@
             </el-table-column>
             <el-table-column width="120" :label="$t('table.parentCategory')" align="center">
                 <template slot-scope="scope">
-                    <span>{{scope.row.parentMapPointType.typeName}}</span>
+                    <span v-if="scope.row.parentMapPointType">{{scope.row.parentMapPointType.typeName}}</span>
                 </template>
             </el-table-column>
             <el-table-column align="center" width="160" :label="$t('table.option')"  class-name="small-padding fixed-width">
