@@ -21,7 +21,7 @@ export default {
       initMap: true,
       campus: [],
       listQuery: {
-        page: 1,
+        page: 0,
         pageSize: 10
       },
       formData: {
@@ -30,9 +30,9 @@ export default {
   },
   methods: {
     getList() {
-      this.listQuery.page--
+      // this.listQuery.page--
       pageCorrect(this.listQuery).then(res => {
-        this.listQuery.page++
+        // this.listQuery.page++
         if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
@@ -63,12 +63,12 @@ export default {
       this.$refs.postForm.resetFields()
     },
     handlerSearch() {
-      this.listQuery.page = 1
+      this.listQuery.page = 0
       this.getList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
       this.getList()
     },
     handleView(list) {
@@ -110,7 +110,7 @@ export default {
       done()
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val
+      this.listQuery.page = val - 1
       this.getList()
     },
     handleDeletMany() {

@@ -30,7 +30,7 @@ export default {
       total: 0,
       listLoading: false,
       listQuery: {
-        page: 1,
+        page: 0,
         pageSize: 10
       },
       campus: [],
@@ -42,14 +42,14 @@ export default {
   },
   methods: {
     getList() {
-      if (this.listQuery.page < 1) {
-        return
-      }
-      this.listQuery.page--
+      // if (this.listQuery.page < 1) {
+      //   return
+      // }
+      // this.listQuery.page--
       this.listLoading = true
       pageOthersInfo(this.listQuery).then(res => {
         this.listLoading = false
-        this.listQuery.page++
+        // this.listQuery.page++
         if (res.data.status) {
           this.list = res.data.data.content
           this.total = res.data.data.totalElements
@@ -94,16 +94,16 @@ export default {
       })
     },
     handlerSearch() {
-      this.listQuery.page = 1
+      this.listQuery.page = 0
       this.getList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
       this.getList()
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val
+      this.listQuery.page = val - 1
       this.getList()
     },
     handleDeletMany() {

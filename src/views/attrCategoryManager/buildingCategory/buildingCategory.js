@@ -35,7 +35,7 @@ export default {
       total: 0,
       listLoading: false,
       listQuery: {
-        page: 1,
+        page: 0,
         page_size: 10
       },
       showReviewer: false,
@@ -46,9 +46,9 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      this.listQuery.page--
+      // this.listQuery.page--
       pageBuildingType(this.listQuery).then(res => {
-        this.listQuery.page++
+        // this.listQuery.page++
         this.listLoading = false
         if (res.data.status) {
           this.list = res.data.data.content
@@ -150,16 +150,16 @@ export default {
       })
     },
     handlerSearch() {
-      this.listQuery.page = 1
+      this.listQuery.page = 0
       this.getList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
       this.getList()
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val
+      this.listQuery.page = val - 1
       this.getList()
     },
     handleAvatarSuccess(res, file) {

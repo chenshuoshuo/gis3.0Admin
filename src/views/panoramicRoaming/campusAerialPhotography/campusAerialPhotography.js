@@ -25,7 +25,7 @@ export default {
       campus: [],
       listLoading: false,
       listQuery: {
-        page: 1,
+        page: 0,
         pageSize: 10,
         roamType: 1
       },
@@ -42,7 +42,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      this.listQuery.page--
+      // this.listQuery.page--
       pageRoam(this.listQuery).then(res => {
         if (res.data.status) {
           this.list = res.data.data.content
@@ -55,7 +55,7 @@ export default {
         }
       }).finally(() => {
         this.listLoading = false
-        this.listQuery.page++
+        // this.listQuery.page++
       })
     },
     handleSuccess(res) {
@@ -102,16 +102,16 @@ export default {
       })
     },
     handlerSearch() {
-      this.listQuery.page = 1
+      this.listQuery.page = 0
       this.getList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
-      this.listQuery.page = 1
+      // this.listQuery.page = 1
       this.getList()
     },
     handleCurrentChange(val) {
-      this.listQuery.page = val
+      this.listQuery.page = val - 1
       this.getList()
     },
     handleDeletMany() {
